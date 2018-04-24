@@ -1,0 +1,6 @@
+label {font-size:12px;}  
+label i {font-size:12px;font-style:normal;display:inline-block;width:14px;height:14px;text-align:center;line-height:12px;color:#fff;vertical-align:middle;margin:-2px 2px 1px 0px;border:#2489c5 1px solid;}  
+input[type="checkbox"]{display:none;}  
+input[type="checkbox"]:checked + i {background:#2489c5;}  
+input[type="checkbox"]:disabled + i {border-color:#ccc;}  
+input[type="checkbox"]:checked:disabled + i{background:#ccc;}  
