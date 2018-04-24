@@ -222,7 +222,7 @@
 				
 	</dependencies>
 	<build>
-		<finalName>gismgr</finalName>
+		<finalName>smartparking</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
