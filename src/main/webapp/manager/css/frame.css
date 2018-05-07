@@ -83,7 +83,7 @@
 .left .logo {
     width: 100%;
     float: left;
-    background:#2dd07e;
+    background:#336699;
     position: relative;
     cursor: pointer;
 }
@@ -95,7 +95,7 @@
     width: 100%;
     display: block;
     line-height: 50px;
-    background:#2dd07e;
+    background:#336699;
     text-align: center;
 }
 
