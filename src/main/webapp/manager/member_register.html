@@ -11,100 +11,79 @@
     <link href="files/member_register/styles.css" type="text/css" rel="stylesheet"/>
     <script src="resources/scripts/jquery-1.7.1.min.js"></script>
     <script src="resources/scripts/jquery-ui-1.8.10.custom.min.js"></script>
-    <script src="resources/scripts/prototypePre.js"></script>
-    <script src="data/document.js"></script>
-    <script src="resources/scripts/prototypePost.js"></script>
-    <script src="files/member_register/data.js"></script>
+    <!-- <script src="resources/scripts/prototypePre.js"></script> -->
+    <!-- <script src="data/document.js"></script> -->
+    <script src="js/member_register.js"></script>
+    <!-- <script src="resources/scripts/prototypePost.js"></script> -->
+    <!-- <script src="files/member_register/data.js"></script> -->
     <script type="text/javascript">
-      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
-      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
-      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
     </script>
   </head>
   <body>
     <div id="base" class="">
 
       <!-- Unnamed (文本框) -->
-      <div id="u0" class="ax_default text_field">
-        <input id="u0_input" type="text" value=""/>
+      <div id="u4" class="ax_default text_field">
+        <input id="u4_input" type="text" value=""/>
       </div>
 
       <!-- Unnamed (矩形) -->
-      <div id="u1" class="ax_default label">
-        <div id="u1_div" class=""></div>
+      <div id="u5" class="ax_default label">
+        <div id="u5_div" class=""></div>
         <!-- Unnamed () -->
-        <div id="u2" class="text">
+        <div id="u6" class="text">
           <p><span>会员名：</span></p>
         </div>
       </div>
 
       <!-- Unnamed (矩形) -->
-      <div id="u3" class="ax_default label">
-        <div id="u3_div" class=""></div>
+      <div id="u7" class="ax_default label">
+        <div id="u7_div" class=""></div>
         <!-- Unnamed () -->
-        <div id="u4" class="text">
+        <div id="u8" class="text">
           <p><span>性别：</span></p>
         </div>
       </div>
 
-      <!-- Unnamed (文本框) -->
-      <div id="u5" class="ax_default text_field">
-        <input id="u5_input" type="text" value=""/>
-      </div>
-
       <!-- Unnamed (矩形) -->
-      <div id="u6" class="ax_default button">
-        <div id="u6_div" class=""></div>
+      <div id="u9" onclick="submit();" class="ax_default button">
+        <div id="u9_div" class=""></div>
         <!-- Unnamed () -->
-        <div id="u7" class="text">
+        <div id="u10"  class="text">
           <p><span>创建会员</span></p>
         </div>
       </div>
 
       <!-- Unnamed (矩形) -->
-      <div id="u8" class="ax_default label">
-        <div id="u8_div" class=""></div>
+      <div id="u11" class="ax_default label">
+        <div id="u11_div" class=""></div>
         <!-- Unnamed () -->
-        <div id="u9" class="text">
+        <div id="u12" class="text">
           <p><span>车牌号：</span></p>
         </div>
       </div>
 
       <!-- Unnamed (文本框) -->
-      <div id="u10" class="ax_default text_field">
-        <input id="u10_input" type="text" value=""/>
+      <div id="u13" class="ax_default text_field">
+        <input id="u13_input" type="text" value=""/>
       </div>
 
       <!-- Unnamed (矩形) -->
-      <div id="u11" class="ax_default _三级标题">
-        <div id="u11_div" class=""></div>
+      <div id="u14" class="ax_default _三级标题">
+        <div id="u14_div" class=""></div>
         <!-- Unnamed () -->
-        <div id="u12" class="text">
+        <div id="u15" class="text">
           <p><span>会员信息：</span></p>
         </div>
       </div>
 
       <!-- Unnamed (矩形) -->
-      <div id="u13" class="ax_default _三级标题">
-        <div id="u13_div" class=""></div>
+      <div id="u16" class="ax_default _三级标题">
+        <div id="u16_div" class=""></div>
         <!-- Unnamed () -->
-        <div id="u14" class="text">
+        <div id="u17" class="text">
           <p><span>车辆信息：</span></p>
         </div>
-      </div>
-
-      <!-- Unnamed (矩形) -->
-      <div id="u15" class="ax_default label">
-        <div id="u15_div" class=""></div>
-        <!-- Unnamed () -->
-        <div id="u16" class="text">
-          <p><span>车主：</span></p>
-        </div>
-      </div>
-
-      <!-- Unnamed (文本框) -->
-      <div id="u17" class="ax_default text_field">
-        <input id="u17_input" type="text" value=""/>
       </div>
 
       <!-- Unnamed (矩形) -->
@@ -112,19 +91,60 @@
         <div id="u18_div" class=""></div>
         <!-- Unnamed () -->
         <div id="u19" class="text">
+          <p><span>车主：</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (文本框) -->
+      <div id="u20" class="ax_default text_field">
+        <input id="u20_input" type="text" value=""/>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u21" class="ax_default label">
+        <div id="u21_div" class=""></div>
+        <!-- Unnamed () -->
+        <div id="u22" class="text">
           <p><span>车辆类型：</span></p>
         </div>
       </div>
 
       <!-- Unnamed (下拉列表框) -->
-      <div id="u20" class="ax_default droplist">
-        <select id="u20_input">
-          <option value="5座汽车">5座汽车</option>
-          <option value="7座汽车">7座汽车</option>
-          <option value="小型客车">小型客车</option>
-          <option value="大型客车">大型客车</option>
-          <option value="小型货车">小型货车</option>
-          <option value="大型货车">大型货车</option>
+      <div id="u23" class="ax_default droplist">
+        <select id="u23_input">
+          <option value="1">5座汽车</option>
+          <option value="2">7座汽车</option>
+          <option value="3">小型客车</option>
+          <option value="4">大型客车</option>
+          <option value="5">小型货车</option>
+          <option value="6">大型货车</option>
+        </select>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u24" class="ax_default _二级标题">
+        <div id="u24_div" class=""></div>
+        <!-- Unnamed () -->
+        <div id="u25"  class="text">
+          <p><span>会员信息注册</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u26" onclick="turnnext();" class="ax_default button">
+        <div id="u26_div" class=""></div>
+        <!-- Unnamed () -->
+        <div id="u27" class="text">
+          <p><span>下一步</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (下拉列表框) -->
+      <div id="u28" class="ax_default droplist">
+        <select id="u28_input">
+          <option value="1">男</option>
+          <option value="0">女</option>
+          <option value="3">未知</option>
         </select>
       </div>
     </div>

@@ -17,6 +17,10 @@ import org.apache.commons.lang.StringUtils;
     20003:当前账户已经失效
     30000:参数校验失败
     40000:微信绑定失败
+    
+    -----------------------smartparking----------------------
+    50000:车主信息不能为空
+    
  * @author 吴迪叶
  *
  */
@@ -53,6 +57,9 @@ public class ServerResult {
 	public final static int RESULT_GETWXINFO_ERROR = 40000;
 	public final static String RESULT_GETWXINFO_ERROR_MSG = "微信绑定失败";
 	
+	public final static int RESULT_OWNERINFO_ERROR = 50000;
+	public final static String RESULT_OWNERINFO_ERROR_MSG = "车主信息不能为空";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -65,6 +72,8 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_ERROE_PARAM, RESULT_ERROE_PARAM_MSG);
 		ServerResultMap.put(RESULT_CHECK_USER_EXPIRY_DATE_ERROE, RESULT_CHECK_USER_EXPIRY_DATE_ERROE_MSG);
 		ServerResultMap.put(RESULT_GETWXINFO_ERROR, RESULT_GETWXINFO_ERROR_MSG);
+		//-----------------------------------------------------------------------
+		ServerResultMap.put(RESULT_OWNERINFO_ERROR, RESULT_OWNERINFO_ERROR_MSG);
 	}
 	
 	

@@ -65,6 +65,7 @@ public class AuthInterceptor implements HandlerInterceptor {
      */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
+		/*
 		HttpSession session = request.getSession();
 		String requestURI = request.getRequestURI();
 		String contextPath = request.getContextPath();
@@ -112,6 +113,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 				return false;
 			}
 		}
+		*/
 		
 //		if(requestURI.contains("/projectmgr/") 
 //				|| 	requestURI.contains("/operate/")
