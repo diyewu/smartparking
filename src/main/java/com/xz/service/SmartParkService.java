@@ -43,11 +43,21 @@ public class SmartParkService {
 		return entranceId;
 	}
 	
-	
-	public void registParkSpace(String parkId,String spaceName,String space_type,int spaceTotal,int spaceUsed,double spacePricePerhour){
+	/**
+	 * 注册停车场车位信息，一个停车场可以有多种车位
+	 * @param parkId
+	 * @param spaceName
+	 * @param space_type
+	 * @param spaceTotal
+	 * @param spaceUsed
+	 * @param spacePricePerhour
+	 * @return
+	 */
+	public String registParkSpace(String parkId,String spaceName,String space_type,int spaceTotal,int spaceUsed,double spacePricePerhour){
 		String spaceId = SortableUUID.randomUUID();
-		
-		
+		String sql = " insert into smart_park_space(id,park_id,space_name,space_type,space_total,space_used,space_price_perhour,create_time,update_time)values(?,?,?,?,?,?,?,NOW(),NOW()) ";
+		jdbcTemplate.update(sql, spaceId,parkId,spaceName,space_type,spaceTotal,spaceUsed,spacePricePerhour);
+		return spaceId;
 	}
 	
 }
