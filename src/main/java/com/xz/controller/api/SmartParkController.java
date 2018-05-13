@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xz.common.ServerResult;
 import com.xz.controller.BaseController;
 import com.xz.model.json.AppJsonModel;
-import com.xz.service.SmartCarService;
+import com.xz.service.SmartParkService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,14 +23,15 @@ import io.swagger.annotations.ApiParam;
 public class SmartParkController extends BaseController{
 	
 	@Autowired
-	private SmartCarService smartCarService;
+	private SmartParkService smartParkService;
 	
 	
 	@ApiOperation(value = "场地信息注册", notes = "填写场地信息", httpMethod = "POST")
 	@RequestMapping("parkRegist")
 	@ResponseBody
 	public AppJsonModel parkRegist(
-			 @ApiParam(name = "memberId", value = "场地管理员编号，可不填", required = false) @RequestParam(value = "memberId", required = false) String memberId,
+			 @ApiParam(name = "memberId", value = "场地管理员编号，可不填，场地管理员或后台操作管理员不能同时为空", required = false) @RequestParam(value = "memberId", required = false) String memberId,
+			 @ApiParam(name = "operateUserId", value = "后台操作管理员编号，可不填，场地管理员或后台操作管理员不能同时为空", required = false) @RequestParam(value = "operateUserId", required = false) String operateUserId,
 			 @ApiParam(name = "parkName", value = "停车场地名称", required = true) @RequestParam(value = "parkName", required = true) String parkName,
 			 @ApiParam(name = "parkLongitude", value = "停车场地经度", required = true) @RequestParam(value ="parkLongitude", required = true) String parkLongitude,
 			 @ApiParam(name = "parkLatitude", value = "停车场地维度", required = true) @RequestParam(value = "parkLatitude", required = false) String parkLatitude,
@@ -38,11 +39,22 @@ public class SmartParkController extends BaseController{
 			){
 		String msg = null;
 		int code = 0;
-		Map<String,String> respMap = new HashMap<String, String>();
+		Map<String,Object> respMap = new HashMap<String, Object>();
+		if(StringUtils.isBlank(memberId) && StringUtils.isBlank(operateUserId)){
+			code = ServerResult.RESULT_PARK_BLANK_ERROR;
+		}
+		String parkId = "";
 		//注册场地信息
 		if(code == 0){
-			
+			try {
+				parkId = smartParkService.registPark(parkName, parkDescription, parkLongitude, parkLatitude, memberId,
+						operateUserId);
+			} catch (Exception e) {
+				msg = e.getMessage();
+				e.printStackTrace();
+			}
 		}
+		respMap.put("parkId", parkId);
 		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
@@ -50,7 +62,6 @@ public class SmartParkController extends BaseController{
 	@RequestMapping("parkEntranceRegist")
 	@ResponseBody
 	public AppJsonModel parkEntranceRegist(
-			@ApiParam(name = "memberId", value = "场地管理员编号，可不填", required = false) @RequestParam(value = "memberId", required = false) String memberId,
 			@ApiParam(name = "parkId", value = "停车场地编号", required = true) @RequestParam(value = "parkId", required = true) String parkId,
 			@ApiParam(name = "entranceName", value = "场地入口名称", required = true) @RequestParam(value ="entranceName", required = true) String entranceName,
 			@ApiParam(name = "entranceLongitude", value = "停车场地入口经度", required = true) @RequestParam(value = "entranceLongitude", required = false) String entranceLongitude,
@@ -60,10 +71,18 @@ public class SmartParkController extends BaseController{
 		String msg = null;
 		int code = 0;
 		Map<String,String> respMap = new HashMap<String, String>();
-		//注册车主信息
+		String entranceId = "";
+		//注册场地入口信息
 		if(code == 0){
-			
+			try {
+				entranceId = smartParkService.registParkEntrance(parkId, entranceName, entranceLongitude,
+						entranceLatitude, entranceDescription);
+			} catch (Exception e) {
+				msg = e.getMessage();
+				e.printStackTrace();
+			}
 		}
+		respMap.put("entranceId", entranceId);
 		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
@@ -71,20 +90,22 @@ public class SmartParkController extends BaseController{
 	@RequestMapping("parkSpaceRegist")
 	@ResponseBody
 	public AppJsonModel parkSpaceRegist(
-			@ApiParam(name = "memberId", value = "场地管理员编号，可不填", required = false) @RequestParam(value = "memberId", required = false) String memberId,
 			@ApiParam(name = "parkId", value = "停车场地编号", required = true) @RequestParam(value = "parkId", required = true) String parkId,
 			@ApiParam(name = "spaceType", value = "场地车位类型", required = true) @RequestParam(value ="spaceType", required = true) String spaceType,
-			@ApiParam(name = "spaceTotal", value = "场地该类型车位总数", required = true) @RequestParam(value = "spaceTotal", required = true) String spaceTotal,
-			@ApiParam(name = "spaceUsed", value = "场地该类型车位已占用数", required = true) @RequestParam(value = "spaceUsed", required = true) String spaceUsed,
-			@ApiParam(name = "spacePricePerhour", value = "场地该类型车位没小时停车费用", required = false) @RequestParam(value = "spacePricePerhour", required = false) String spacePricePerhour
+			@ApiParam(name = "spaceTotal", value = "场地该类型车位总数", required = true) @RequestParam(value = "spaceTotal", required = true) int spaceTotal,
+			@ApiParam(name = "spaceUsed", value = "场地该类型车位已占用数", required = true) @RequestParam(value = "spaceUsed", required = true) int spaceUsed,
+			@ApiParam(name = "spacePricePerhour", value = "场地该类型车位没小时停车费用", required = false) @RequestParam(value = "spacePricePerhour", required = false) double spacePricePerhour,
+			@ApiParam(name = "spaceDescription", value = "场地该类型车位描述", required = false) @RequestParam(value = "spaceDescription", required = false) String spaceDescription
 			){
 		String msg = null;
 		int code = 0;
 		Map<String,String> respMap = new HashMap<String, String>();
-		//注册车主信息
+		String spaceId = "";
+		//注册车位信息
 		if(code == 0){
-			
+			spaceId = smartParkService.registParkSpace(parkId, spaceType, spaceTotal, spaceUsed, spacePricePerhour, spaceDescription);
 		}
+		respMap.put("spaceId", spaceId);
 		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	

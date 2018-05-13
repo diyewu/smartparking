@@ -1,3 +1,4 @@
+var globalMemberId = "";
 $(document).ready(function() {
 
 })
@@ -13,6 +14,7 @@ function submit(){
 	function(result){
 		// console.log(result);
 		var memberId = result.data.memberId;
+		globalMemberId = memberId;
 		submitCar(memberId);
 	},'json');
 }
@@ -41,6 +43,6 @@ function submitCar(memberId){
 }
 
 function turnnext(){
-	window.location.href="park_register.html"
+	window.location.href="park_register.html?memberId="+globalMemberId
 }
 

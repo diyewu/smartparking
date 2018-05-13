@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
     
     -----------------------smartparking----------------------
     50000:车主信息不能为空
+    50001:场地管理员或后台操作管理员不能同时为空
     
  * @author 吴迪叶
  *
@@ -60,6 +61,9 @@ public class ServerResult {
 	public final static int RESULT_OWNERINFO_ERROR = 50000;
 	public final static String RESULT_OWNERINFO_ERROR_MSG = "车主信息不能为空";
 	
+	public final static int RESULT_PARK_BLANK_ERROR = 50001;
+	public final static String RESULT_PARK_BLANK_ERROR_MSG = "场地管理员或后台操作管理员不能同时为空";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -74,6 +78,7 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_GETWXINFO_ERROR, RESULT_GETWXINFO_ERROR_MSG);
 		//-----------------------------------------------------------------------
 		ServerResultMap.put(RESULT_OWNERINFO_ERROR, RESULT_OWNERINFO_ERROR_MSG);
+		ServerResultMap.put(RESULT_PARK_BLANK_ERROR, RESULT_PARK_BLANK_ERROR_MSG);
 	}
 	
 	

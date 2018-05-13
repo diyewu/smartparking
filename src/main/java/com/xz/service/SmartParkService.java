@@ -19,12 +19,13 @@ public class SmartParkService {
 	 * @param parkLongitude
 	 * @param parkLatitude
 	 * @param managerId
-	 * @return parkId
+	 * @param operateUserId
+	 * @return
 	 */
-	public String registPark(String parkName,String parkDescription,String parkLongitude,String parkLatitude,String managerId){
+	public String registPark(String parkName,String parkDescription,String parkLongitude,String parkLatitude,String managerId,String operateUserId){
 		String parkId = SortableUUID.randomUUID();
-		String sql = " insert into smart_park(id,park_name,park_description,park_longitude,park_latitude,create_time,update_time,manager_id)VALUES(?,?,?,?,?,NOW(),NOW(),?) ";
-		jdbcTemplate.update(sql, parkId,parkName,parkDescription,parkLongitude,parkLatitude,managerId);
+		String sql = " insert into smart_park(id,park_name,park_description,park_longitude,park_latitude,create_time,update_time,manager_id,operate_user_id)VALUES(?,?,?,?,?,NOW(),NOW(),?,?) ";
+		jdbcTemplate.update(sql, parkId,parkName,parkDescription,parkLongitude,parkLatitude,managerId,operateUserId);
 		return parkId;
 	}
 	
@@ -34,29 +35,30 @@ public class SmartParkService {
 	 * @param entranceName
 	 * @param entranceLongitude
 	 * @param entranceLatitude
-	 * @return entranceId
+	 * @param entranceDescription
+	 * @return
 	 */
-	public String registParkEntrance(String parkId,String entranceName,String entranceLongitude,String entranceLatitude){
+	public String registParkEntrance(String parkId,String entranceName,String entranceLongitude,String entranceLatitude,String entranceDescription){
 		String entranceId = SortableUUID.randomUUID();
-		String sql = " insert into smart_park_entrance(id,park_id,entrance_name,entrance_longitude,entrance_latitude,create_time,update_time)values(?,?,?,?,?,NOW(),NOW()) ";
-		jdbcTemplate.update(sql, entranceId,parkId,entranceName,entranceLongitude,entranceLatitude);
+		String sql = " insert into smart_park_entrance(id,park_id,entrance_name,entrance_longitude,entrance_latitude,entrance_description,create_time,update_time)values(?,?,?,?,?,?,NOW(),NOW()) ";
+		jdbcTemplate.update(sql, entranceId,parkId,entranceName,entranceLongitude,entranceLatitude,entranceDescription);
 		return entranceId;
 	}
 	
 	/**
 	 * 注册停车场车位信息，一个停车场可以有多种车位
 	 * @param parkId
-	 * @param spaceName
-	 * @param space_type
+	 * @param spaceType
 	 * @param spaceTotal
 	 * @param spaceUsed
 	 * @param spacePricePerhour
+	 * @param spaceDescription
 	 * @return
 	 */
-	public String registParkSpace(String parkId,String spaceName,String space_type,int spaceTotal,int spaceUsed,double spacePricePerhour){
+	public String registParkSpace(String parkId,String spaceType,int spaceTotal,int spaceUsed,double spacePricePerhour,String spaceDescription){
 		String spaceId = SortableUUID.randomUUID();
-		String sql = " insert into smart_park_space(id,park_id,space_name,space_type,space_total,space_used,space_price_perhour,create_time,update_time)values(?,?,?,?,?,?,?,NOW(),NOW()) ";
-		jdbcTemplate.update(sql, spaceId,parkId,spaceName,space_type,spaceTotal,spaceUsed,spacePricePerhour);
+		String sql = " insert into smart_park_space(id,park_id,space_type,space_total,space_used,space_price_perhour,space_description,create_time,update_time)values(?,?,?,?,?,?,?,NOW(),NOW()) ";
+		jdbcTemplate.update(sql, spaceId,parkId,spaceType,spaceTotal,spaceUsed,spacePricePerhour,spaceDescription);
 		return spaceId;
 	}
 	
