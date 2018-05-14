@@ -21,6 +21,8 @@ import org.apache.commons.lang.StringUtils;
     -----------------------smartparking----------------------
     50000:车主信息不能为空
     50001:场地管理员或后台操作管理员不能同时为空
+    50002：车辆信息未注册
+    50003：未查询到停车状态中的订单
     
  * @author 吴迪叶
  *
@@ -64,6 +66,12 @@ public class ServerResult {
 	public final static int RESULT_PARK_BLANK_ERROR = 50001;
 	public final static String RESULT_PARK_BLANK_ERROR_MSG = "场地管理员或后台操作管理员不能同时为空";
 	
+	public final static int RESULT_CAR_NOT_REGIST_ERROR = 50002;
+	public final static String RESULT_CAR_NOT_REGIST_ERROR_MSG = "车辆信息未注册";
+	
+	public final static int RESULT_ORDER_DONOT_EXSIT_ERROR = 50003;
+	public final static String RESULT_ORDER_DONOT_EXSIT_ERROR_MSG = "未查询到停车状态中的订单";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -79,6 +87,8 @@ public class ServerResult {
 		//-----------------------------------------------------------------------
 		ServerResultMap.put(RESULT_OWNERINFO_ERROR, RESULT_OWNERINFO_ERROR_MSG);
 		ServerResultMap.put(RESULT_PARK_BLANK_ERROR, RESULT_PARK_BLANK_ERROR_MSG);
+		ServerResultMap.put(RESULT_CAR_NOT_REGIST_ERROR, RESULT_CAR_NOT_REGIST_ERROR_MSG);
+		ServerResultMap.put(RESULT_ORDER_DONOT_EXSIT_ERROR, RESULT_ORDER_DONOT_EXSIT_ERROR_MSG);
 	}
 	
 	

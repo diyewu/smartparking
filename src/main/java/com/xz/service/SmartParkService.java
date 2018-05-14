@@ -1,10 +1,16 @@
 package com.xz.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xz.entity.SmartOrder;
 import com.xz.utils.SortableUUID;
 
 @Service
@@ -61,5 +67,185 @@ public class SmartParkService {
 		jdbcTemplate.update(sql, spaceId,parkId,spaceType,spaceTotal,spaceUsed,spacePricePerhour,spaceDescription);
 		return spaceId;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Map<String, Object>> listPark(){
+		String sql = " select id,park_name from smart_park ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return list;
+	}
+	
+	public List<Map<String, Object>> listSpaceByParkId(String parkId){
+		String sql = " select sps.id,spsd.space_name from smart_park_space sps left join smart_park_space_dictionary spsd on sps.space_type = spsd.id where park_id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return list;
+	}
+
+	
+	//订单相关 service****************************************************************
+	/**
+	 * 判断车辆是否允许进入停车场
+	 * @param carId
+	 * @param parkId
+	 * @return
+	 */
+	public int checkCarForbidParking(String carId,String parkId){
+		//TODO 
+		return 0;
+	}
+	
+	
+	/**
+	 * 申请成功后创建订单，返回订单编号信息
+	 * @param carId
+	 * @param parkId
+	 * @param spaceId
+	 * @param parkingType
+	 * @return
+	 */
+	public String createOrder(String carId,String parkId,int orderType){
+		String orderId = SortableUUID.randomUUID();
+		String orderSql = " insert into smart_order(id,car_id,park_id,order_type,order_state_id,create_time)values(?,?,?,?,?,?,NOW()) ";
+		jdbcTemplate.update(orderSql, orderId,carId,parkId,orderType,1);
+		return orderId;
+	}
+	
+	/**
+	 * 根据车辆、场地、订单状态获取订单信息
+	 * @param carId
+	 * @param parkId
+	 * @param orderStateId
+	 * @return
+	 */
+	public String getOrderId(String carId,String parkId,int orderStateId){
+		String orderId = "";
+		String sql = " select * from smart_order where car_id = ? and park_id = ? and order_state_id = ? ORDER BY create_time desc ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, carId,parkId,orderStateId);
+		if (list != null && list.size() > 0) {
+			orderId = list.get(0).get("id")+"";
+		}
+		return orderId;
+	}
+	
+	/**
+	 * 根据订单编号查询 开始停车时间 和 汽车驶入记录 ID
+	 * @param orderId
+	 * @return
+	 */
+	public List<Map<String, Object>> getOrderInfo(String orderId){
+		String sql = " SELECT so.begin_time, so.record_in_id, sps.space_price_perhour, sps.space_name, sp.park_name FROM smart_order so LEFT JOIN ( SELECT a.space_price_perhour, b.space_name FROM smart_park_space a LEFT JOIN smart_park_space_dictionary b ON a.space_type = b.id ) sps ON so.space_id = sps.id LEFT JOIN smart_park sp ON so.park_id = sp.id WHERE id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, orderId);
+		return list;
+	}
+	
+	
+	/**
+	 * 停车
+	 * @param carNumber
+	 * @param parkId
+	 * @param spaceId
+	 * @param parkingType
+	 */
+	public void parkIng(String carId,String parkId,String spaceId,String entranceId,int parkingType,String orderId,int updateOrderState){
+		if(StringUtils.isNotBlank(orderId)){
+			String recordId = SortableUUID.randomUUID();
+			String sql = " insert into smart_car_park_recoder(id,car_id,park_id,space_id,entrance_id,parking_type,create_time)VALUE(?,?,?,?,?,?,NOW()) ";
+			jdbcTemplate.update(sql, recordId,carId,parkId,spaceId,entranceId,parkingType);
+			
+			String orderSql = "";
+			if(0 == parkingType){//进场
+				orderSql = " update smart_order set space_id = ?,order_state_id=?,begin_time =NOW(),create_time = NOW(),record_in_id= ? where id = ? ";
+				jdbcTemplate.update(orderSql, spaceId,updateOrderState,recordId,orderId);
+			}else{//出场
+				
+			}
+		}
+	}
+	
+	public void updateSmartOrder(SmartOrder smartOrder){
+		if(StringUtils.isNotBlank(smartOrder.getId())){
+			StringBuilder sb = new StringBuilder();
+			List<Object> param = new ArrayList<Object>();
+			sb.append(" update smart_order set id = ? ");
+			param.add(smartOrder.getId());
+			if(StringUtils.isNotBlank(smartOrder.getCarId())){
+				sb.append(" ,car_id = ? ");
+				param.add(smartOrder.getCarId());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getParkId())){
+				sb.append(" ,park_id = ? ");
+				param.add(smartOrder.getParkId());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getSpaceId())){
+				sb.append(" ,space_id = ? ");
+				param.add(smartOrder.getSpaceId());
+			}
+			if(smartOrder.getOrderType() != null){
+				sb.append(" ,order_type = ? ");
+				param.add(smartOrder.getOrderType());
+			}
+			if(smartOrder.getOrderStateId() != null){
+				sb.append(" ,order_state_id = ? ");
+				param.add(smartOrder.getOrderStateId());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getBeginTime())){
+				sb.append(" ,begin_time = ? ");
+				param.add(smartOrder.getBeginTime());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getEndTime())){
+				sb.append(" ,end_time = ? ");
+				param.add(smartOrder.getEndTime());
+			}
+			if(smartOrder.getReceivableAmount() != null){
+				sb.append(" ,receivable_amount = ? ");
+				param.add(smartOrder.getReceivableAmount());
+			}
+			if(smartOrder.getActualAmount() != null){
+				sb.append(" ,actual_amount = ? ");
+				param.add(smartOrder.getActualAmount());
+			}
+			
+			if(StringUtils.isNotBlank(smartOrder.getEndTime())){
+				sb.append(" ,end_time = ? ");
+				param.add(smartOrder.getEndTime());
+			}
+			if(smartOrder.getReceivableAmount() != null){
+				sb.append(" ,receivable_amount = ? ");
+				param.add(smartOrder.getReceivableAmount());
+			}
+			if(smartOrder.getActualAmount() != null){
+				sb.append(" ,actual_amount = ? ");
+				param.add(smartOrder.getActualAmount());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getPayWayId())){
+				sb.append(" ,pay_way_id = ? ");
+				param.add(smartOrder.getPayWayId());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getRecordInId())){
+				sb.append(" ,record_in_id = ? ");
+				param.add(smartOrder.getRecordInId());
+			}
+			if(StringUtils.isNotBlank(smartOrder.getRecordOutId())){
+				sb.append(" ,record_out_id = ? ");
+				param.add(smartOrder.getRecordOutId());
+			}
+			sb.append(" where id = ? ");
+			param.add(smartOrder.getId());
+			jdbcTemplate.update(sb.toString(), param.toArray());
+		}
+	}
+	
+	
+	
+	
+	
+	//订单相关 service****************************************************************
+	
+	
+	
+	
 	
 }

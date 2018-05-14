@@ -1,5 +1,8 @@
 package com.xz.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,22 @@ public class SmartCarService {
 		return ownerId;
 	}
 	
+	
+	public List<Map<String, Object>> listCar(){
+		String sql = " select id,car_number from smart_car ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return list;
+	}
+	
+	public String getCarIdByNumber(String carNumber){
+		String sql = " select id from smart_car where car_number = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql,carNumber);
+		String carId = "";
+		if(list != null && list.size()>0){
+			carId = list.get(0).get("id")+"";
+		}
+		return carId;
+	}
 	
 	
 }
