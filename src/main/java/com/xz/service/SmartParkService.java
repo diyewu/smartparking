@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xz.common.SmartParkDictionary;
 import com.xz.entity.SmartOrder;
 import com.xz.utils.SortableUUID;
 
@@ -120,14 +121,10 @@ public class SmartParkService {
 	 * @param orderStateId
 	 * @return
 	 */
-	public String getOrderId(String carId,String parkId,int orderStateId){
-		String orderId = "";
+	public List<Map<String, Object>> getOrderId(String carId,String parkId,int orderStateId){
 		String sql = " select * from smart_order where car_id = ? and park_id = ? and order_state_id = ? ORDER BY create_time desc ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, carId,parkId,orderStateId);
-		if (list != null && list.size() > 0) {
-			orderId = list.get(0).get("id")+"";
-		}
-		return orderId;
+		return list;
 	}
 	
 	/**
@@ -148,23 +145,31 @@ public class SmartParkService {
 	 * @param parkId
 	 * @param spaceId
 	 * @param parkingType
+	 * return 
 	 */
-	public void parkIng(String carId,String parkId,String spaceId,String entranceId,int parkingType,String orderId,int updateOrderState){
-		if(StringUtils.isNotBlank(orderId)){
-			String recordId = SortableUUID.randomUUID();
-			String sql = " insert into smart_car_park_recoder(id,car_id,park_id,space_id,entrance_id,parking_type,create_time)VALUE(?,?,?,?,?,?,NOW()) ";
-			jdbcTemplate.update(sql, recordId,carId,parkId,spaceId,entranceId,parkingType);
-			
-			String orderSql = "";
-			if(0 == parkingType){//进场
-				orderSql = " update smart_order set space_id = ?,order_state_id=?,begin_time =NOW(),create_time = NOW(),record_in_id= ? where id = ? ";
-				jdbcTemplate.update(orderSql, spaceId,updateOrderState,recordId,orderId);
-			}else{//出场
-				
-			}
-		}
+	public String parkIngIn(String carId,String parkId,String spaceId,String entranceId,int parkingType){
+		String recordId = SortableUUID.randomUUID();
+		String sql = " insert into smart_car_park_recoder(id,car_id,park_id,space_id,entrance_id,parking_type,create_time)VALUE(?,?,?,?,?,?,NOW()) ";
+		jdbcTemplate.update(sql, recordId,carId,parkId,spaceId,entranceId,parkingType);
+		return recordId;
 	}
 	
+	/**
+	 * 校验订单编号和会员编号是否一致
+	 * @param orderId
+	 * @param memberId
+	 * @return
+	 */
+	public List<Map<String, Object>>  checkOrderIdAndMemberId(String orderId,String memberId){
+		String sql = " SELECT so.* FROM smart_order so LEFT JOIN smart_car sc ON so.car_id = sc.id LEFT JOIN smart_member sm ON sc.member_id = sm.id WHERE so.id = ? AND sm.id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, orderId,memberId);
+		return list;
+	}
+	
+	/**
+	 * 动态更新smart_order
+	 * @param smartOrder
+	 */
 	public void updateSmartOrder(SmartOrder smartOrder){
 		if(StringUtils.isNotBlank(smartOrder.getId())){
 			StringBuilder sb = new StringBuilder();

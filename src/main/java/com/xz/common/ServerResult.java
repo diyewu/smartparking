@@ -23,7 +23,8 @@ import org.apache.commons.lang.StringUtils;
     50001:场地管理员或后台操作管理员不能同时为空
     50002：车辆信息未注册
     50003：未查询到停车状态中的订单
-    
+    50004:订单编号和会员编号不匹配
+    50005:停车驶入场地记录创建失败
  * @author 吴迪叶
  *
  */
@@ -72,6 +73,12 @@ public class ServerResult {
 	public final static int RESULT_ORDER_DONOT_EXSIT_ERROR = 50003;
 	public final static String RESULT_ORDER_DONOT_EXSIT_ERROR_MSG = "未查询到停车状态中的订单";
 	
+	public final static int RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR = 50004;
+	public final static String RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR_MSG = "订单编号和会员编号不匹配";
+	
+	public final static int RESULT_RECORD_CREATE_ERROR = 50005;
+	public final static String RESULT_RECORD_CREATE_ERROR_MSG = "停车驶入场地记录创建失败";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -89,6 +96,8 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_PARK_BLANK_ERROR, RESULT_PARK_BLANK_ERROR_MSG);
 		ServerResultMap.put(RESULT_CAR_NOT_REGIST_ERROR, RESULT_CAR_NOT_REGIST_ERROR_MSG);
 		ServerResultMap.put(RESULT_ORDER_DONOT_EXSIT_ERROR, RESULT_ORDER_DONOT_EXSIT_ERROR_MSG);
+		ServerResultMap.put(RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR, RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR_MSG);
+		ServerResultMap.put(RESULT_RECORD_CREATE_ERROR, RESULT_RECORD_CREATE_ERROR_MSG);
 	}
 	
 	
