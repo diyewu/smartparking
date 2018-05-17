@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
  *
  * @author dean
  */
-@RestController
+//@RestController
 public class AppApiontroller extends BaseController{
 	@Autowired
 	private AppService webAndAppService;

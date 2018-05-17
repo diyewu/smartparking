@@ -30,8 +30,9 @@ public class Swagger2 {
 	
 	private ApiInfo apiInfo(){
 		return new ApiInfoBuilder()
-				.title("GIS APP APIs")
-				.description("描述")
+				.title("智慧停车系统接口 APIs")
+				.description("目前对外开放测试接口，smart-car-controller："
+						+ "车辆信息注册；smart-member-controller：会员信息注册；smart-park-controller：场地信息注册；demo-controller：停车流程测试")
 				.termsOfServiceUrl("")
 				.version("1.0")
 				.build();
