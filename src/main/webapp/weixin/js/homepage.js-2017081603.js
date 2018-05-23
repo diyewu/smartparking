@@ -23,13 +23,7 @@ $(function() {
 })
 
 function setTitle(){
-    if (getCookie('webSourceType') == 2){//如果虹桥商圈
-        document.title = '虹桥商圈';
-    } else if (getCookie('webSourceType') == 7){//如果振华
-        document.title = '振华智停';
-    } else {
-        document.title = '优会停捷停';
-    }
+    document.title = '智慧停车';
 }
 
 function initParkInfo(){
@@ -71,35 +65,16 @@ function initEffect(){
 }
 
 function getActList(){
-    // if (getCookie('webSourceType') == 2){//如果虹桥商圈
-    if (true){//如果虹桥商圈
+    if (getCookie('webSourceType') == 2){//如果虹桥商圈
+    // if (true){//如果虹桥商圈
         $(".slider ul").append("<li><a href='http://weibo.com/u/3677658801'><img src='hqsq.jpg'/*tpa=http://ipark.oss-cn-hangzhou.aliyuncs.com/images/activity/hqsq.jpg*/></a></li>");
         $(".slider").yxMobileSlider({width:750,height:400,during:5000});
     } else if (getCookie('webSourceType') == 7){//如果振华
         $(".slider ul").append("<li><a href='" + contextPath + "/html/zhenhua/induce.html'><img src='" + contextPath + "/resources/images/weChat/homepage/zhenhua_banner@2x.png'></a></li>");
         $(".slider").yxMobileSlider({width:750,height:400,during:5000});
     } else {
-        $.ajax({
-            type: "get",
-            dateType: "json",
-            url: contextPath + "/weixin/index/act/list",
-            data: null,
-            success: function(result) {
-                for (var i = 0; i < result.data.length; i++){
-                    var id = result.data[i].id;
-                    var redirectUrl = result.data[i].redirectUrl;
-                    if (id == 5){
-                        redirectUrl = contextPath + "/act/sevenDis/init?openid=" + getCookie('openid');
-                    } else {
-                        if (redirectUrl == null){
-                            redirectUrl = "javascript:void(0);";
-                        }
-                    }
-                    $(".slider ul").append("<li><a href='" + redirectUrl + "'><img src='" + result.data[i].picPath + "'></a></li>");
-                }
-                $(".slider").yxMobileSlider({width:750,height:400,during:5000});
-            }
-        });
+        $(".slider ul").append("<li><a href=''><img src='images/bg.png'></a></li>");
+        $(".slider").yxMobileSlider({width:750,height:400,during:5000});
     }
 }
 
@@ -162,11 +137,11 @@ function jumpAddCarNumPage(){
 }
 
 function jumpMemInfoPage(){
-    window.location.href = contextPath + "/weixin/mem/info/init/" + getCookie('openid');
+    window.location.href = 'userHome.htm';
 }
 
 function jumpParkListPage(){
-    window.location.href = contextPath + "/weixin/park/list/init";
+    window.location.href = 'parkList.htm';
 }
 
 function jumpOrderParkListPage(){
@@ -174,7 +149,7 @@ function jumpOrderParkListPage(){
     //    title: "提示",
     //    text: "暂未开放，敬请期待"
     //});
-    window.location.href = contextPath + "/weixin/order/park/list/init?openid=" + getCookie('openid');
+    window.location.href = 'order.htm';
 }
 
 function jumpUnpayPage(){
