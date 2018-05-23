@@ -35,7 +35,6 @@ public class WeixinAccessController extends BaseController{
     @RequestMapping(value="access",method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public void bindWeixinServer(HttpServletRequest request, HttpServletResponse response) throws IOException{
-//        PrintWriter out = response.getWriter();
         try {
                 String signature = request.getParameter("signature");// 微信加密签名  
                 String timestamp = request.getParameter("timestamp");// 时间戳  
@@ -44,7 +43,6 @@ public class WeixinAccessController extends BaseController{
                 if(SignUtil.checkSignature(customConfig.getWeixintoken(), signature, timestamp, nonce)){
                 // 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败    
                     LOGGER.info("Connect the weixin server successful.");
-//                    response.getWriter().write(echostr);
                     this.printData(response, echostr);
                 } else {  
                     LOGGER.error("Failed to verify the signature!"); 
@@ -56,6 +54,8 @@ public class WeixinAccessController extends BaseController{
 //            out.close();
         }
 	}
+    
+    
     
     
     
