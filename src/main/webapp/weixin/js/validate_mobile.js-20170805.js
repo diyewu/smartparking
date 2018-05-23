@@ -19,9 +19,9 @@ $(function() {
     });
 
     if (getCookie('webSourceType') == 7){//如果振华
-        $(".xieyi a").html("《振华智停用户协议》");
+        $(".xieyi a").html("《用户协议》");
     } else {
-        $(".xieyi a").html("《优会停捷停用户协议》");
+        $(".xieyi a").html("《用户协议》");
     }
 })
 

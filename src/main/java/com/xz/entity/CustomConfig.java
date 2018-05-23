@@ -14,6 +14,7 @@ public class CustomConfig {
     private String appid;
     private String secret;
     private String baiduapikey;
+    private String weixintoken;
 
 	public String getClientFileUpladPath() {
 		return clientFileUpladPath;
@@ -78,6 +79,14 @@ public class CustomConfig {
 
 	public void setBaiduapikey(String baiduapikey) {
 		this.baiduapikey = baiduapikey;
+	}
+
+	public String getWeixintoken() {
+		return weixintoken;
+	}
+
+	public void setWeixintoken(String weixintoken) {
+		this.weixintoken = weixintoken;
 	} 
-      
+    
 }  
