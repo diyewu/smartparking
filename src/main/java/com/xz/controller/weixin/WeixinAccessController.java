@@ -63,10 +63,13 @@ public class WeixinAccessController extends BaseController{
     @RequestMapping(value="access",method = RequestMethod.POST)
     @ResponseBody
     public void weixinCommunicate(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    	System.out.println("______________________");
     	try {
-    		
+    		String resp = WeixinHelper.processRequest(request);
+    		System.out.println("_____________________1_"+resp);
+    		this.printData(response, resp);
     	} catch (Exception e) {
-    		
+    		e.printStackTrace();
     	}finally{
     		
     	}

@@ -93,7 +93,7 @@ public class WeixinHelper {
         return map;
     }	
     
-    public String processRequest(HttpServletRequest request) {
+    public static String processRequest(HttpServletRequest request) {
         Map<String, String> map = xmlToMap(request);
         // 发送方帐号（一个OpenID）
         String fromUserName = map.get("FromUserName");
@@ -101,19 +101,23 @@ public class WeixinHelper {
         String toUserName = map.get("ToUserName");
         // 消息类型
         String msgType = map.get("MsgType");
-        
+        System.out.println("msgType="+msgType);
+        // 消息内容
+        String msgContent = map.get("Content");
         
         // 默认回复一个"success"
         String responseMessage = "success";
         // 对消息进行处理
         if (WeixinConstants.MESSAGE_TEXT.equals(msgType)) {// 文本消息
-            TextMessage textMessage = new TextMessage();
-            textMessage.setMsgType(WeixinConstants.MESSAGE_TEXT);
-            textMessage.setToUserName(fromUserName);
-            textMessage.setFromUserName(toUserName);
-            textMessage.setCreateTime(System.currentTimeMillis());
-            textMessage.setContent("我已经受到你发来的消息了");
-            responseMessage = textMessageToXml(textMessage);
+        	String resp = MessageHandler.processMsg(msgContent);
+        	System.out.println("resp="+resp);
+        	TextMessage textMessage = new TextMessage();
+        	textMessage.setMsgType(WeixinConstants.MESSAGE_TEXT);
+        	textMessage.setToUserName(fromUserName);
+        	textMessage.setFromUserName(toUserName);
+        	textMessage.setCreateTime(System.currentTimeMillis());
+        	textMessage.setContent(resp);
+        	responseMessage = textMessageToXml(textMessage);
         }
         return responseMessage;
 
