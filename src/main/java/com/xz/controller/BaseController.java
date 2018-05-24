@@ -4,10 +4,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.xz.common.ServerResult;
 import com.xz.common.Simp2TranUtils;
@@ -16,6 +20,21 @@ import com.xz.utils.AgingCache;
 
 
 public class BaseController {
+	
+	protected HttpServletRequest getRequest() {
+		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+	}
+
+	protected HttpServletResponse getResponse() {
+		return (HttpServletResponse) RequestContextHolder.getRequestAttributes().getAttribute(
+				"httpServletResponse", RequestAttributes.SCOPE_REQUEST);
+	}
+	
+	protected String getRequestType(){
+		String method = getRequest().getMethod();
+		return method;
+	}
+	
 	protected void writeJson(Object obj,HttpServletResponse response) {
 		ObjectMapper mapper = new ObjectMapper();
 		response.setContentType("text/html");
