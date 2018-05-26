@@ -49,4 +49,19 @@ public class SmartMemberController extends BaseController{
 		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
+	@ApiOperation(value = "微信公众号根据openid检查会员是否注册", notes = "判断依据为是否有手机号码", httpMethod = "POST")
+	@RequestMapping("checkMemberByOpenId")
+	@ResponseBody
+	public AppJsonModel checkMemberByOpenId(
+			@ApiParam(name = "openId", value = "微信openId", required = true) @RequestParam("openId") String openId
+			){
+		String msg = null;
+		Map<String,String> respMap = new HashMap<String, String>();
+		int code = 0;
+		
+		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+	}
+	
+	
+	
 }
