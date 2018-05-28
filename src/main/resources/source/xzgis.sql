@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50629
 File Encoding         : 65001
 
-Date: 2018-05-13 12:56:47
+Date: 2018-05-28 17:07:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -4877,6 +4877,7 @@ CREATE TABLE `smart_car_park_recoder` (
   `entrance_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `parking_type` int(1) DEFAULT NULL COMMENT '停车类型，0：驶入 1 驶出',
   `create_time` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci COMMENT '说明',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -4893,18 +4894,19 @@ CREATE TABLE `smart_member` (
   `member_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '会员名称',
   `member_sex` int(1) DEFAULT NULL COMMENT '性别,0 女性，1 男性,2 未知',
   `create_time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `open_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of smart_member
 -- ----------------------------
-INSERT INTO `smart_member` VALUES ('00152574989796300000', '测试会员', '1', '2018-05-08 11:24:57');
-INSERT INTO `smart_member` VALUES ('00152576302951200000', '啊啊啊', '1', '2018-05-08 15:03:49');
-INSERT INTO `smart_member` VALUES ('00152576334877400003', '啊实打实', '1', '2018-05-08 15:09:08');
-INSERT INTO `smart_member` VALUES ('00152576337863000004', '阿斯顿', '1', '2018-05-08 15:09:38');
-INSERT INTO `smart_member` VALUES ('00152576348903900007', '急急急', '1', '2018-05-08 15:11:29');
-INSERT INTO `smart_member` VALUES ('00152618016278500000', 'asd', '1', '2018-05-13 10:56:02');
+INSERT INTO `smart_member` VALUES ('00152574989796300000', '测试会员', '1', '2018-05-08 11:24:57', null);
+INSERT INTO `smart_member` VALUES ('00152576302951200000', '啊啊啊', '1', '2018-05-08 15:03:49', null);
+INSERT INTO `smart_member` VALUES ('00152576334877400003', '啊实打实', '1', '2018-05-08 15:09:08', null);
+INSERT INTO `smart_member` VALUES ('00152576337863000004', '阿斯顿', '1', '2018-05-08 15:09:38', null);
+INSERT INTO `smart_member` VALUES ('00152576348903900007', '急急急', '1', '2018-05-08 15:11:29', null);
+INSERT INTO `smart_member` VALUES ('00152618016278500000', 'asd', '1', '2018-05-13 10:56:02', null);
 
 -- ----------------------------
 -- Table structure for smart_order
@@ -4946,9 +4948,10 @@ CREATE TABLE `smart_order_state_dictionory` (
 -- ----------------------------
 INSERT INTO `smart_order_state_dictionory` VALUES ('0', '完结，正常驶出停车场');
 INSERT INTO `smart_order_state_dictionory` VALUES ('1', '申请驶进停车场');
-INSERT INTO `smart_order_state_dictionory` VALUES ('2', null);
-INSERT INTO `smart_order_state_dictionory` VALUES ('3', '撤销');
-INSERT INTO `smart_order_state_dictionory` VALUES ('4', '强制完结，无法正常完结');
+INSERT INTO `smart_order_state_dictionory` VALUES ('2', '停车中');
+INSERT INTO `smart_order_state_dictionory` VALUES ('3', '申请驶出停车场，待支付');
+INSERT INTO `smart_order_state_dictionory` VALUES ('4', '支付完成，待出场');
+INSERT INTO `smart_order_state_dictionory` VALUES ('5', '强制完结，无法正常完结');
 
 -- ----------------------------
 -- Table structure for smart_park
@@ -5036,6 +5039,8 @@ CREATE TABLE `smart_park_space_dictionary` (
 -- ----------------------------
 -- Records of smart_park_space_dictionary
 -- ----------------------------
+INSERT INTO `smart_park_space_dictionary` VALUES ('1', '地下停车位', '1');
+INSERT INTO `smart_park_space_dictionary` VALUES ('2', '地上停车位', '2');
 
 -- ----------------------------
 -- Table structure for smart_pay_way
