@@ -28,4 +28,16 @@ public class SmartMemberService {
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, openId);
 		return list;
 	}
+	
+	public void getCarParkState(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("  ");
+//		select scpr.create_time,sc.car_number,sp.park_name
+//		from smart_car_park_record scpr
+//		left join smart_car sc on scpr.car_id = sc.id
+//		left join smart_member sm on sc.member_id = sm.id
+//		left join smart_park sp on scpr.park_id = sp.id
+//		where sm.open_id = ""
+
+	}
 }

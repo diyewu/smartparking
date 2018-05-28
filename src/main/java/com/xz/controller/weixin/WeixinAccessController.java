@@ -1,27 +1,36 @@
 package com.xz.controller.weixin;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.xz.controller.BaseController;
 import com.xz.entity.CustomConfig;
+import com.xz.service.SmartMemberService;
 import com.xz.utils.SignUtil;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RequestMapping("wechat")
-@Controller
+@RestController
 public class WeixinAccessController extends BaseController{
-	
+	@Autowired
+	private SmartMemberService smartMemberService;
 	@Autowired  
     private CustomConfig customConfig; 
 	
@@ -55,7 +64,7 @@ public class WeixinAccessController extends BaseController{
 	        }
 	}
     /**
-     * weixin绑定服务器
+     * weixin连接服务器
      * @param request
      * @return
      * @throws IOException 
@@ -72,6 +81,39 @@ public class WeixinAccessController extends BaseController{
     		
     	}
     }
+    
+    /**
+     * { "access_token":"ACCESS_TOKEN",
+		"expires_in":7200,
+		"refresh_token":"REFRESH_TOKEN",
+		"openid":"OPENID",
+		"scope":"SCOPE" }
+     * @param authCode
+     */
+    @ApiOperation(value = "根据微信网页授权code获取openId", notes = "根据微信网页授权code获取openId", httpMethod = "POST")
+    @RequestMapping(value="getOpenIdByCode",method = RequestMethod.POST)
+    @ResponseBody
+    public void getOpenIdByCode(@ApiParam(name = "authCode", value = "用户同意授权，获取code", required = true) @RequestParam("authCode") String authCode
+    		){
+    	String msg = null;
+		int code = 0;
+		Map<String,String> respMap = new HashMap<String, String>();
+		respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
+		try {
+			String openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
+			//TODO 得到openid走业务逻辑，如果数据库中存在则查询数据，如果没有绑定手机号
+			List<Map<String, Object>> list = smartMemberService.checkMemberByOpenId(openId);
+			if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
+				
+			}else{
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    }
+    
     
     
     

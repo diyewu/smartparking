@@ -3,10 +3,10 @@
       {    
           "type":"view",
           "name":"我的",
-          "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc03cad31c1ceb8f3&redirect_uri=https://zhonglestudio.cn/smartparking/weixin/index.htm&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
+          "url":"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc03cad31c1ceb8f3&redirect_uri=https%3A%2F%2Fzhonglestudio.cn%2Fsmartparking%2Fweixin%2Findex.htm&response_type=code&scope=snsapi_base&state=123#wechat_redirect"
       },
       {
- 					"type":"click",
+ 		  "type":"click",
           "name":"联系我们",
           "key":"connectus"
       }]

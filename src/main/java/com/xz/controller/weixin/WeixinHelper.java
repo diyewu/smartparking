@@ -42,7 +42,7 @@ public class WeixinHelper {
 	}
 
 	/**
-	 * 
+	 * 基础支持的access_token
 	 * @param appId
 	 * @param appSecret
 	 * @return
@@ -73,6 +73,36 @@ public class WeixinHelper {
 			e.printStackTrace();
 		}
 		return accessToken;
+	}
+	/**
+	 * 网页授权接口调用凭证access_token
+	 * @param appId
+	 * @param appSecret
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String,String> getWebAuthOpenIdAndAccessToken(String appId, String appSecret,String authCode) {
+		ObjectMapper mapper = new ObjectMapper();
+		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
+		url = url.replace("APPID", appId).replace("SECRET", appSecret).replace("CODE", authCode);
+//		String resp = HttpsUtil.doPost(url);
+		String accessToken = "";
+		Map<String,String> respMap = new HashMap<String, String>();
+		try {
+			// 到接口中获取
+			Map<String, Object> params = new HashMap<String, Object>();
+			String resp = HttpsUtil.doPostSSL(url, params);
+			Map<String, Object> map = mapper.readValue(resp, Map.class);
+			if (map.containsKey("access_token")) {
+				accessToken = (String) map.get("access_token");
+				int expiresIn = (Integer) map.get("expires_in");
+				respMap.put(WeixinConstants.WEIXIN_WEB_AUTH_TOKEN, accessToken);
+				respMap.put(WeixinConstants.WEIXIN_OPEN_ID, (String)map.get("openid"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return respMap;
 	}
 
 	/**

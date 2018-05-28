@@ -2,6 +2,8 @@ package com.xz.controller.weixin;
 
 public class WeixinConstants {
 	public static final String WEIXIN_TOKEN = "weinxin_token";
+	public static final String WEIXIN_WEB_AUTH_TOKEN = "weixin_web_auth_token";
+	public static final String WEIXIN_OPEN_ID = "weixin_open_id";
 	
     // 各种消息类型,除了扫带二维码事件
     /**

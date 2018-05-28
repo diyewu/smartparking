@@ -1,5 +1,6 @@
 package com.xh.mgr.test;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +8,13 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 public class MainTest {
-	public static void main(String[] args) {
-		splitTest();
+	public static void main(String[] args) throws UnsupportedEncodingException {
+		urlEncode();
 	}
 	
-	
+	public static void urlEncode() throws UnsupportedEncodingException{
+		 System.out.println(java.net.URLEncoder.encode("https://zhonglestudio.cn/smartparking/weixin/index.htm",   "utf-8"));   
+	}
 	
 	public static void formatTest(){
 		DecimalFormat df = new DecimalFormat("#.00000");
