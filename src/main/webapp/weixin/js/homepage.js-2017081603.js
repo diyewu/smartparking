@@ -23,10 +23,6 @@ $(function() {
     }
 })
 
-function init(){
-	var code = getParam("code");
-	
-}
 
 /** 
  * 获取指定的URL参数值 

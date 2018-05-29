@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xz.common.ServerResult;
 import com.xz.controller.BaseController;
 import com.xz.entity.CustomConfig;
+import com.xz.model.json.AppJsonModel;
 import com.xz.service.SmartMemberService;
 import com.xz.utils.SignUtil;
 
@@ -91,27 +93,33 @@ public class WeixinAccessController extends BaseController{
      * @param authCode
      */
     @ApiOperation(value = "根据微信网页授权code获取openId", notes = "根据微信网页授权code获取openId", httpMethod = "POST")
-    @RequestMapping(value="getOpenIdByCode",method = RequestMethod.POST)
+    @RequestMapping(value="getCarParkInfoByCode",method = RequestMethod.POST)
     @ResponseBody
-    public void getOpenIdByCode(@ApiParam(name = "authCode", value = "用户同意授权，获取code", required = true) @RequestParam("authCode") String authCode
+    public AppJsonModel getCarParkInfoByCode(@ApiParam(name = "authCode", value = "用户同意授权，获取code", required = true) @RequestParam("authCode") String authCode
     		){
     	String msg = null;
 		int code = 0;
+		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,String> respMap = new HashMap<String, String>();
 		respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
 		try {
 			String openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
-			//TODO 得到openid走业务逻辑，如果数据库中存在则查询数据，如果没有绑定手机号
+			// 得到openid走业务逻辑，如果数据库中存在则查询数据，如果没有绑定手机号
 			List<Map<String, Object>> list = smartMemberService.checkMemberByOpenId(openId);
 			if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
-				
-			}else{
-				
+				map.put("state", "1");
+				String memberId = (String)list.get(0).get("id");
+				List<Map<String, Object>> carParkList = smartMemberService.getCarParkStateByMemId(memberId);
+				map.put("carstate", carParkList);
+			}else{//不存在，跳转到手机注册页面
+				map.put("state", "0");
 			}
 		} catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		
+		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), map);
     }
     
     

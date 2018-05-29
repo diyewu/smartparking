@@ -1,8 +1,10 @@
 package com.xz.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -29,15 +31,19 @@ public class SmartMemberService {
 		return list;
 	}
 	
-	public void getCarParkState(){
+	public List<Map<String, Object>> getCarParkStateByMemId(String memberId){
 		StringBuilder sb = new StringBuilder();
-		sb.append("  ");
-//		select scpr.create_time,sc.car_number,sp.park_name
-//		from smart_car_park_record scpr
-//		left join smart_car sc on scpr.car_id = sc.id
-//		left join smart_member sm on sc.member_id = sm.id
-//		left join smart_park sp on scpr.park_id = sp.id
-//		where sm.open_id = ""
-
+		sb.append(" select sc.car_number,so.order_state_id,sp.park_name ,sod.state_name ");
+		sb.append(" from smart_car sc  ");
+		sb.append(" left join smart_member sm on sc.member_id = sm.id ");
+		sb.append(" left join smart_order so on so.car_id = sc.id and so.order_state_id in (1,2,3,4) ");
+		sb.append(" left join smart_order_state_dictionory sod on so.order_state_id = sod.id ");
+		sb.append(" left join smart_park sp on so.park_id = sp.id ");
+		sb.append(" where sm.id = ? ");
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		if(StringUtils.isNotBlank(memberId)){
+			list = jdbcTemplate.queryForList(sb.toString(), memberId);
+		}
+		return list;
 	}
 }
