@@ -104,6 +104,7 @@ public class WeixinAccessController extends BaseController{
 		respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
 		try {
 			String openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
+			System.out.println("openId="+openId);
 			// 得到openid走业务逻辑，如果数据库中存在则查询数据，如果没有绑定手机号
 			List<Map<String, Object>> list = smartMemberService.checkMemberByOpenId(openId);
 			if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
@@ -119,9 +120,29 @@ public class WeixinAccessController extends BaseController{
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
+		System.out.println("map="+map);
 		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), map);
     }
     
+    
+    /**
+     * weixin连接服务器
+     * @param request
+     * @return
+     * @throws IOException 
+     */
+    @RequestMapping(value="console",method = RequestMethod.POST)
+    @ResponseBody
+    public void consoleLog(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    	try {
+    		String data =  request.getParameter("data");
+    		System.out.println("data="+data);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}finally{
+    		
+    	}
+    }
     
     
     
