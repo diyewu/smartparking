@@ -20,7 +20,7 @@ public class MobileRemainTask {
 	 * 每天24时执行一次
 	 * https://www.cnblogs.com/softidea/p/5833248.html
 	 */
-	@Scheduled(cron="0 0 24 * * ?")
+	@Scheduled(cron="0 59 23 * * ?")
 //	@Scheduled(fixedRate = 1000)
 	public void initRemainTime(){
 		try {

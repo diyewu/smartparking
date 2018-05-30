@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,6 +29,7 @@ import com.xz.controller.BaseController;
 import com.xz.entity.CustomConfig;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartMemberService;
+import com.xz.utils.MailSam;
 import com.xz.utils.SignUtil;
 
 import io.swagger.annotations.ApiOperation;
@@ -129,7 +131,6 @@ public class WeixinAccessController extends BaseController{
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		System.out.println("map="+map);
 		return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
     }
     
@@ -144,53 +145,71 @@ public class WeixinAccessController extends BaseController{
      */
     @RequestMapping(value="sendValidateMobileCode",method = RequestMethod.POST)
     @ResponseBody
-    public void sendValidateMobileCode(
+    public JsonModel sendValidateMobileCode(
     		@ApiParam(name = "mobileNumber", value = "手机号码", required = true) @RequestParam("mobileNumber") String mobileNumber
     		) throws IOException{
     	String msg = null;
 		int code = 0;
 		Map<String,Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
-    	//校验手机号码
-    	boolean isMobile = isMobile(mobileNumber);
-    	
-    	if(!isMobile){
-    		code = ServerResult.RESULT_MOBILE_VALIDATE_ERROR;
-    	}
-    	//校验当天剩余次数
-    	if(code == 0){
-    		list = smartMemberService.getLastSendCodeTime(mobileNumber);
-    		if(list != null && list.size() > 0){
-    			int remainTimes = (Integer) list.get(0).get("remain_time");
-    			if(remainTimes > 0){//剩余次数大于0，继续校验上一次发送时间
-    				String lastSendCodeTime = (String)list.get(0).get("last_send_time");
-    				if(StringUtils.isNotBlank(lastSendCodeTime)){
-    	    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-    	    			try {
-    						Date d1 = df.parse(lastSendCodeTime);
-    						Date nowTiem = new Date();
-    						long diff = nowTiem.getTime() - d1.getTime();// 这样得到的差值是微秒级别
-    						long second = diff / (60 * 60 * 24);
-    						if(second > 120){//2分钟之后才能继续发送验证码
-    							//TODO  发送验证码
-    							
-    						}else{
-    							code = ServerResult.RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR;
-    						}
-    					} catch (Exception e) {
-    						e.printStackTrace();
-    					}  
-    	    		}
-    			}else{
-    				code = ServerResult.RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR;
-    			}
-    		}else{
-    			//TODO  第一次发送验证码，则直接发送，并存储数据库,存储次数为9
-    			
-    		}
-    	}
-    	
-    	
+		
+    	try {
+			//校验手机号码
+			boolean isMobile = isMobile(mobileNumber);
+			int mobileCode = (int) ((Math.random() * 9 + 1) * 100000);
+			if (!isMobile) {
+				code = ServerResult.RESULT_MOBILE_VALIDATE_ERROR;
+			}
+			//校验当天剩余次数
+			if (code == 0) {
+				list = smartMemberService.getLastSendCodeTime(mobileNumber);
+				if (list != null && list.size() > 0) {//数据库中存在mobile数据
+					int remainTimes = (Integer) list.get(0).get("remain_time");
+					if (remainTimes > 0) {//剩余次数大于0，继续校验上一次发送时间
+						String lastSendCodeTime = (String) list.get(0).get("last_send_time");
+						if (StringUtils.isNotBlank(lastSendCodeTime)) {
+							DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							try {
+								Date d1 = df.parse(lastSendCodeTime);
+								Date nowTiem = new Date();
+								long diff = nowTiem.getTime() - d1.getTime();// 这样得到的差值是微秒级别
+								long second = diff / (60 * 60 * 24);
+								if (second > 120) {//2分钟之后才能继续发送验证码
+									//TODO  发送验证码
+									String content="尊敬的用户：<br/>您的验证码为："+mobileCode+"（60分钟内有效，区分大小写），为了保证您的账户安全，请勿向任何人提供此验证码。";
+									try {
+										MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
+									} catch (MessagingException e) {
+										e.printStackTrace();
+									}
+									//插入数据库
+									smartMemberService.updateMobileCodeSend(mobileNumber, mobileCode);
+								} else {
+									code = ServerResult.RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					} else {
+						code = ServerResult.RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR;
+					}
+				} else {
+					//TODO  第一次发送验证码，则直接发送，并存储数据库,存储次数为9
+					String content="尊敬的用户：<br/>您的验证码为："+mobileCode+"（60分钟内有效，区分大小写），为了保证您的账户安全，请勿向任何人提供此验证码。";
+					try {
+						MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
+					} catch (MessagingException e) {
+						e.printStackTrace();
+					}
+					smartMemberService.insertMobileCodeSend(mobileNumber, mobileCode, 9);
+				}
+			} 
+		} catch (Exception e) {
+			code = 1;
+			msg = e.getMessage();
+		}
+    	return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
     }
     
     

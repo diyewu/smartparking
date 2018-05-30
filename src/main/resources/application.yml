@@ -75,10 +75,10 @@ custom:
 #     clientFileUpladPath: /home/gis/temp
 #     clientFileUpladPath: F:\tempfilepath/
 #     clientFileUpladPath: /Users/calvin/Work/Tomcat/temp/
-     smtp: smtp.ym.163.com
-     port: 25
-     user: xuzhongwxgzh@xxinxi.com
-     pwd: xuzhongwxgzh
+     smtp: smtp.qq.com
+     port: 587
+     user: 194973883@qq.com
+     pwd: bctxjkzoywyqbied
      appid: wxc03cad31c1ceb8f3
      secret: d4624c36b6795d1d99dcf0547af5443d
      baiduapikey: 7gsG6xxeUEbtVCvVIqZ6aZY9Bage25Zm

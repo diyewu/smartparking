@@ -59,18 +59,21 @@ public class SmartMemberService {
 		return list;
 	}
 	
-	public void updateMobileCodeSend(String mobileNumber,String code){
+	public void updateMobileCodeSend(String mobileNumber,int code){
 		String sql = " update smart_mobile_code_send set last_send_time = NOW() ,code = ?,remain_time = remain_time -1 where mobile = ? ";
 		jdbcTemplate.update(sql, code,mobileNumber);
+		insertIntoMobileCodeSendHis(mobileNumber, code);
 	}
 	
-	public void insertMobileCodeSend(String mobileNumber,String code,int remainTime){
+	public void insertMobileCodeSend(String mobileNumber,int code,int remainTime){
 		String sql = " insert into smart_mobile_code_send(mobile,last_send_time,code,remain_time)values(?,NOW(),?,?) ";
 		jdbcTemplate.update(sql, mobileNumber,code,remainTime);
+		insertIntoMobileCodeSendHis(mobileNumber, code);
 	}
 	
-	public void insertIntoMobileCodeSendHis(){
-		
+	public void insertIntoMobileCodeSendHis(String mobileNumber,int code ){
+		String sql = " insert into smart_mobile_code_send_history(mobile,send_time,send_code)values(?,NOW(),?) ";
+		jdbcTemplate.update(sql, mobileNumber,code);
 	}
 	
 	

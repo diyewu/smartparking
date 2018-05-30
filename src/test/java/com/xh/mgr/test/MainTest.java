@@ -9,7 +9,9 @@ import org.apache.commons.lang.StringUtils;
 
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		urlEncode();
+		for(int i=0;i<100;i++){
+			System.out.println((int)((Math.random()*9+1)*100000));  
+		}
 	}
 	
 	public static void urlEncode() throws UnsupportedEncodingException{

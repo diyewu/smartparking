@@ -48,12 +48,14 @@ function getCode(){
     $.ajax({
         type: "get",
         dateType: "json",
-        url: '',
-        data: null,
+        url: '../wechat/sendValidateMobileCode/',
+        data: {
+        	mobileNumber:mobile
+        },
         success: function(result) {
             $("body").hiddenLoadingView();
             if (result.resCode == '000000') {
-                $("#code_button").html("60s后重新发送");
+                $("#code_button").html("120s后重新发送");
                 $("#code_button").attr("status", 1);
 
                 var timer = setInterval(function(){
@@ -106,7 +108,7 @@ function register(obj){
     if (openid == undefined || openid == '' || openid == null || openid == 'null'){
         $("body").alertDialog({
             title: "提示",
-            text: "未获取openid，请先关注‘优会停捷停’公众号"
+            text: "未获取openid，请先关注公众号"
         });
         return;
     }
