@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50629
 File Encoding         : 65001
 
-Date: 2018-05-28 21:43:27
+Date: 2018-05-30 18:38:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -4866,24 +4866,23 @@ INSERT INTO `smart_car_owner` VALUES ('00152576348905800008', '阿斯顿', null,
 INSERT INTO `smart_car_owner` VALUES ('00152618016289500001', '12121212', null, null, '2018-05-13 10:56:02', '2018-05-13 10:56:02', null);
 
 -- ----------------------------
--- Table structure for smart_car_park_record
+-- Table structure for smart_car_park_recoder
 -- ----------------------------
-DROP TABLE IF EXISTS `smart_car_park_record`;
-CREATE TABLE `smart_car_park_record` (
+DROP TABLE IF EXISTS `smart_car_park_recoder`;
+CREATE TABLE `smart_car_park_recoder` (
   `id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `car_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `park_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `begin_time` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `end_time` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `receivable_amount` double DEFAULT NULL COMMENT '应收费用',
-  `actual_amount` double DEFAULT NULL COMMENT '实收费用',
+  `space_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `entrance_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `parking_type` int(1) DEFAULT NULL COMMENT '停车类型，0：驶入 1 驶出',
   `create_time` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pay_way_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '支付渠道',
+  `description` text COLLATE utf8mb4_unicode_ci COMMENT '说明',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
--- Records of smart_car_park_record
+-- Records of smart_car_park_recoder
 -- ----------------------------
 
 -- ----------------------------
@@ -4908,6 +4907,44 @@ INSERT INTO `smart_member` VALUES ('00152576334877400003', '啊实打实', '1', 
 INSERT INTO `smart_member` VALUES ('00152576337863000004', '阿斯顿', '1', '2018-05-08 15:09:38', null);
 INSERT INTO `smart_member` VALUES ('00152576348903900007', '急急急', '1', '2018-05-08 15:11:29', null);
 INSERT INTO `smart_member` VALUES ('00152618016278500000', 'asd', '1', '2018-05-13 10:56:02', null);
+
+-- ----------------------------
+-- Table structure for smart_mobile_code_send
+-- ----------------------------
+DROP TABLE IF EXISTS `smart_mobile_code_send`;
+CREATE TABLE `smart_mobile_code_send` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mobile` varchar(11) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_send_time` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` int(6) DEFAULT NULL,
+  `remain_time` int(2) DEFAULT '10' COMMENT '当天手机验证码剩余次数',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mobile_code_number` (`mobile`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of smart_mobile_code_send
+-- ----------------------------
+INSERT INTO `smart_mobile_code_send` VALUES ('1', '18936483081', '2018-05-08 15:09:38', '111111', '9');
+INSERT INTO `smart_mobile_code_send` VALUES ('2', '1111111111', '2018-05-08 15:09:38', '122121', '7');
+
+-- ----------------------------
+-- Table structure for smart_mobile_code_send_history
+-- ----------------------------
+DROP TABLE IF EXISTS `smart_mobile_code_send_history`;
+CREATE TABLE `smart_mobile_code_send_history` (
+  `id` int(11) NOT NULL,
+  `mobile` varchar(11) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `send_time` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `send_code` int(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `mobilesend_his_mobile` (`mobile`) USING BTREE,
+  KEY `mobilesend_his_time` (`send_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of smart_mobile_code_send_history
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for smart_order
