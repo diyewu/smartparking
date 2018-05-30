@@ -3,6 +3,8 @@ package com.xz.controller;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -162,7 +164,15 @@ public class BaseController {
 		
 	}
 	
-	
+	 public static boolean isMobile(final String str) {  
+	     Pattern p = null;  
+	     Matcher m = null;  
+	     boolean b = false;  
+	     p = Pattern.compile("^[1][3,4,5,7,8,9][0-9]{9}$"); // 验证手机号  
+	     m = p.matcher(str);  
+	     b = m.matches();  
+	     return b;  
+	 }  
 	
 	public static class Result {
 		private boolean success;

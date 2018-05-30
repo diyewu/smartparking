@@ -25,7 +25,7 @@ body{
     float: left;
     line-height: 60px;
     font-size: 60px;
-    color: #002d52;
+    color: #3086c3;
 }
 .top div .top_right_div{
     float: left;
@@ -67,14 +67,14 @@ body{
 }
 .rate_sel{
     color: #ffffff;
-    background: #002d52;
+    background: #3086c3;
 }
 .share_button{
     float: left;
     width: 288px;
     height: 40px;
     margin: 25px calc(50% - 144px) 15px calc(50% - 144px);
-    background: #002d52;
+    background: #3086c3;
     color: #ffffff;
     font-size: 16px;
     line-height: 40px;

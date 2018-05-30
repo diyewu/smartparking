@@ -85,8 +85,11 @@ public class WeixinHelper {
 		ObjectMapper mapper = new ObjectMapper();
 		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
 		url = url.replace("APPID", appId).replace("SECRET", appSecret).replace("CODE", authCode);
-//		String resp = HttpsUtil.doPost(url);
 		String accessToken = "";
+		System.out.println("appId="+appId);
+		System.out.println("appSecret="+appSecret);
+		System.out.println("authCode="+authCode);
+		System.out.println("url="+url);
 		Map<String,String> respMap = new HashMap<String, String>();
 		try {
 			// 到接口中获取

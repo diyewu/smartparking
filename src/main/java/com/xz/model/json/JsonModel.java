@@ -8,7 +8,7 @@ public class JsonModel implements java.io.Serializable{
 	/**
 	 * 是否成功
 	 */
-	private boolean success = false;
+	private boolean success = true;
 	/**
 	 * 返回状态码
 	 */

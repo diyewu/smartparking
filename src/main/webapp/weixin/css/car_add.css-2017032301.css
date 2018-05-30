@@ -46,7 +46,7 @@ body{
     width: 6px;
     height: 6px;
     border-radius: 3px;
-    background: #002d52;
+    background: #3086c3;
 }
 .car_add_button{
     float: left;
@@ -60,7 +60,7 @@ body{
     text-align: center;
 }
 .car_add_button_ok{
-    background: #002d52;
+    background: #3086c3;
 }
 .board_div{
     display: block;

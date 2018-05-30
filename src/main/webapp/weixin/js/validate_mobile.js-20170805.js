@@ -48,7 +48,7 @@ function getCode(){
     $.ajax({
         type: "get",
         dateType: "json",
-        url: contextPath + "/weixin/mem/code/" + mobile + "/4",
+        url: '',
         data: null,
         success: function(result) {
             $("body").hiddenLoadingView();

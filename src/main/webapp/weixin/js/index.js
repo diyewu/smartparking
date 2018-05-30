@@ -16,9 +16,8 @@ function getCarParkInfo(code){
 	},
 	function(result){
 		if(result.success == true){//登陆成功
-//			console.log(result);
-//			consoleLog(JSON.stringify(result));
 			var data = result.data;
+			alert(data.state);
 			if(data.state){
 				if("1" == data.state){
 				}else{//未绑定手机，跳转手机页面

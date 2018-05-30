@@ -46,4 +46,41 @@ public class SmartMemberService {
 		}
 		return list;
 	}
+	
+	/**
+	 * 获取上一次发送验证码的时间
+	 * @param mobileNumber
+	 * @return
+	 */
+	public List<Map<String, Object>> getLastSendCodeTime(String mobileNumber){
+		String lastSendTime = "";
+		String sql = " select * from smart_mobile_code_send where mobile = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, mobileNumber);
+		return list;
+	}
+	
+	public void updateMobileCodeSend(String mobileNumber,String code){
+		String sql = " update smart_mobile_code_send set last_send_time = NOW() ,code = ?,remain_time = remain_time -1 where mobile = ? ";
+		jdbcTemplate.update(sql, code,mobileNumber);
+	}
+	
+	public void insertMobileCodeSend(String mobileNumber,String code,int remainTime){
+		String sql = " insert into smart_mobile_code_send(mobile,last_send_time,code,remain_time)values(?,NOW(),?,?) ";
+		jdbcTemplate.update(sql, mobileNumber,code,remainTime);
+	}
+	
+	public void insertIntoMobileCodeSendHis(){
+		
+	}
+	
+	
+	/**
+	 * 初始化发送验证码次数
+	 * @param time
+	 */
+	public void initMobileRemain(int time){
+		String sql = " update smart_mobile_code_send set remain_time = ? ";
+		jdbcTemplate.update(sql, time);
+		
+	}
 }

@@ -80,6 +80,7 @@ custom:
      user: xuzhongwxgzh@xxinxi.com
      pwd: xuzhongwxgzh
      appid: wxc03cad31c1ceb8f3
-     secret: 825fd1951bd0ae06eaa46a485d8b1f46
+     secret: d4624c36b6795d1d99dcf0547af5443d
      baiduapikey: 7gsG6xxeUEbtVCvVIqZ6aZY9Bage25Zm
      weixintoken: N6BflxST3dsDdRNr
+     sendtimes: 10

@@ -3,7 +3,7 @@
     border: 1px solid RGB(227, 227, 227);
 }
 .multi-switch .switch-content.active{
-    background-color: #002d52;
+    background-color: #3086c3;
 }
 body{
     background: RGB(240, 240, 240);
@@ -47,6 +47,6 @@ body{
     font-size: 16px;
     text-align: center;
     color: #ffffff;
-    background-color: #002d52;
+    background-color: #3086c3;
     border-radius: 20px;
 }

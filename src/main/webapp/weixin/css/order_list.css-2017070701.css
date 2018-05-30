@@ -30,7 +30,7 @@ body{
     margin: 17px 10px 0 0;
 }
 .order_left_blue{
-    background: #002d52;
+    background: #3086c3;
 }
 .order_left_grey{
      background: RGB(227, 227, 227);
@@ -39,7 +39,7 @@ body{
     float: right;
     font-size: 15px;
     line-height: 40px;
-    color: #002d52;
+    color: #3086c3;
     text-decoration: underline;
 }
 .order_line_1{

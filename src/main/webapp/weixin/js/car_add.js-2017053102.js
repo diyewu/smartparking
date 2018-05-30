@@ -63,15 +63,15 @@ function resetCarNumBoard(){
             $(".car_num_input").css("borderColor", "RGB(227, 227, 227)");
             $(".car_num_input_" + (i + 1)).html(_this.val()[i]);
             if (_this.val().length < carLength){
-                $(".car_num_input_" + (i + 2)).css("borderColor", "#002d52");
+                $(".car_num_input_" + (i + 2)).css("borderColor", "#3086c3");
                 $(".car_add_button").removeClass("car_add_button_ok");
             } else {
-                $(".car_num_input_" + carLength).css("borderColor", "#002d52");
+                $(".car_num_input_" + carLength).css("borderColor", "#3086c3");
                 $(".car_add_button").addClass("car_add_button_ok");
             }
         }
     } else {
-        $(".car_num_input_1").css("borderColor", "#002d52");
+        $(".car_num_input_1").css("borderColor", "#3086c3");
     }
 }
 
@@ -189,7 +189,7 @@ function updateOrAddCarNum(obj){
                     _this.val($(this).html());
                     $(".car_num_input").css("borderColor", "RGB(227, 227, 227)");
                     $(".car_num_input_1").html($(this).html());
-                    $(".car_num_input_2").css("borderColor", "#002d52");
+                    $(".car_num_input_2").css("borderColor", "#3086c3");
                     $(".board_second_div").css("display", "block");
                     $(".board_first_div").css("display", "none");
                 } else if(_this.val().length < carLength) {
@@ -197,9 +197,9 @@ function updateOrAddCarNum(obj){
                     $(".car_num_input").css("borderColor", "RGB(227, 227, 227)");
                     $(".car_num_input_" + (_this.val().length)).html($(this).html());
                     if (_this.val().length < carLength){
-                        $(".car_num_input_" + (_this.val().length + 1)).css("borderColor", "#002d52");
+                        $(".car_num_input_" + (_this.val().length + 1)).css("borderColor", "#3086c3");
                     } else {
-                        $(".car_num_input_" + carLength).css("borderColor", "#002d52");
+                        $(".car_num_input_" + carLength).css("borderColor", "#3086c3");
                         $(".car_add_button").addClass("car_add_button_ok");
                     }
                 }
@@ -208,7 +208,7 @@ function updateOrAddCarNum(obj){
             $(".board_clean").bind("touchstart", function(){
                 _this.val(_this.val().substring(0, _this.val().length - 1));
                 $(".car_num_input").css("borderColor", "RGB(227, 227, 227)");
-                $(".car_num_input_" + (_this.val().length + 1)).html($(this).html()).css("borderColor", "#002d52");
+                $(".car_num_input_" + (_this.val().length + 1)).html($(this).html()).css("borderColor", "#3086c3");
                 if ($(".car_add_button").hasClass("car_add_button_ok")){
                     $(".car_add_button").removeClass("car_add_button_ok");
                 }
@@ -226,14 +226,14 @@ function updateOrAddCarNum(obj){
                     $(".car_num_input").css("borderColor", "RGB(227, 227, 227)");
                     $(".car_num_input_" + (i + 1)).html(_this.val()[i]);
                     if (_this.val().length < carLength){
-                        $(".car_num_input_" + (i + 2)).css("borderColor", "#002d52");
+                        $(".car_num_input_" + (i + 2)).css("borderColor", "#3086c3");
                     } else {
-                        $(".car_num_input_" + carLength).css("borderColor", "#002d52");
+                        $(".car_num_input_" + carLength).css("borderColor", "#3086c3");
                         $(".car_add_button").addClass("car_add_button_ok");
                     }
                 }
             } else {
-                $(".car_num_input_1").css("borderColor", "#002d52");
+                $(".car_num_input_1").css("borderColor", "#3086c3");
             }
         });
     }

@@ -31,7 +31,7 @@ body{
     height: 25px;
     line-height: 25px;
     padding: 0 8px;
-    background: #002d52;
+    background: #3086c3;
     color: #ffffff;
     border-radius: 25px;
 }
@@ -70,7 +70,7 @@ body{
     float: left;
 }
 .blue_font{
-    color: #002d52;
+    color: #3086c3;
 }
 .record_text_right{
     float: right;

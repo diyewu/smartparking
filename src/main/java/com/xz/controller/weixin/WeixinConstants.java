@@ -5,6 +5,12 @@ public class WeixinConstants {
 	public static final String WEIXIN_WEB_AUTH_TOKEN = "weixin_web_auth_token";
 	public static final String WEIXIN_OPEN_ID = "weixin_open_id";
 	
+	
+	/**
+	 * session 相关
+	 */
+	public static final String SESSION_WEIXIN_OPEN_ID = "session_weixin_open_id";
+	
     // 各种消息类型,除了扫带二维码事件
     /**
      * 文本消息

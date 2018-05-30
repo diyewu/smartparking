@@ -25,6 +25,9 @@ import org.apache.commons.lang.StringUtils;
     50003：未查询到停车状态中的订单
     50004:订单编号和会员编号不匹配
     50005:停车驶入场地记录创建失败
+    50006:手机号码验证失败
+    50007:时间间隔小于120秒
+    50008:今天手机发送次数已用完
  * @author 吴迪叶
  *
  */
@@ -79,6 +82,16 @@ public class ServerResult {
 	public final static int RESULT_RECORD_CREATE_ERROR = 50005;
 	public final static String RESULT_RECORD_CREATE_ERROR_MSG = "停车驶入场地记录创建失败";
 	
+	public final static int RESULT_MOBILE_VALIDATE_ERROR = 50006;
+	public final static String RESULT_MOBILE_VALIDATE_ERROR_MSG = "手机号码验证失败";
+	
+	public final static int RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR = 50007;
+	public final static String RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR_MSG = "时间间隔小于120秒";
+	
+	public final static int RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR = 50008;
+	public final static String RESULT_MOBILE_CODE_SEND_REMAINTIMES_MSG = "今天手机发送次数已用完";
+	
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -98,6 +111,9 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_ORDER_DONOT_EXSIT_ERROR, RESULT_ORDER_DONOT_EXSIT_ERROR_MSG);
 		ServerResultMap.put(RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR, RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR_MSG);
 		ServerResultMap.put(RESULT_RECORD_CREATE_ERROR, RESULT_RECORD_CREATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_MOBILE_VALIDATE_ERROR, RESULT_MOBILE_VALIDATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR, RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR_MSG);
+		ServerResultMap.put(RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR, RESULT_MOBILE_CODE_SEND_REMAINTIMES_MSG);
 	}
 	
 	
