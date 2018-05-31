@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xz.common.ServerResult;
 import com.xz.controller.BaseController;
 import com.xz.entity.CustomConfig;
+import com.xz.entity.SmartMember;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartMemberService;
 import com.xz.utils.MailSam;
@@ -127,7 +128,7 @@ public class WeixinAccessController extends BaseController{
 				map.put("state", "0");
 			}
 		} catch (Exception e) {
-			code = 1;
+			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
@@ -143,6 +144,7 @@ public class WeixinAccessController extends BaseController{
      * @return
      * @throws IOException 
      */
+    @ApiOperation(value = "发送手机验证码", notes = "发送手机验证码", httpMethod = "POST")
     @RequestMapping(value="sendValidateMobileCode",method = RequestMethod.POST)
     @ResponseBody
     public JsonModel sendValidateMobileCode(
@@ -152,7 +154,7 @@ public class WeixinAccessController extends BaseController{
 		int code = 0;
 		Map<String,Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
-		
+		HttpSession session = getRequest().getSession();
     	try {
 			//校验手机号码
 			boolean isMobile = isMobile(mobileNumber);
@@ -178,12 +180,16 @@ public class WeixinAccessController extends BaseController{
 									//TODO  发送验证码
 									String content="尊敬的用户：<br/>您的验证码为："+mobileCode+"（60分钟内有效，区分大小写），为了保证您的账户安全，请勿向任何人提供此验证码。";
 									try {
+										//插入数据库
+										smartMemberService.updateMobileCodeSend(mobileNumber, mobileCode);
 										MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
+										session.setAttribute(WeixinConstants.SESSION_WEIXIN_USER_MOBILE, mobileNumber);
+										session.setAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE, mobileCode);
 									} catch (MessagingException e) {
+										code = ServerResult.RESULT_SERVER_ERROR;
+										msg = e.getMessage();
 										e.printStackTrace();
 									}
-									//插入数据库
-									smartMemberService.updateMobileCodeSend(mobileNumber, mobileCode);
 								} else {
 									code = ServerResult.RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR;
 								}
@@ -206,12 +212,57 @@ public class WeixinAccessController extends BaseController{
 				}
 			} 
 		} catch (Exception e) {
-			code = 1;
+			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
+			e.printStackTrace();
 		}
     	return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
     }
     
+    
+    
+    
+    @ApiOperation(value = "检查手机验证码", notes = "检查手机验证码", httpMethod = "POST")
+    @RequestMapping(value="checkMobileCode",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonModel checkMobileCode(
+    		@ApiParam(name = "mobileValidateCode", value = "手机验证码", required = true) @RequestParam("mobileValidateCode") String mobileValidateCode
+    		) throws IOException{
+    	String msg = null;
+		int code = 0;
+		Map<String,Object> map = new HashMap<String, Object>();
+    	HttpSession session = getRequest().getSession();
+    	try {
+			String mobile = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_USER_MOBILE);
+			String openId = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+			String sessionValidateCode = (String) session.getAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE);
+			session.setAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE, "");
+			if (StringUtils.isBlank(sessionValidateCode)) {
+				code = ServerResult.RESULT_MOBILE_CODE_VALIDATE_ERROR;
+			}
+			if (code == 0) {
+				if (StringUtils.isNotBlank(mobile)) {
+					if (!sessionValidateCode.equals(mobileValidateCode)) {
+						code = ServerResult.RESULT_MOBILE_CODE_VALIDATE_ERROR;
+					}
+				} else {
+					code = ServerResult.RESULT_SESSION_MOBILE_CHECK_ERROR;
+				}
+			}
+			//手机验证码验证成功之后，插入会员信息
+			if (code == 0) {
+				SmartMember smartMember = new SmartMember();
+				smartMember.setMobile(mobile);
+				smartMember.setOpenId(openId);
+				smartMemberService.updateMember(smartMember);
+			} 
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
+    }
     
     /**
      * weixin连接服务器
@@ -219,12 +270,33 @@ public class WeixinAccessController extends BaseController{
      * @return
      * @throws IOException 
      */
+    @ApiOperation(value = "TEST", notes = "TEST", httpMethod = "POST")
     @RequestMapping(value="console",method = RequestMethod.POST)
     @ResponseBody
-    public void consoleLog(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public void consoleLog() throws IOException{
     	try {
-    		String data =  request.getParameter("data");
-    		System.out.println("data="+data);
+    		SmartMember sm = new SmartMember();
+    		String id = getRequest().getParameter("id");
+    		String member_name = getRequest().getParameter("member_name");
+    		String member_sex = getRequest().getParameter("member_sex");
+    		String open_id = getRequest().getParameter("open_id");
+    		String mobile = getRequest().getParameter("mobile");
+    		if(StringUtils.isNotBlank(id)){
+    			sm.setId(id);
+    		}
+    		if(StringUtils.isNotBlank(member_name)){
+    			sm.setMemberName(member_name);
+    		}
+    		if(StringUtils.isNotBlank(member_sex)){
+    			sm.setMemberSex(member_sex);
+    		}
+    		if(StringUtils.isNotBlank(open_id)){
+    			sm.setOpenId(open_id);
+    		}
+    		if(StringUtils.isNotBlank(mobile)){
+    			sm.setMobile(mobile);
+    		}
+    		smartMemberService.updateMember(sm);
     	} catch (Exception e) {
     		e.printStackTrace();
     	}finally{

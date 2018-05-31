@@ -46,7 +46,7 @@ function getCode(){
     }
     $("body").showLoadingView();
     $.ajax({
-        type: "get",
+        type: "post",
         dateType: "json",
         url: '../wechat/sendValidateMobileCode/',
         data: {
@@ -54,7 +54,7 @@ function getCode(){
         },
         success: function(result) {
             $("body").hiddenLoadingView();
-            if (result.resCode == '000000') {
+            if (result.success == true) {
                 $("#code_button").html("120s后重新发送");
                 $("#code_button").attr("status", 1);
 
@@ -72,7 +72,7 @@ function getCode(){
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.resMsg
+                    text: result.msg
                 });
             }
 
@@ -118,27 +118,15 @@ function register(obj){
     $.ajax({
         type: "post",
         dateType: "json",
-        url: contextPath + "/weixin/mem/validate/mobile",
-        data: {mobile : mobile, smsCode : smsCode, openid : getCookie('openid'), webSourceType : getCookie('webSourceType')},
+        url: "../wechat/checkMobileCode/",
+        data: {
+			mobileValidateCode : smsCode, 
+			webSourceType : getCookie('webSourceType')
+		},
         success: function(result) {
             ajaxButtonRespone(obj);
-            if (result.resCode == '000000') {
-                setCookie('mobile',mobile);
-                if (result.data.optType == 1){
-                    var loginType = getCookie('loginType');
-                    if (loginType == 1 || loginType == 6){//6：注册页面则跳转首页
-                        window.location.href = contextPath + "/weixin/index/homepage/init?openid=" + getCookie('openid');
-                    }
-                    if (loginType == 4){
-                        window.location.href = contextPath + "/weixin/order/park/list/init?openid=" + getCookie('openid');
-                    }
-                    if (loginType == 5){//车辆记录详情
-                        window.location.href = contextPath + "/weixin/pay/detail?parkingLogId=" + getCookie('param1') + "&openid="
-                            + openid + "&webSourceType=" + getCookie('webSourceType') + "&platType=" + getCookie('platType');
-                    }
-                } else {
-                    window.location.href = contextPath + '/weixin/car/add/init/2';
-                }
+            if (result.success == true) {
+            	window.location.href = 'index.htm';
             } else {
                 $("body").alertDialog({
                     title: "提示",

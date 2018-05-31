@@ -9,7 +9,12 @@ public class WeixinConstants {
 	/**
 	 * session 相关
 	 */
+	//微信openid
 	public static final String SESSION_WEIXIN_OPEN_ID = "session_weixin_open_id";
+	//获取验证码手机号
+	public static final String SESSION_WEIXIN_USER_MOBILE = "session_weixin_user_mobile";
+	//手机验证码
+	public static final String SESSION_MOBILE_VALIDATE_CODE = "session_mobile_validate_code";
 	
     // 各种消息类型,除了扫带二维码事件
     /**

@@ -7,11 +7,19 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.base.Joiner;
+
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		for(int i=0;i<100;i++){
-			System.out.println((int)((Math.random()*9+1)*100000));  
-		}
+		joinList();
+	}
+	
+	public static void joinList(){
+		List<String> list = new ArrayList<String>();  
+		list.add("a");  
+		list.add("b");  
+		list.add("c");  
+		System.out.println(Joiner.on(",").join(list));
 	}
 	
 	public static void urlEncode() throws UnsupportedEncodingException{

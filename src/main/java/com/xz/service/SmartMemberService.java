@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Joiner;
+import com.xz.entity.SmartMember;
 import com.xz.utils.SortableUUID;
 
 @Service
@@ -24,6 +26,70 @@ public class SmartMemberService {
 		jdbcTemplate.update(sql, memberId,memberName,memberSex);
 		return memberId;
 	}
+	
+	public void updateMember(SmartMember smartMember){
+		if(StringUtils.isBlank(smartMember.getId())){
+			insertMember(smartMember);
+		}else{
+			StringBuilder sb = new StringBuilder();
+			List<String> param = new ArrayList<String>();
+			sb.append(" update smart_member set update_time = NOW() ");
+			if(StringUtils.isNotBlank(smartMember.getMemberName())){
+				sb.append(" ,member_name=? ");
+				param.add(smartMember.getMemberName());
+			}
+			if(StringUtils.isNotBlank(smartMember.getMemberSex())){
+				sb.append(" ,member_sex=? ");
+				param.add(smartMember.getMemberSex());
+			}
+			if(StringUtils.isNotBlank(smartMember.getOpenId())){
+				sb.append(" ,open_id=? ");
+				param.add(smartMember.getOpenId());
+			}
+			if(StringUtils.isNotBlank(smartMember.getMobile())){
+				sb.append(" ,mobile=? ");
+				param.add(smartMember.getMobile());
+			}
+			sb.append(" where id = ? ");
+			param.add(smartMember.getId());
+			jdbcTemplate.update(sb.toString(), param.toArray());
+		}
+	}
+	
+	public void insertMember(SmartMember smartMember){
+		String uuid = SortableUUID.randomUUID();
+		StringBuilder sb = new StringBuilder();
+		List<String> symbols = new ArrayList<String>();
+		List<String> param = new ArrayList<String>();
+		sb.append(" insert into smart_member( id ");
+		param.add(uuid);
+		symbols.add("?");
+		if(StringUtils.isNotBlank(smartMember.getMemberName())){
+			sb.append(" ,member_name ");
+			symbols.add("?");
+			param.add(smartMember.getMemberName());
+		}
+		if(StringUtils.isNotBlank(smartMember.getMemberSex())){
+			sb.append(" ,member_sex ");
+			symbols.add("?");
+			param.add(smartMember.getMemberSex());
+		}
+		if(StringUtils.isNotBlank(smartMember.getOpenId())){
+			sb.append(" ,open_id ");
+			symbols.add("?");
+			param.add(smartMember.getOpenId());
+		}
+		if(StringUtils.isNotBlank(smartMember.getMobile())){
+			sb.append(" ,mobile ");
+			symbols.add("?");
+			param.add(smartMember.getMobile());
+		}
+		sb.append(",create_time,update_time)values(");
+		sb.append(Joiner.on(",").join(symbols)+",NOW(),NOW())");
+		jdbcTemplate.update(sb.toString(), param.toArray());
+	}
+	
+	
 	
 	public List<Map<String, Object>> checkMemberByOpenId(String openId){
 		String sql = " select * from smart_member where open_id = ? ";

@@ -28,6 +28,8 @@ import org.apache.commons.lang.StringUtils;
     50006:手机号码验证失败
     50007:时间间隔小于120秒
     50008:今天手机发送次数已用完
+    50009:尚未发送验证码
+    50010:手机验证码验证失败
  * @author 吴迪叶
  *
  */
@@ -91,6 +93,12 @@ public class ServerResult {
 	public final static int RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR = 50008;
 	public final static String RESULT_MOBILE_CODE_SEND_REMAINTIMES_MSG = "今天手机发送次数已用完";
 	
+	public final static int RESULT_SESSION_MOBILE_CHECK_ERROR = 50009;
+	public final static String RESULT_SESSION_MOBILE_CHECK_ERROR_MSG = "尚未发送验证码";
+	
+	public final static int RESULT_MOBILE_CODE_VALIDATE_ERROR = 50010;
+	public final static String RESULT_MOBILE_CODE_VALIDATE_ERROR_MSG = "手机验证码验证失败";
+	
 	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
@@ -114,6 +122,8 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_MOBILE_VALIDATE_ERROR, RESULT_MOBILE_VALIDATE_ERROR_MSG);
 		ServerResultMap.put(RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR, RESULT_MOBILE_CODE_SEND_INTERVAL_ERROR_MSG);
 		ServerResultMap.put(RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR, RESULT_MOBILE_CODE_SEND_REMAINTIMES_MSG);
+		ServerResultMap.put(RESULT_SESSION_MOBILE_CHECK_ERROR, RESULT_SESSION_MOBILE_CHECK_ERROR_MSG);
+		ServerResultMap.put(RESULT_MOBILE_CODE_VALIDATE_ERROR, RESULT_MOBILE_CODE_VALIDATE_ERROR_MSG);
 	}
 	
 	
