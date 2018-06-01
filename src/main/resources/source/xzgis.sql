@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50629
 File Encoding         : 65001
 
-Date: 2018-05-30 18:38:38
+Date: 2018-06-01 19:29:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -4893,20 +4893,18 @@ CREATE TABLE `smart_member` (
   `id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `member_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '会员名称',
   `member_sex` int(1) DEFAULT NULL COMMENT '性别,0 女性，1 男性,2 未知',
-  `create_time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `open_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `create_time` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `update_time` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `open_id` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mobile` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `member_open_id` (`open_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of smart_member
 -- ----------------------------
-INSERT INTO `smart_member` VALUES ('00152574989796300000', '测试会员', '1', '2018-05-08 11:24:57', null);
-INSERT INTO `smart_member` VALUES ('00152576302951200000', '啊啊啊', '1', '2018-05-08 15:03:49', null);
-INSERT INTO `smart_member` VALUES ('00152576334877400003', '啊实打实', '1', '2018-05-08 15:09:08', null);
-INSERT INTO `smart_member` VALUES ('00152576337863000004', '阿斯顿', '1', '2018-05-08 15:09:38', null);
-INSERT INTO `smart_member` VALUES ('00152576348903900007', '急急急', '1', '2018-05-08 15:11:29', null);
-INSERT INTO `smart_member` VALUES ('00152618016278500000', 'asd', '1', '2018-05-13 10:56:02', null);
+INSERT INTO `smart_member` VALUES ('00152775510077000003', '啊实打实', '1', '2018-05-31 16:25:00', '2018-05-31 16:25:44', 'asddasdsadasasdd', '2222222');
 
 -- ----------------------------
 -- Table structure for smart_mobile_code_send
@@ -4933,7 +4931,7 @@ INSERT INTO `smart_mobile_code_send` VALUES ('2', '1111111111', '2018-05-08 15:0
 -- ----------------------------
 DROP TABLE IF EXISTS `smart_mobile_code_send_history`;
 CREATE TABLE `smart_mobile_code_send_history` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `mobile` varchar(11) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `send_time` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `send_code` int(6) DEFAULT NULL,
