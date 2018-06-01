@@ -147,3 +147,8 @@ function ggToBd(gg_lng, gg_lat) {
     bd_lat = z * Math.sin(theta) + 0.006;
     return {"bd_lng" : bd_lng, "bd_lat" : bd_lat};
 }
+
+
+function jumpUrl(url){
+	window.location.href = url;
+}

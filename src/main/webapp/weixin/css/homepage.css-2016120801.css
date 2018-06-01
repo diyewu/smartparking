@@ -31,7 +31,7 @@
 }
 .park_detail{
     display: inline-block;
-    background: url("../images/vectorSmartObject@3x.png")/*tpa=http://wx.jiepark.com/resources/images/weChat/homepage/vectorSmartObject@3x.png*/ no-repeat;
+    /*background: url("../images/vectorSmartObject@3x.png") no-repeat;*/
     background-size: contain;
 }
 .item .park_detail .park_detail_no_img{

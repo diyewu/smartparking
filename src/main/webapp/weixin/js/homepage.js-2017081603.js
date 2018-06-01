@@ -154,11 +154,11 @@ function jumpAddCarNumPage(){
 }
 
 function jumpMemInfoPage(){
-    window.location.href = 'userHome.htm';
+    window.location.href = 'userHome.html';
 }
 
 function jumpParkListPage(){
-    window.location.href = 'parkList.htm';
+    window.location.href = 'parkList.html';
 }
 
 function jumpOrderParkListPage(){
@@ -166,7 +166,7 @@ function jumpOrderParkListPage(){
     //    title: "提示",
     //    text: "暂未开放，敬请期待"
     //});
-    window.location.href = 'order.htm';
+    window.location.href = 'order.html';
 }
 
 function jumpUnpayPage(){

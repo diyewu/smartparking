@@ -7,14 +7,14 @@
   <title></title>
   
   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/wap_show_tools.css-2017022805.css">
+  <link rel="stylesheet" href="css/wap_show_tools.css">
   <link rel="stylesheet" href="css/simple_slider.css"">
   <link rel="stylesheet" href="css/owl.carousel.css"">
   <link rel="stylesheet" href="css/owl.theme.default.css">
   <link rel="stylesheet" href="css/homepage.css-2016120801.css">
 
   <script type="text/javascript" src="js/jquery_1.9.min.js"></script>
-  <script type="text/javascript" src="js/base.js-2016050301.js" ></script>
+  <script type="text/javascript" src="js/base.js" ></script>
   <script type="text/javascript" src="js/wap_show_tools.js"></script>
   <script type="text/javascript" src="js/simple_slider.js" ></script>
   <script type="text/javascript" src="js/owl.carousel.js" ></script>
@@ -48,56 +48,34 @@
 </div>
   <div class="homepage_tips">
   </div>
-  <input type="hidden" id="car_num_list" value="赣G5544Y,苏CR5677,苏CR567U,">
-  <input type="hidden" id="park_info_list" value="
-  
-    {'carNum' : '赣G5544Y',
-    
-      'parkingLogId' : '0', 'status' : '0'},
-    
-    
-  
-    {'carNum' : '苏CR5677',
-    
-      'parkingLogId' : '0', 'status' : '0'},
-    
-    
-  
-    {'carNum' : '苏CR567U',
-    
-      'parkingLogId' : '0', 'status' : '0'},
-    
-    
-  
-  ">
+  <input type="hidden" id="car_num_list" value=""><!-- 无  或者 赣C66688，赣C666as8 -->
+  <input type="hidden" id="park_info_list" value="">
   <div class="park_list">
     <div class="refresh_button" onclick="$('body').showLoadingView();location.reload();">
-      <img src="images/icon_home_renovate@3x.png" tppabs="http://wx.jiepark.com/resources/images/weChat/homepage/icon_home_renovate@3x.png">
+      <img src="images/icon_home_renovate@3x.png">
       刷新
     </div>
     <div class="problem_button" onclick="jumpProblemPage();">
       问题反馈
     </div>
     <div class="owl_carousel">
-      
-      
-        
+    	  <!--  -->
           <div class="item">
             <div class="park_detail">
-              <img class="park_detail_no_img" src="images/pic4@3x.png">
+              <img class="park_detail_no_img" src="images/parking3.png">
               <div class="park_detail_no_tips">
-                您未驶入停车场
+                	您正停在XXXXXXXXX
               </div>
             </div>
 	          <div class="park_operate_div">
-	            <div class="park_operate_button" onclick="">添加车辆</div>
+	            <div class="park_operate_button" onclick="jumpUrl('addCar.html');">添加车辆</div>
 	          </div>
             <div class="park_info">
               <div class="park_info_left">时长</div>
               <div class="park_info_right">0小时0分钟</div>
             </div>
           </div>
-        
+        <!-- 
           <div class="item">
             <div class="park_detail">
               <img class="park_detail_no_img" src="images/pic4@3x.png">
@@ -109,7 +87,7 @@
             </div>
             <div class="park_info">
               <div class="park_info_left">时长</div>
-              <div class="park_info_right">0小时0分钟</div>
+              <div class="park_info_right">1小时0分钟</div>
             </div>
           </div>
         
@@ -124,14 +102,10 @@
             </div>
             <div class="park_info">
               <div class="park_info_left">时长</div>
-              <div class="park_info_right">0小时0分钟</div>
+              <div class="park_info_right">2小时0分钟</div>
             </div>
           </div>
-        
-        
-        
-        
-      
+           -->
     </div>
   </div>
   <div class="bottom_bar_brace"></div>

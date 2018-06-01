@@ -15,6 +15,8 @@ public class WeixinConstants {
 	public static final String SESSION_WEIXIN_USER_MOBILE = "session_weixin_user_mobile";
 	//手机验证码
 	public static final String SESSION_MOBILE_VALIDATE_CODE = "session_mobile_validate_code";
+	//用户ID
+	public static final String SESSION_MEMBER_ID = "session_member_id";
 	
     // 各种消息类型,除了扫带二维码事件
     /**

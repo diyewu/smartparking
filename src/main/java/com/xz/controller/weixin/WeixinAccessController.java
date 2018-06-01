@@ -122,6 +122,7 @@ public class WeixinAccessController extends BaseController{
 			if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
 				map.put("state", "1");
 				String memberId = (String)list.get(0).get("id");
+				session.setAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID, memberId);
 				List<Map<String, Object>> carParkList = smartMemberService.getCarParkStateByMemId(memberId);
 				map.put("carstate", carParkList);
 			}else{//不存在，跳转到手机注册页面

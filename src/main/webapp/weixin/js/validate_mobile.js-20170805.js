@@ -1,5 +1,4 @@
 /**
- * Created by wangcheng on 2016/5/30.
  */
 var	contextPath;
 $(function() {
@@ -45,6 +44,8 @@ function getCode(){
         return;
     }
     $("body").showLoadingView();
+    $("#code_button").html("120s后重新发送");
+    $("#code_button").attr("status", 1);
     $.ajax({
         type: "post",
         dateType: "json",
@@ -55,17 +56,14 @@ function getCode(){
         success: function(result) {
             $("body").hiddenLoadingView();
             if (result.success == true) {
-                $("#code_button").html("120s后重新发送");
-                $("#code_button").attr("status", 1);
-
                 var timer = setInterval(function(){
                     var btnVal = $("#code_button").html().split("s");
                     var s = parseInt(btnVal[0],10);
                     if (s > 0) {
                         $("#code_button").html((s - 1) + 's后重新发送');
                     } else {
-                        $("#code_button").html("获得验证码");
-                        $("#code_button").attr("status", 0);
+                    	$("#code_button").html("获得验证码");
+                    	$("#code_button").attr("status", 0);
                         clearInterval(timer);
                     }
                 },1000);
@@ -74,6 +72,8 @@ function getCode(){
                     title: "提示",
                     text: result.msg
                 });
+                $("#code_button").html("获得验证码");
+                $("#code_button").attr("status", 0);
             }
 
         }
@@ -126,7 +126,7 @@ function register(obj){
         success: function(result) {
             ajaxButtonRespone(obj);
             if (result.success == true) {
-            	window.location.href = 'index.htm';
+            	window.location.href = 'index.html';
             } else {
                 $("body").alertDialog({
                     title: "提示",

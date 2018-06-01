@@ -99,7 +99,7 @@ public class SmartMemberService {
 	
 	public List<Map<String, Object>> getCarParkStateByMemId(String memberId){
 		StringBuilder sb = new StringBuilder();
-		sb.append(" select sc.car_number,so.order_state_id,sp.park_name ,sod.state_name ");
+		sb.append(" select sc.car_number,so.order_state_id,sp.park_name ,sod.state_name ,so.begin_time ");
 		sb.append(" from smart_car sc  ");
 		sb.append(" left join smart_member sm on sc.member_id = sm.id ");
 		sb.append(" left join smart_order so on so.car_id = sc.id and so.order_state_id in (1,2,3,4) ");

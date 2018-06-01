@@ -1,6 +1,3 @@
-/**
- * Created by wangcheng on 2016/5/3.
- */
 var	contextPath;
 $(function(){
     contextPath = $("#contextPath").val();
@@ -92,12 +89,17 @@ function updateOrAddCarNum(obj){
     $.ajax({
         type: "post",
         dateType: "json",
-        url: contextPath + "/weixin/car/update",
-        data: {sourceCarNum : sourceCarNum, carNum : carNum, openid : getCookie('openid')},
+        url: "../smartCar/carRegist/",
+        data: {
+        	sourceCarNum : sourceCarNum, 
+        	carNumber : carNum
+        	/*, 
+        	openid : getCookie('openid')
+        	*/
+        },
         success: function(result) {
             ajaxButtonRespone(obj);
-            if (result.resCode == '000000') {
-                if ($("#type").val() == 1){
+            if (result.success == true) {
                     var text = "修改车牌成功";
                     if (sourceCarNum == '' || sourceCarNum == undefined){
                         text = "添加车牌成功";
@@ -106,26 +108,13 @@ function updateOrAddCarNum(obj){
                         title: "提示",
                         text: text,
                         okFtn: function(){
-                            window.location.href = contextPath + "/weixin/car/list/init?openid=" + getCookie('openid');
+                            window.location.href = "index.html";
                         }
                     });
-                } else {
-                    var loginType = getCookie('loginType');
-                    if (loginType == 1 && loginType == 6){//6：注册页面则跳转首页
-                        window.location.href = contextPath + "/weixin/index/homepage/init?openid=" + getCookie('openid');
-                    }
-                    if (loginType == 4){
-                        window.location.href = contextPath + "/weixin/order/park/list/init?openid=" + getCookie('openid');
-                    }
-                    if (loginType == 5){//车辆记录详情
-                        window.location.href = contextPath + "/weixin/pay/detail?parkingLogId=" + getCookie('param1') + "&openid="
-                            + openid + "&webSourceType=" + getCookie('webSourceType') + "&platType=" + getCookie('platType');
-                    }
-                }
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.resMsg
+                    text: result.msg
                 });
             }
         }

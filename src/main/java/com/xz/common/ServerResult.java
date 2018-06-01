@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
     50008:今天手机发送次数已用完
     50009:尚未发送验证码
     50010:手机验证码验证失败
+    50011:登陆信息验证失败
  * @author 吴迪叶
  *
  */
@@ -98,6 +99,9 @@ public class ServerResult {
 	
 	public final static int RESULT_MOBILE_CODE_VALIDATE_ERROR = 50010;
 	public final static String RESULT_MOBILE_CODE_VALIDATE_ERROR_MSG = "手机验证码验证失败";
+	
+	public final static int RESULT_AUTH_VALIDATE_ERROR = 50011;
+	public final static String RESULT_AUTH_VALIDATE_ERROR_MSG = "登陆信息验证失败";
 	
 	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
