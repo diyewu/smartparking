@@ -20,7 +20,7 @@ function flagChange(type, obj){
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.resMsg
+                    text: result.msg
                 });
             }
         }
@@ -48,7 +48,7 @@ function loginOut(obj){
                     } else {
                         $("body").alertDialog({
                             title: "提示",
-                            text: result.resMsg
+                            text: result.msg
                         });
                     }
                 }

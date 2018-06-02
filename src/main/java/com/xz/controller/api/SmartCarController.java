@@ -1,6 +1,7 @@
 package com.xz.controller.api;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xz.common.ServerResult;
 import com.xz.controller.BaseController;
 import com.xz.controller.weixin.WeixinConstants;
-import com.xz.model.json.AppJsonModel;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartCarService;
 
@@ -34,7 +34,7 @@ public class SmartCarController extends BaseController{
 	@RequestMapping("carRegist")
 	@ResponseBody
 	public JsonModel carRegist(
-//			 @ApiParam(name = "memberId", value = "会员编号", required = true) @RequestParam("memberId") String memberId,
+			 @ApiParam(name = "carId", value = "会员编号", required = false) @RequestParam(value = "carId", required = false) String carId,
 			 @ApiParam(name = "carNumber", value = "车牌号码", required = true) @RequestParam("carNumber") String carNumber,
 			 @ApiParam(name = "carType", value = "车辆类型", required = true) @RequestParam("carType") String carType,
 			 @ApiParam(name = "isOwn", value = "车辆是否属于会员本人，0：不属于，1：属于", required = false) @RequestParam(value = "isOwn", required = false) String isOwn,
@@ -54,8 +54,14 @@ public class SmartCarController extends BaseController{
 			//TODO 统一检测参数 memberId
 			HttpSession session = getRequest().getSession();
 			String memberId = (String) session.getAttribute(WeixinConstants.SESSION_MEMBER_ID);
-			if (StringUtils.isNotBlank(memberId)) {
+			if (StringUtils.isBlank(memberId)) {
 				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}
+			if(code == 0){//检查会员名下车辆总数
+				List<Map<String, Object>> list = smartCarService.checkMaxCar(memberId);
+				if(list != null && list.size() >= 3){
+					code = ServerResult.RESULT_MAX_CAR_ERROR;
+				}
 			}
 			//注册车主信息
 			if (code == 0) {
@@ -68,7 +74,7 @@ public class SmartCarController extends BaseController{
 				}
 				if (StringUtils.isNotBlank(ownerId)) {
 					int carTypeInt = Integer.parseInt(carType);
-					String carId = smartCarService.carRegist(memberId, carNumber, ownerId, carTypeInt);
+					String savedCarId = smartCarService.carRegist(memberId, carNumber, ownerId, carTypeInt,carId);
 				}
 			} 
 		} catch (Exception e) {
@@ -76,7 +82,7 @@ public class SmartCarController extends BaseController{
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), respMap);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
 }

@@ -12,6 +12,12 @@ $(function() {
     getMyLocation();
 })
 
+function naviBaidu(longitude,latitude){
+	var longitude = 121.330725;
+	var latitude = 31.247019;
+	window.location.href = "http://api.map.baidu.com/geocoder?location="+latitude+","+longitude+"&coord_type=gcj02&output=html&src=yourCompanyName|yourAppName";
+}
+
 function showSearch(){
     $(".park_type").css("display", "none");
     $(".sel_park").css("display", "none");
@@ -30,6 +36,7 @@ function hiddenSearch(){
 }
 //定位当前经纬度
 function getMyLocation(){
+	/*
     $("body").showLoadingView();
     AMap.plugin('AMap.Geolocation', function () {
         var geolocation = new AMap.Geolocation({
@@ -62,6 +69,7 @@ function getMyLocation(){
             });
         });
     })
+    */
 }
 //逆向地理编码（坐标-地址）
 function regeocoder(lng, lat){
@@ -122,6 +130,7 @@ function clickAutoTips(name, lng, lat){
 }
 //通过ip定位城市信息
 function currentCitySearch(){
+	/*
     //加载IP定位插件
     AMap.plugin(["AMap.CitySearch"], function() {
         //实例化城市查询类
@@ -136,6 +145,7 @@ function currentCitySearch(){
             }
         });
     });
+    */
 }
 
 function getParkList(lng, lat){
@@ -245,7 +255,7 @@ function naviOrder(type){
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.resMsg
+                    text: result.msg
                 });
             }
         }

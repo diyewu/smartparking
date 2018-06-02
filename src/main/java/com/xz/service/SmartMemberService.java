@@ -27,6 +27,12 @@ public class SmartMemberService {
 		return memberId;
 	}
 	
+	public List<Map<String, Object>> getMemberINfoByOpenId(String openId){
+		String sql = " select * from smart_member where open_id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, openId);
+		return list;
+	}
+	
 	public void updateMember(SmartMember smartMember){
 		if(StringUtils.isBlank(smartMember.getId())){
 			insertMember(smartMember);

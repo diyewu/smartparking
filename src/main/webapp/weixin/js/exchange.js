@@ -40,7 +40,7 @@ function exchange(obj){
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.resMsg
+                    text: result.msg
                 });
             }
 

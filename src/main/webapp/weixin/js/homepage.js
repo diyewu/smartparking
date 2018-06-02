@@ -1,44 +1,10 @@
-/**
- * Created by wangcheng on 2016/5/3.
- */
 var	contextPath;
 var parkInfoArray;
 $(function() {
-//	alert(getParam("code"));
-    contextPath = $("#contextPath").val();
-    //首页刷新flag,1则返回首页要刷新页面
-    var homepageRefreshFlag = getCookie("homepageRefreshFlag");
-    if (homepageRefreshFlag == 1){
-        setCookie("homepageRefreshFlag", 0);
-        location.reload();
-    }
-    setTitle();//设置特殊的title
-    getActList();
-    getUnpayCount();
-    initParkInfo();
-    initOwlcarousel();
-    initEffect();
-    if ($('.run_timer').length > 0){
-        window.setInterval("runTimer();", 1000);
-    }
+    
 })
 
 
-/** 
- * 获取指定的URL参数值 
- * URL:http://www.quwan.com/index?name=tyler 
- * 参数：paramName URL参数 
- * 调用方法:getParam("name") 
- * 返回值:tyler 
- */ 
-function getParam(paramName) { 
-    paramValue = "", isFound = !1; 
-    if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) { 
-        arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0; 
-        while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++ 
-    } 
-    return paramValue == "" && (paramValue = null), paramValue 
-}  
 function setTitle(){
     document.title = '智慧停车';
 }
@@ -99,7 +65,7 @@ function getUnpayCount(){
     $.ajax({
         type: "get",
         dateType: "json",
-        url: contextPath + "/weixin/index/unpay/count/" + getCookie('openid'),
+        url: "",
         data: null,
         success: function(result) {
             if (result.data > 0) {

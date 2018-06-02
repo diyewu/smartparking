@@ -105,6 +105,7 @@ function register(obj){
         });
         return;
     }
+    /*
     if (openid == undefined || openid == '' || openid == null || openid == 'null'){
         $("body").alertDialog({
             title: "提示",
@@ -112,6 +113,7 @@ function register(obj){
         });
         return;
     }
+    */
     if (ajaxButtonRequest(obj)){
         return;
     }
@@ -130,7 +132,7 @@ function register(obj){
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.resMsg
+                    text: result.msg
                 });
             }
         }

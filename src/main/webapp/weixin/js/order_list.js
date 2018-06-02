@@ -98,7 +98,7 @@ function getCoupon(type){
                 }
                 wrapper.refresh();
             } else {
-                alert(result.resMsg);
+                alert(result.msg);
             }
 
         }

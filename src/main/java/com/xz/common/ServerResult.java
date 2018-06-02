@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
     50009:尚未发送验证码
     50010:手机验证码验证失败
     50011:登陆信息验证失败
+    50012:名下登记车辆总数超过最大数量
  * @author 吴迪叶
  *
  */
@@ -101,7 +102,10 @@ public class ServerResult {
 	public final static String RESULT_MOBILE_CODE_VALIDATE_ERROR_MSG = "手机验证码验证失败";
 	
 	public final static int RESULT_AUTH_VALIDATE_ERROR = 50011;
-	public final static String RESULT_AUTH_VALIDATE_ERROR_MSG = "登陆信息验证失败";
+	public final static String RESULT_AUTH_VALIDATE_ERROR_MSG = "权限信息验证失败";
+	
+	public final static int RESULT_MAX_CAR_ERROR = 50012;
+	public final static String RESULT_MAX_CAR_ERROR_MSG = "名下登记车辆总数超过最大数量";
 	
 	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
@@ -128,6 +132,8 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_MOBILE_CODE_SEND_REMAINTIMES_ERROR, RESULT_MOBILE_CODE_SEND_REMAINTIMES_MSG);
 		ServerResultMap.put(RESULT_SESSION_MOBILE_CHECK_ERROR, RESULT_SESSION_MOBILE_CHECK_ERROR_MSG);
 		ServerResultMap.put(RESULT_MOBILE_CODE_VALIDATE_ERROR, RESULT_MOBILE_CODE_VALIDATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_AUTH_VALIDATE_ERROR, RESULT_AUTH_VALIDATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_MAX_CAR_ERROR, RESULT_MAX_CAR_ERROR_MSG);
 	}
 	
 	

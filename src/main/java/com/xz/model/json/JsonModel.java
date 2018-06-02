@@ -52,6 +52,7 @@ public class JsonModel implements java.io.Serializable{
 	}
 	
 	public JsonModel(Integer code, String msg, Object data) {
+		this.success = (code == 0);
 		this.code = code;
 		this.msg = msg;
 		this.data = data;
@@ -66,6 +67,13 @@ public class JsonModel implements java.io.Serializable{
 	
 	public JsonModel(boolean success, String msg, Object data, Object obj) {
 		this.success = success;
+		this.msg = msg;
+		this.data = data;
+		this.obj = obj;
+	}
+	public JsonModel(int code, String msg, Object data, Object obj) {
+		this.code = code;
+		this.success = (code == 0);
 		this.msg = msg;
 		this.data = data;
 		this.obj = obj;

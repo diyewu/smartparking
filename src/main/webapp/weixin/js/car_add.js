@@ -21,7 +21,7 @@ function clickNewFlag(){
     if (newFlag == 0){
         $("#new_flag").val(1);
         // $(".new_flag img").attr("src", contextPath + "/resources/images/weChat/car_add/icon_addfunds_h@3x.png");
-        $(".new_flag img").attr("src", "images/icon_addfunds_h@3x.png");
+        $(".new_flag img").attr("src", "images/check.png");
         $(".car_add_input_left,.car_add_input_right").css("width", "12%");
         $(".car_add_input_mid").css("width", "4%");
         $(".car_num_input_8").parent(".car_add_input_right").css("display", "block");
@@ -78,6 +78,7 @@ function updateOrAddCarNum(obj){
     }
     var carNum = $.trim($("#car_num_input_hidden").val());
     var sourceCarNum = $.trim($("#update_car_num").val());
+    var carId = getParam('carId');
     var carNumMatch  = $("#new_flag").val() == 1 ? "^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9_港_澳]{6}$" : "^[\u4e00-\u9fa5]{1}[A-Z]{1}[A-Z_0-9_港_澳]{5}$";
     if (!carNum.match(carNumMatch)) {
         alert("请输入正确格式的车牌号");
@@ -91,8 +92,9 @@ function updateOrAddCarNum(obj){
         dateType: "json",
         url: "../smartCar/carRegist/",
         data: {
-        	sourceCarNum : sourceCarNum, 
-        	carNumber : carNum
+        	carId : carId, 
+        	carNumber : carNum,
+        	carType:1
         	/*, 
         	openid : getCookie('openid')
         	*/

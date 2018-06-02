@@ -30,6 +30,7 @@ import com.xz.entity.CustomConfig;
 import com.xz.entity.SmartMember;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartMemberService;
+import com.xz.utils.DateHelper;
 import com.xz.utils.MailSam;
 import com.xz.utils.SignUtil;
 
@@ -105,35 +106,61 @@ public class WeixinAccessController extends BaseController{
     @ResponseBody
     public JsonModel getCarParkInfoByCode(@ApiParam(name = "authCode", value = "用户同意授权，获取code", required = true) @RequestParam("authCode") String authCode
     		){
+    	System.out.println("authCode="+authCode);
+//    	return null;
     	String msg = null;
 		int code = 0;
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,String> respMap = new HashMap<String, String>();
-		respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
 		try {
-			String openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
-			System.out.println("openId="+openId);
+			String openId = "";
 			HttpSession session = getRequest().getSession(); 
-			if(StringUtils.isNotBlank(openId)){
+			if(StringUtils.isNotBlank(authCode)){
+				respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
+				openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
+			}else{
+				openId = (String)session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+			}
+			System.out.println("openId="+openId);
+			if(StringUtils.isBlank(openId)){
+				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}else{
 				session.setAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID, openId);
 			}
-			// 得到openid走业务逻辑，如果数据库中存在则查询数据，如果没有绑定手机号
-			List<Map<String, Object>> list = smartMemberService.checkMemberByOpenId(openId);
-			if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
-				map.put("state", "1");
-				String memberId = (String)list.get(0).get("id");
-				session.setAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID, memberId);
-				List<Map<String, Object>> carParkList = smartMemberService.getCarParkStateByMemId(memberId);
-				map.put("carstate", carParkList);
-			}else{//不存在，跳转到手机注册页面
-				map.put("state", "0");
+			if(code == 0){
+				// 得到openid走业务逻辑，如果数据库中存在则查询数据，如果没有绑定手机号
+				List<Map<String, Object>> list = smartMemberService.checkMemberByOpenId(openId);
+				if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
+					map.put("state", "1");
+					String memberId = (String)list.get(0).get("id");
+					session.setAttribute(WeixinConstants.SESSION_MEMBER_ID, memberId);
+					List<Map<String, Object>> carParkList = smartMemberService.getCarParkStateByMemId(memberId);
+					List<Map<String, Object>> respList = new ArrayList<Map<String,Object>>();
+					if(carParkList != null && carParkList.size()>0){
+						Map<String, Object> tmap = new HashMap<String, Object>();
+						for(int i=0;i<carParkList.size();i++){
+							tmap = new HashMap<String, Object>();
+							tmap = carParkList.get(i);
+							String begin_time = (String)tmap.get("begin_time");
+							tmap.put("diff_time", "0小时0分钟");
+							if(StringUtils.isNotBlank(begin_time)){
+								String DateDiff = DateHelper.getDateDiffengt(begin_time);
+								tmap.put("diff_time", DateDiff);
+							}
+							respList.add(tmap);
+						}
+					}
+					map.put("carstate", respList);
+				}else{//不存在，跳转到手机注册页面
+					map.put("state", "0");
+				}
 			}
 		} catch (Exception e) {
 			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), map);
     }
     
     
@@ -163,6 +190,14 @@ public class WeixinAccessController extends BaseController{
 			if (!isMobile) {
 				code = ServerResult.RESULT_MOBILE_VALIDATE_ERROR;
 			}
+			//校验是否有 openId
+			if (code == 0) {
+				String openId = (String)session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+				if(StringUtils.isBlank(openId)){
+					code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+				}
+			}
+			
 			//校验当天剩余次数
 			if (code == 0) {
 				list = smartMemberService.getLastSendCodeTime(mobileNumber);
@@ -176,7 +211,7 @@ public class WeixinAccessController extends BaseController{
 								Date d1 = df.parse(lastSendCodeTime);
 								Date nowTiem = new Date();
 								long diff = nowTiem.getTime() - d1.getTime();// 这样得到的差值是微秒级别
-								long second = diff / (60 * 60 * 24);
+								long second = diff / 1000;
 								if (second > 120) {//2分钟之后才能继续发送验证码
 									//TODO  发送验证码
 									String content="尊敬的用户：<br/>您的验证码为："+mobileCode+"（60分钟内有效，区分大小写），为了保证您的账户安全，请勿向任何人提供此验证码。";
@@ -217,7 +252,7 @@ public class WeixinAccessController extends BaseController{
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-    	return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
+    	return new JsonModel(code, ServerResult.getCodeMsg(code, msg), map);
     }
     
     
@@ -236,8 +271,9 @@ public class WeixinAccessController extends BaseController{
     	try {
 			String mobile = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_USER_MOBILE);
 			String openId = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
-			String sessionValidateCode = (String) session.getAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE);
+			String sessionValidateCode = session.getAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE)+"";
 			session.setAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE, "");
+			String memberId = "";
 			if (StringUtils.isBlank(sessionValidateCode)) {
 				code = ServerResult.RESULT_MOBILE_CODE_VALIDATE_ERROR;
 			}
@@ -252,17 +288,28 @@ public class WeixinAccessController extends BaseController{
 			}
 			//手机验证码验证成功之后，插入会员信息
 			if (code == 0) {
+				//根据openid获取会员信息
+				List<Map<String, Object>> list = smartMemberService.getMemberINfoByOpenId(openId);
+				if(list != null && list.size()>0){
+					memberId = (String)list.get(0).get("id");
+				}
 				SmartMember smartMember = new SmartMember();
-				smartMember.setMobile(mobile);
-				smartMember.setOpenId(openId);
-				smartMemberService.updateMember(smartMember);
+				if(StringUtils.isNotBlank(memberId)){//验证手机验证码，如果是已存在的会员，则无需更新
+//					smartMember.setId(memberId);
+//					SESSION_MEMBER_ID
+					session.setAttribute(WeixinConstants.SESSION_MEMBER_ID, memberId);
+				}else{
+					smartMember.setMobile(mobile);
+					smartMember.setOpenId(openId);
+					smartMemberService.updateMember(smartMember);
+				}
 			} 
 		} catch (Exception e) {
 			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		return new JsonModel(code == 0, ServerResult.getCodeMsg(code, msg), map);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), map);
     }
     
     /**

@@ -3,6 +3,7 @@ package com.xz.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,32 @@ public class SmartCarService {
 	@Autowired  
 	private JdbcTemplate jdbcTemplate; 
 	
-	public String carRegist(String memberId,String carNumber,String carOwnerId,int carType){
-		String carId = SortableUUID.randomUUID();
+	public String carRegist(String memberId,String carNumber,String carOwnerId,int carType,String carId){
+		if(StringUtils.isNotBlank(carId)){//更新
+			this.updateSmartCar(carNumber, carType, carId);
+			return carId;
+		}else{
+			return this.insertsmartCar(memberId, carNumber, carOwnerId, carType);
+		}
+	}
+	
+	public List<Map<String, Object>> checkMaxCar(String memberId){
+		String sql = " select 1 from smart_car where member_id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);
+		return list;
+	}
+	
+	public String updateSmartCar(String carNumber,int carType,String carId){
+		String sql = " update smart_car(car_number,car_type,update_time)values(?,?,NOW())where id = ? ";
+		jdbcTemplate.update(sql, carNumber,carType,carId);
+		return null;
+	}
+	
+	public String insertsmartCar(String memberId,String carNumber,String carOwnerId,int carType){
+		String uuCarId = SortableUUID.randomUUID();
 		String sql = " insert into smart_car(id,member_id,car_number,car_owner_id,car_type,create_time,update_time)values(?,?,?,?,?,NOW(),NOW()) ";
-		jdbcTemplate.update(sql, carId,memberId,carNumber,carOwnerId,carType);
-		return carId;
+		jdbcTemplate.update(sql, uuCarId,memberId,carNumber,carOwnerId,carType);
+		return uuCarId;
 	}
 	
 	public String ownerRegist(String ownerName,String ownerAdress,String ownerPhone){

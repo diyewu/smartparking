@@ -20,7 +20,7 @@ public class DateHelper {
 		Date today = new Date();
 		String beforeDayStr = "20171007";
 		Date beforeDay = paraseStringToDate(beforeDayStr, "yyyyMMdd");
-		List<String> list = getBetweenDates(beforeDay,today);
+		List<String> list = getBetweenDates(beforeDay, today);
 		System.out.println(list);
 
 	}
@@ -38,6 +38,7 @@ public class DateHelper {
 
 	/**
 	 * 根据传入日期来获取一个月的开始时间
+	 * 
 	 * @param d
 	 * @return
 	 */
@@ -48,6 +49,7 @@ public class DateHelper {
 
 	/**
 	 * 根据传入时间获取一个月月末时间
+	 * 
 	 * @param d
 	 * @return
 	 */
@@ -59,9 +61,10 @@ public class DateHelper {
 
 	/**
 	 * 根据月份获取当月的每一天
+	 * 
 	 * @param monthStr
 	 */
-	public static List<String> getMonthEveryDayByMonth(String monthStr){
+	public static List<String> getMonthEveryDayByMonth(String monthStr) {
 		List<String> dateList = new ArrayList<String>();
 		Date d = null;
 		try {
@@ -73,16 +76,19 @@ public class DateHelper {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		int totalDays = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-		for(int i=1; i<=totalDays; i++){
-		  c.set(Calendar.DAY_OF_MONTH, i);
-		  Date date = c.getTime();
-//		  System.out.println((new SimpleDateFormat("yyyyMMdd")).format(date));
-		  dateList.add((new SimpleDateFormat("yyyyMMdd")).format(date));
+		for (int i = 1; i <= totalDays; i++) {
+			c.set(Calendar.DAY_OF_MONTH, i);
+			Date date = c.getTime();
+			// System.out.println((new
+			// SimpleDateFormat("yyyyMMdd")).format(date));
+			dateList.add((new SimpleDateFormat("yyyyMMdd")).format(date));
 		}
 		return dateList;
 	}
+
 	/**
 	 * 根据传入的日期获取所在月份所有日期
+	 * 
 	 * @param day
 	 * @return
 	 */
@@ -98,55 +104,60 @@ public class DateHelper {
 		}
 		return lst;
 	}
-	
+
 	/**
 	 * 获取从今天起，共days天的日期
+	 * 
 	 * @param days
 	 * @return
 	 */
-	public static List<String> getDaysBeforeByToday(int days){
+	public static List<String> getDaysBeforeByToday(int days) {
 		List<String> list = new ArrayList<String>();
-	    Date date=new Date();//取时间  
-	    Calendar calendar = new GregorianCalendar();  
-	    calendar.setTime(date);  
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");  
-	    for(int i=0;i<days;i++){
-	    	calendar = new GregorianCalendar();   
-	    	calendar.add(calendar.DATE,0-i);//把日期往后增加一天.整数往后推,负数往前移动  
-	    	date=calendar.getTime(); //这个时间就是日期往后推一天的结果   
-	    	String dateString = formatter.format(date);  
-	    	System.out.println(dateString);
-	    	list.add(dateString);
-	    }
-		return list;  
-	}
-	/**
-	 * 获取从某天起，共days天的日期
-	 * @param days
-	 * @param day yyyyMMdd
-	 * @return
-	 */
-	public static List<String> getDaysBeforeByAnyDay(String day,int days){
-		Date date = paraseStringToDate(day, "yyyyMMdd");
-		List<String> list = new ArrayList<String>();
-//		Date date=new Date();//取时间  
-		Calendar calendar = new GregorianCalendar();  
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");  
-		Date date1 = null;
-		for(int i=0;i<days;i++){
-			calendar.setTime(date);  
-//			calendar = new GregorianCalendar();   
-			calendar.add(calendar.DATE,0-i);//把日期往后增加一天.整数往后推,负数往前移动  
-			date1=calendar.getTime(); //这个时间就是日期往后推一天的结果   
-			String dateString = formatter.format(date1);  
+		Date date = new Date();// 取时间
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+		for (int i = 0; i < days; i++) {
+			calendar = new GregorianCalendar();
+			calendar.add(calendar.DATE, 0 - i);// 把日期往后增加一天.整数往后推,负数往前移动
+			date = calendar.getTime(); // 这个时间就是日期往后推一天的结果
+			String dateString = formatter.format(date);
 			System.out.println(dateString);
 			list.add(dateString);
 		}
-		return list;  
+		return list;
 	}
 
 	/**
-	 *  将字符串转化为日期
+	 * 获取从某天起，共days天的日期
+	 * 
+	 * @param days
+	 * @param day
+	 *            yyyyMMdd
+	 * @return
+	 */
+	public static List<String> getDaysBeforeByAnyDay(String day, int days) {
+		Date date = paraseStringToDate(day, "yyyyMMdd");
+		List<String> list = new ArrayList<String>();
+		// Date date=new Date();//取时间
+		Calendar calendar = new GregorianCalendar();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+		Date date1 = null;
+		for (int i = 0; i < days; i++) {
+			calendar.setTime(date);
+			// calendar = new GregorianCalendar();
+			calendar.add(calendar.DATE, 0 - i);// 把日期往后增加一天.整数往后推,负数往前移动
+			date1 = calendar.getTime(); // 这个时间就是日期往后推一天的结果
+			String dateString = formatter.format(date1);
+			System.out.println(dateString);
+			list.add(dateString);
+		}
+		return list;
+	}
+
+	/**
+	 * 将字符串转化为日期
+	 * 
 	 * @param timestr
 	 * @return
 	 */
@@ -162,16 +173,18 @@ public class DateHelper {
 		}
 		return date;
 	}
+
 	/**
-	 *  将字符串转化为日期
+	 * 将字符串转化为日期
+	 * 
 	 * @param timestr
 	 * @param format=yyyyMMdd|yyyy-MM-dd......
 	 * @return
 	 */
-	public static Date paraseStringToDate(String timestr,String format)// 将字符串转化为日期
+	public static Date paraseStringToDate(String timestr, String format)// 将字符串转化为日期
 	{
 		Date date = null;
-		
+
 		Format f = new SimpleDateFormat(format);
 		try {
 			date = (Date) f.parseObject(timestr);
@@ -180,13 +193,15 @@ public class DateHelper {
 		}
 		return date;
 	}
+
 	/**
-	 *  将日期转化为字符串
+	 * 将日期转化为字符串
+	 * 
 	 * @param timestr
 	 * @param format=yyyyMMdd|yyyy-MM-dd......
 	 * @return
 	 */
-	public static String paraseDateToString(Date date,String format)// 将字符串转化为日期
+	public static String paraseDateToString(Date date, String format)// 将字符串转化为日期
 	{
 		String dateStr = null;
 		try {
@@ -200,6 +215,7 @@ public class DateHelper {
 
 	/**
 	 * 获取当月末日期
+	 * 
 	 * @return
 	 */
 	public String getMonthEnd()// 获取月末日期
@@ -210,6 +226,7 @@ public class DateHelper {
 
 	/**
 	 * 取日期所在月的第一天
+	 * 
 	 * @param date
 	 * @return
 	 */
@@ -223,6 +240,7 @@ public class DateHelper {
 
 	/**
 	 * 取日期所在月的最后一天
+	 * 
 	 * @param date
 	 * @return
 	 */
@@ -244,6 +262,7 @@ public class DateHelper {
 
 	/**
 	 * 根据日期来获取一周的第一天
+	 * 
 	 * @param d
 	 * @return
 	 */
@@ -262,6 +281,7 @@ public class DateHelper {
 
 	/**
 	 * 根据日期来获取一周的最后一天
+	 * 
 	 * @param d
 	 * @return
 	 */
@@ -280,6 +300,7 @@ public class DateHelper {
 
 	/**
 	 * 根据日期来获取其所在周的每一天
+	 * 
 	 * @param d
 	 * @return
 	 */
@@ -295,28 +316,32 @@ public class DateHelper {
 		}
 		return lst;
 	}
+
 	/**
 	 * 获取两个日期之间的日期（不包括end）
-	 * @param start 开始日期
-	 * @param end 结束日期
+	 * 
+	 * @param start
+	 *            开始日期
+	 * @param end
+	 *            结束日期
 	 * @return 日期集合
 	 */
 	public static List<String> getBetweenDates(Date start, Date end) {
-	    List<String> result = new ArrayList<String>();
-	    Calendar tempStart = Calendar.getInstance();
-	    tempStart.setTime(start);
-	    tempStart.add(Calendar.DAY_OF_YEAR, 0);
-	    Calendar tempEnd = Calendar.getInstance();
-	    tempEnd.setTime(end);
-	    int day = tempEnd.get(Calendar.DATE);
-	    tempEnd.set(Calendar.DATE, day - 1);
-	    while (tempStart.before(tempEnd)) {
-	        result.add(paraseDateToString(tempStart.getTime(),"yyyyMMdd"));
-	        tempStart.add(Calendar.DAY_OF_YEAR, 1);
-	    }
-	    return result;
+		List<String> result = new ArrayList<String>();
+		Calendar tempStart = Calendar.getInstance();
+		tempStart.setTime(start);
+		tempStart.add(Calendar.DAY_OF_YEAR, 0);
+		Calendar tempEnd = Calendar.getInstance();
+		tempEnd.setTime(end);
+		int day = tempEnd.get(Calendar.DATE);
+		tempEnd.set(Calendar.DATE, day - 1);
+		while (tempStart.before(tempEnd)) {
+			result.add(paraseDateToString(tempStart.getTime(), "yyyyMMdd"));
+			tempStart.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		return result;
 	}
-	
+
 	/**
 	 * 获得指定日期的前一天
 	 * 
@@ -324,7 +349,7 @@ public class DateHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Date getSpecifiedDayBefore(Date date,String format) {
+	public static Date getSpecifiedDayBefore(Date date, String format) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		int day = c.get(Calendar.DATE);
@@ -334,6 +359,7 @@ public class DateHelper {
 
 	/**
 	 * 日期格式化成字符串
+	 * 
 	 * @param date
 	 * @param fmt
 	 * @return
@@ -342,7 +368,7 @@ public class DateHelper {
 		DateFormat df = new SimpleDateFormat(fmt);
 		return df.format(date);
 	}
-	
+
 	public static List<String> getALlweekDays() {
 		List<String> lst = new ArrayList();
 		Calendar calendar = Calendar.getInstance();
@@ -366,4 +392,16 @@ public class DateHelper {
 		return dateFormat.format(calendar.getTime());
 	}
 
+	public static String getDateDiffengt(String beginDateStr) {
+		Date endDate = new Date();
+		Date beginDate = paraseStringToDate(beginDateStr, "yyyy-MM-dd HH:mm:ss");
+		return getDateDiffengt(beginDate, endDate);
+	}
+
+	public static String getDateDiffengt(Date beginDate, Date endDate) {
+		long between = (endDate.getTime() - beginDate.getTime());// 除以1000是为了转换成秒
+		long hours = (between) / (1000 * 60 * 60);
+		long minutes = (between - hours * (1000 * 60 * 60)) / (1000 * 60);
+		return hours + "小时" + (minutes + 1) + "分";
+	}
 }
