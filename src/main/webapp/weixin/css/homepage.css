@@ -621,7 +621,7 @@
     .refresh_button{
         font-size: 16px;
         top: 0px;
-        right: 30px;
+        left: 30px;
     }
     .refresh_button img{
         width: 16px;

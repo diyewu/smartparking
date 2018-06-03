@@ -15,11 +15,11 @@ body{
 }
 .line_top{
     float: left;
-    width: 20px;
+    width: 30px;
     margin-top: 16px;
 }
 .first .line_top{
-    margin-top: 14px;
+    margin-top: 16px;
 }
 .line_title{
     float: left;
