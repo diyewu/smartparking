@@ -21,7 +21,7 @@ function exchange(obj){
     $.ajax({
         type: "post",
         dateType: "json",
-        url: contextPath + "/weixin/coupon/exchange",
+        url: "",
         data: {exchangeCode : exchangeCode, openid : getCookie('openid')},
         success: function(result) {
             ajaxButtonRespone(obj);
@@ -31,7 +31,7 @@ function exchange(obj){
                     text: '兑换成功！',
                     okFtn: function(){
                         $('body').showLoadingView();
-                        window.location.href = contextPath + "/weixin/coupon/list/init";
+                        window.location.href = "";
                     }
                 });
             } else {

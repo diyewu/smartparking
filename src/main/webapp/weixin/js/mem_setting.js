@@ -6,6 +6,8 @@ $(function() {
 
 function flagChange(type, obj){
     $("body").showLoadingView();
+    $("body").hiddenLoadingView();
+    /*
     $.ajax({
         type: "get",
         dateType: "json",
@@ -22,6 +24,7 @@ function flagChange(type, obj){
             }
         }
     });
+    */
 }
 
 function loginOut(obj){

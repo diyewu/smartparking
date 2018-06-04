@@ -59,9 +59,15 @@ public class SmartCarController extends BaseController{
 				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
 			}
 			if(code == 0){//检查会员名下车辆总数
-				List<Map<String, Object>> list = smartCarService.checkMaxCar(memberId);
-				if(list != null && list.size() >= 3){
-					code = ServerResult.RESULT_MAX_CAR_ERROR;
+				if(StringUtils.isBlank(carId)){//更新汽车牌号是不需要校验数量，需要校验是否属于该会员
+					List<Map<String, Object>> list = smartCarService.checkMaxCar(memberId);
+					if(list != null && list.size() >= 3){
+						code = ServerResult.RESULT_MAX_CAR_ERROR;
+					}
+				}else{
+					if(!smartCarService.checkCarIsOwnMember(carId, memberId)){//汽车不属于该会员拥有，则不能更新
+						code = ServerResult.RESULT_CAR_AUTH_VALIDATE_ERROR;
+					}
 				}
 			}
 			//注册车主信息

@@ -111,13 +111,16 @@ function updateOrAddCarNum(obj){
                         title: "提示",
                         text: text,
                         okFtn: function(){
-                            window.location.href = "index.html";
+                            window.location.href = "carManager.html";
                         }
                     });
             } else {
                 $("body").alertDialog({
                     title: "提示",
-                    text: result.msg
+                    text: result.msg,
+                    okFtn: function(){
+                        window.location.href = "index.html";
+                    }
                 });
             }
         }

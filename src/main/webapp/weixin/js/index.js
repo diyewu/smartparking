@@ -42,7 +42,7 @@ function getCarParkInfo(code){
 	    	$("body").hiddenLoadingView();
 			if(result.success == true){//登陆成功
 				var data = result.data;
-				alert(data.state);
+//				alert(data.state);
 				if(data.state){
 					var html1 = '<div class="item">'+
 					'<div class="park_detail">'+
@@ -72,12 +72,27 @@ function getCarParkInfo(code){
 							$(".owl_carousel").append(html1.replace("#parking", "")+addCarHtml+html2.replace("#time", "0小时0分钟"));
 						}
 						$("#car_num_list").val(carNumArr.toString());
-						alert(carNumArr.toString());
+//						alert(carNumArr.toString());
 					}else{//未绑定手机，跳转手机页面
 						window.location.href = "validateMobile.html";
 					}
+				}else{
+					$("body").alertDialog({
+						title: "提示",
+						text: result.msg,
+						okFtn: function(){
+							window.location.href = "validateMobile.html";
+						}
+					});
 				}
-			}else {
+			}else {//验证失败
+				$("body").alertDialog({
+                    title: "提示",
+                    text: result.msg,
+                    okFtn: function(){
+                        window.location.href = "validateMobile.html";
+                    }
+                });
 			}
 	    }  
 	});  

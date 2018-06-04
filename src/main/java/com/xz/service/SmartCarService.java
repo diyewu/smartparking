@@ -27,13 +27,24 @@ public class SmartCarService {
 	}
 	
 	public List<Map<String, Object>> checkMaxCar(String memberId){
-		String sql = " select 1 from smart_car where member_id = ? ";
+		String sql = " select 1 from smart_car where car_owner_id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);
 		return list;
 	}
 	
+	
+	public boolean checkCarIsOwnMember(String carId,String memberId){
+		String sql = " select * from smart_car where id = ? and car_owner_id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, carId,memberId);
+		if(list != null && list.size() == 1){
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public String updateSmartCar(String carNumber,int carType,String carId){
-		String sql = " update smart_car(car_number,car_type,update_time)values(?,?,NOW())where id = ? ";
+		String sql = " update smart_car set car_number =?,car_type=?,update_time=NOW() where id = ? ";
 		jdbcTemplate.update(sql, carNumber,carType,carId);
 		return null;
 	}

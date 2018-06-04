@@ -119,7 +119,7 @@ public class WeixinAccessController extends BaseController{
 				respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
 				openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
 			}
-			if(StringUtils.isBlank(openId)){
+			if(StringUtils.isBlank(openId) && StringUtils.isBlank(authCode)){
 				openId = (String)session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
 			}
 			System.out.println("openId="+openId);
@@ -219,10 +219,11 @@ public class WeixinAccessController extends BaseController{
 									try {
 										//插入数据库
 										smartMemberService.updateMobileCodeSend(mobileNumber, mobileCode);
-										MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
+//										MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
+										map.put("code", mobileCode);
 										session.setAttribute(WeixinConstants.SESSION_WEIXIN_USER_MOBILE, mobileNumber);
 										session.setAttribute(WeixinConstants.SESSION_MOBILE_VALIDATE_CODE, mobileCode);
-									} catch (MessagingException e) {
+									} catch (Exception e) {
 										code = ServerResult.RESULT_SERVER_ERROR;
 										msg = e.getMessage();
 										e.printStackTrace();
@@ -241,8 +242,9 @@ public class WeixinAccessController extends BaseController{
 					//TODO  第一次发送验证码，则直接发送，并存储数据库,存储次数为9
 					String content="尊敬的用户：<br/>您的验证码为："+mobileCode+"（60分钟内有效，区分大小写），为了保证您的账户安全，请勿向任何人提供此验证码。";
 					try {
-						MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
-					} catch (MessagingException e) {
+//						MailSam.send(customConfig.getSmtp(), customConfig.getPort(), customConfig.getUser(), customConfig.getPwd(), "930725713@qq.com", "测试手机验证码", content);
+						map.put("code", mobileCode);
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					smartMemberService.insertMobileCodeSend(mobileNumber, mobileCode, 9);

@@ -67,6 +67,10 @@ function getCode(){
                         clearInterval(timer);
                     }
                 },1000);
+                $("body").alertDialog({
+                	title: "测试验证码：",
+                	text: result.data.code
+                });
             } else {
                 $("body").alertDialog({
                     title: "提示",

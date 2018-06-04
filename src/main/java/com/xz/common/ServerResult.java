@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
     50011:登陆信息验证失败
     50012:名下登记车辆总数超过最大数量
     50013:车辆信息校验错误
+    50014:车辆权限信息校验失败
  * @author 吴迪叶
  *
  */
@@ -70,8 +71,12 @@ public class ServerResult {
 	
 	public final static int RESULT_MAX_CAR_ERROR = 50012;
 	public final static String RESULT_MAX_CAR_ERROR_MSG = "名下登记车辆总数超过最大数量";
+	
 	public final static int RESULT_CAR_VALIDATE_ERROR = 50013;
 	public final static String RESULT_CAR_VALIDATE_ERROR_MSG = "车辆信息校验错误";
+	
+	public final static int RESULT_CAR_AUTH_VALIDATE_ERROR = 50014;
+	public final static String RESULT_CAR_AUTH_VALIDATE_ERROR_MSG = "车辆权限信息校验失败";
 	
 	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
@@ -91,6 +96,7 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_AUTH_VALIDATE_ERROR, RESULT_AUTH_VALIDATE_ERROR_MSG);
 		ServerResultMap.put(RESULT_MAX_CAR_ERROR, RESULT_MAX_CAR_ERROR_MSG);
 		ServerResultMap.put(RESULT_CAR_VALIDATE_ERROR, RESULT_CAR_VALIDATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_CAR_AUTH_VALIDATE_ERROR, RESULT_CAR_AUTH_VALIDATE_ERROR_MSG);
 	}
 	
 	
