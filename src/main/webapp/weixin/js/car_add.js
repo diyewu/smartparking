@@ -2,6 +2,7 @@ var	contextPath;
 $(function(){
     contextPath = $("#contextPath").val();
     initNewFlag();//初始化是否是新能源车牌
+    $("#car_num_input_hidden").val(getParam('carNum'));
     $("#car_num_input_hidden").carNumBoard();
 });
 //初始化是否是新能源车牌
@@ -132,7 +133,7 @@ function updateOrAddCarNum(obj){
             $(".board_div").append("<div class=\"board_first_div\"></div>");
             $(".board_div").append("<div class=\"board_second_div\"></div>");
             $(".board_first_div").append("<div class=\"board_first_line board_line\"></div>");
-            var htmlContent = new Array("京","津","冀","鲁","晋","蒙","辽","吉","黑","沪");
+            var htmlContent = new Array("沪","京","津","冀","鲁","晋","蒙","辽","吉","黑");
             for (var i = 0; i < htmlContent.length; i++){
                 $(".board_first_line").append("<div class=\"board_first_block\">" + htmlContent[i] + "</div>");
             }
@@ -147,7 +148,7 @@ function updateOrAddCarNum(obj){
                 $(".board_third_line").append("<div class=\"board_first_block\">" + htmlContent[i] + "</div>");
             }
             $(".board_first_div").append("<div class=\"board_fourth_line board_line\"></div>");
-            var htmlContent = new Array("琼","新","港","澳","台","宁");
+            var htmlContent = new Array("琼","新","宁","港","澳","台");
             for (var i = 0; i < htmlContent.length; i++){
                 $(".board_fourth_line").append("<div class=\"board_first_block\">" + htmlContent[i] + "</div>");
             }

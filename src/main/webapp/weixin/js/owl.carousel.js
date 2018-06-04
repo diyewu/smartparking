@@ -1902,7 +1902,8 @@
 			this._core.trigger('load', { element: $element, url: url }, 'lazy');
 
 			if ($element.is('img')) {
-				$element.one('http://wx.jiepark.com/resources/js/lib/owlcarousel/load.owl.lazy', $.proxy(function() {
+//				$element.one('http://wx.jiepark.com/resources/js/lib/owlcarousel/load.owl.lazy', $.proxy(function() {
+				$element.one('', $.proxy(function() {
 					$element.css('opacity', 1);
 					this._core.trigger('loaded', { element: $element, url: url }, 'lazy');
 				}, this)).attr('src', url);
@@ -1978,7 +1979,8 @@
 					this.update();
 				}
 			}, this),
-			'http://wx.jiepark.com/resources/js/lib/owlcarousel/loaded.owl.lazy': $.proxy(function(e) {
+//			'http://wx.jiepark.com/resources/js/lib/owlcarousel/loaded.owl.lazy': $.proxy(function(e) {
+			'': $.proxy(function(e) {
 				if (this._core.settings.autoHeight && e.element.closest('.' + this._core.settings.itemClass)
 					=== this._core.$stage.children().eq(this._core.current())) {
 					this.update();

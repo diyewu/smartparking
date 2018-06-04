@@ -117,7 +117,7 @@
 }
 .park_operate_pay_grab{
     display: inline-block;
-    background: url("../images/btn_home@3x.png")/*tpa=http://wx.jiepark.com/resources/images/weChat/homepage/btn_home@3x.png*/ no-repeat;
+    background: url("../images/btn_home@3x.png") no-repeat;
     background-size: contain;
     width: 108px;
     height: 42px;

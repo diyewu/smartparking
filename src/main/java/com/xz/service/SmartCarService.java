@@ -52,10 +52,11 @@ public class SmartCarService {
 		return ownerId;
 	}
 	public String ownerIsMemberRegist(String memberId){
-		String ownerId = SortableUUID.randomUUID();
-		String sql = " insert into smart_car_owner(id,member_id,create_time,update_time)values(?,?,NOW(),NOW()) ";
-		jdbcTemplate.update(sql, ownerId,memberId);
-		return ownerId;
+//		String ownerId = SortableUUID.randomUUID();
+//		String sql = " insert into smart_car_owner(id,member_id,create_time,update_time)values(?,?,NOW(),NOW()) ";
+//		jdbcTemplate.update(sql, ownerId,memberId);
+//		return ownerId;
+		return null;
 	}
 	
 	
@@ -73,6 +74,45 @@ public class SmartCarService {
 			carId = list.get(0).get("id")+"";
 		}
 		return carId;
+	}
+	
+	
+	/**
+	 * 检查车辆是否属于会员名下，防止请求被篡改
+	 * @param memberId
+	 * @return
+	 */
+	public boolean checkCarOwner(String memberId,String carId){
+		boolean flag = false;
+		String sql = " select * from smart_car where car_owner_id = ? and id = ?  ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId,carId);
+		if(list != null && list.size()>0){
+			flag = true;
+		}
+		return flag;
+	}
+	
+	
+	/**
+	 * 更具车辆ID删除车辆信息
+	 * @param carId
+	 */
+	public void deleteCarById(String carId){
+		if(StringUtils.isNotBlank(carId)){
+			String sql = " delete from smart_car where id = ?  ";
+			jdbcTemplate.update(sql, carId);
+		}
+	}
+	
+	/**
+	 * 获取会员名下车辆信息
+	 * @param memberId
+	 * @return
+	 */
+	public List<Map<String, Object>> getCarListByMemberId(String memberId){
+		String sql = " select id ,car_number from smart_car where car_owner_id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);
+		return list;
 	}
 	
 	

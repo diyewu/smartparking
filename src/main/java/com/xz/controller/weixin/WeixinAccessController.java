@@ -257,8 +257,6 @@ public class WeixinAccessController extends BaseController{
     }
     
     
-    
-    
     @ApiOperation(value = "检查手机验证码", notes = "检查手机验证码", httpMethod = "POST")
     @RequestMapping(value="checkMobileCode",method = RequestMethod.POST)
     @ResponseBody

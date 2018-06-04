@@ -1,6 +1,3 @@
-/**
- * Created by chengWang on 2016/8/2.
- */
 var	contextPath;
 var currentCity = "全国";
 var parkList;

@@ -107,7 +107,7 @@ public class SmartMemberService {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" select sc.car_number,so.order_state_id,sp.park_name ,sod.state_name ,so.begin_time ");
 		sb.append(" from smart_car sc  ");
-		sb.append(" left join smart_member sm on sc.member_id = sm.id ");
+		sb.append(" left join smart_member sm on sc.car_owner_id = sm.id ");
 		sb.append(" left join smart_order so on so.car_id = sc.id and so.order_state_id in (1,2,3,4) ");
 		sb.append(" left join smart_order_state_dictionory sod on so.order_state_id = sod.id ");
 		sb.append(" left join smart_park sp on so.park_id = sp.id ");

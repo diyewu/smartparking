@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -19,24 +16,25 @@
   <script type="text/javascript" src="js/car_list.js" ></script>
 </head>
 <body>
-  <input type="hidden" value="" id="contextPath">
-  <div class="get_car_button" onclick="window.location.href = 'http://wx.jiepark.com/weixin/car/upload/init';">找回车牌</div>
-  
+  <!-- <div class="get_car_button" onclick="window.location.href = '';">找回车牌</div> -->
+  <div id="car_content">
+  <!-- 
     <div class="car_list_div">
       <div class="car_list_num">
         <div class="car_list_num_img">
-          <img src="images/icon_vehiclemanagemengt_car_n@3x.png" >
+          <img src="images/carno.png" >
         </div>
         <div class="car_list_num_text"><span>苏CR5677</span></div>
       </div>
       <div class="car_list_operate">
-        <div class="car_list_operate_button" onclick="window.location.href = 'http://wx.jiepark.com/weixin/car/add/init/1?carNum=苏CR5677';" style="border-right: 1px solid RGB(227, 227, 227);">
+        <input type="hidden" value="">
+        <div class="car_list_operate_button" onclick="jumpAddCar('#carNum','#carId');" style="border-right: 1px solid RGB(227, 227, 227);">
           <div class="car_list_operate_img">
             <img src="images/icon_vehiclemanagemengt_edit_n@3x.png" >
           </div>
           <div class="car_list_operate_text"><span>编辑</span></div>
         </div>
-        <div class="car_list_operate_button" onclick="deleteCarNum(this, '苏CR5677');">
+        <div class="car_list_operate_button" onclick="deleteCarNum(this,'#carId');">
           <div class="car_list_operate_img">
             <img src="images/icon_vehiclemanagemengt_delete_n@3x.png" >
           </div>
@@ -44,10 +42,11 @@
         </div>
       </div>
     </div>
-  
+     -->
+   </div>
+    
+    
   <div class="car_list_max">最多可绑定三辆车</div>
-  
-    <div class="car_list_button" onclick="window.location.href = 'addCar.html';">添加车牌</div>
-  
+  <div class="car_list_button" onclick="window.location.href = 'addCar.html';">添加车牌</div>
 </body>
 </html>

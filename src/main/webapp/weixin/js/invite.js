@@ -1,6 +1,3 @@
-/**
- * Created by cheng Wang on 2016/12/8.
- */
 var	contextPath;
 $(function() {
     contextPath = $("#contextPath").val();

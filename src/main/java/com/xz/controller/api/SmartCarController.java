@@ -1,5 +1,6 @@
 package com.xz.controller.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class SmartCarController extends BaseController{
 	@RequestMapping("carRegist")
 	@ResponseBody
 	public JsonModel carRegist(
-			 @ApiParam(name = "carId", value = "会员编号", required = false) @RequestParam(value = "carId", required = false) String carId,
+			 @ApiParam(name = "carId", value = "车辆编号", required = false) @RequestParam(value = "carId", required = false) String carId,
 			 @ApiParam(name = "carNumber", value = "车牌号码", required = true) @RequestParam("carNumber") String carNumber,
 			 @ApiParam(name = "carType", value = "车辆类型", required = true) @RequestParam("carType") String carType,
 			 @ApiParam(name = "isOwn", value = "车辆是否属于会员本人，0：不属于，1：属于", required = false) @RequestParam(value = "isOwn", required = false) String isOwn,
@@ -67,8 +68,9 @@ public class SmartCarController extends BaseController{
 			if (code == 0) {
 				String ownerId = "";
 				//会员即是车主
-				if (StringUtils.isNotBlank(isOwn) && "1".equals(isOwn)) {
-					ownerId = smartCarService.ownerIsMemberRegist(memberId);
+				if (StringUtils.isBlank(isOwn)) {
+//					ownerId = smartCarService.ownerIsMemberRegist(memberId);
+					ownerId = memberId;
 				} else {
 					ownerId = smartCarService.ownerRegist(carOwnerName, carOwnerAddress, carOwnerPhone);
 				}
@@ -84,5 +86,65 @@ public class SmartCarController extends BaseController{
 		}
 		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
+	@ApiOperation(value = "车辆信息删除", notes = "车辆信息删除", httpMethod = "POST")
+	@RequestMapping("carDelete")
+	@ResponseBody
+	public JsonModel carDelete(
+			@ApiParam(name = "carId", value = "车辆编号", required = true) @RequestParam(value = "carId", required = true) String carId
+			){
+		String msg = null;
+		int code = 0;
+		Map<String,String> respMap = new HashMap<String, String>();
+		try {
+			//TODO 统一检测参数 memberId
+			HttpSession session = getRequest().getSession();
+			String memberId = (String) session.getAttribute(WeixinConstants.SESSION_MEMBER_ID);
+			if (StringUtils.isBlank(memberId)) {
+				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}
+			//检查该车辆是否是该会员名下，防止请求被篡改
+			if(code == 0){
+				if(!smartCarService.checkCarOwner(memberId,carId)){
+					code  = ServerResult.RESULT_CAR_VALIDATE_ERROR;
+				}
+			}
+			//校验无误后进行删除
+			if(code == 0){
+				smartCarService.deleteCarById(carId);
+			}
+			
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+	}
+	@ApiOperation(value = "加载会员名下车辆信息", notes = "加载会员名下车辆信息", httpMethod = "POST")
+	@RequestMapping("loadCarInfo")
+	@ResponseBody
+	public JsonModel loadCarInfo(){
+		String msg = null;
+		int code = 0;
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		try {
+			//统一检测参数 memberId
+			HttpSession session = getRequest().getSession();
+			String memberId = (String) session.getAttribute(WeixinConstants.SESSION_MEMBER_ID);
+			if (StringUtils.isBlank(memberId)) {
+				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}
+			if(code == 0){
+				list = smartCarService.getCarListByMemberId(memberId);
+			}
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+	}
+	
+	
 	
 }

@@ -17,7 +17,7 @@ public class MobileRemainTask {
     private CustomConfig customConfig; 
 	
 	/**
-	 * 每天24时执行一次
+	 * 每天23:59时执行一次
 	 * https://www.cnblogs.com/softidea/p/5833248.html
 	 */
 	@Scheduled(cron="0 59 23 * * ?")

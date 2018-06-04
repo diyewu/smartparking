@@ -66,7 +66,7 @@ body{
     width: 40px;
     margin: 0 0 0 1%;
     height: 40px;
-    background: url("../images/clean.png")/*tpa=http://wx.jiepark.com/resources/css/lib/car_num_board/clean.png*/;
+    background: url("../images/clean.png");
     background-size: cover;
     -webkit-tap-highlight-color:rgba(255,255,255,0);
 }

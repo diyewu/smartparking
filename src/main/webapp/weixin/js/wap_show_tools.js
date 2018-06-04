@@ -1,6 +1,3 @@
-/**
- * Created by wangcheng on 2016/7/4.
- */
 (function($){
     $.fn.confirmDialog = function (params) {
         this.each(function(){

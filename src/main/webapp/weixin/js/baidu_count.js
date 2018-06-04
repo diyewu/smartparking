@@ -1,6 +1,3 @@
-/**
- * Created by chengWang on 2016/12/7.
- */
 var _hmt = _hmt || [];
 (function() {
     var hm = document.createElement("script");

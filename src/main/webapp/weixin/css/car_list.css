@@ -22,8 +22,8 @@ body{
 }
 .car_list_num_img img{
     float: left;
-    width: 20px;
-    margin-top: 21px;
+    width: 30px;
+    margin-top: 15px;
 }
 .car_list_num_text{
     display: inline-block;

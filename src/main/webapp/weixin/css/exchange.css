@@ -4,7 +4,7 @@ body{
 .content{
     float: left;
     width: 100%;
-    background: url("bg_dh@3x.png")/*tpa=http://wx.jiepark.com/resources/images/weChat/coupon/exchange/bg_dh@3x.png*/ no-repeat;
+    background: url("bg_dh@3x.png") no-repeat;
     background-size: 100% 100%;
 }
 .top_img{

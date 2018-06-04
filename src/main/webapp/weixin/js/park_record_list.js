@@ -1,6 +1,3 @@
-/**
- * Created by chengWang on 2016/8/18.
- */
 var	contextPath;
 var pageIndex = 1;
 var pageSize = 10;

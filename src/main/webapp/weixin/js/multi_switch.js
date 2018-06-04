@@ -1,7 +1,3 @@
-/* 
-    Created on : 15/04/2016, 14:11:50
-    Author     : tcavalin
-*/
 
 (function ($) {
     $.fn.multiSwitch = function (options) {

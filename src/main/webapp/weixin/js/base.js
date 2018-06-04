@@ -1,3 +1,6 @@
+String.prototype.replaceAll = function(s1,s2){
+    return this.replace(new RegExp(s1,"gm"),s2);
+}
 //数组方法
 Array.prototype.remove=function(dx)
 {
@@ -160,11 +163,8 @@ function jumpUrl(url){
  * 调用方法:getParam("name") 
  * 返回值:tyler 
  */ 
-function getParam(paramName) { 
-    paramValue = "", isFound = !1; 
-    if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) { 
-        arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0; 
-        while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++ 
-    } 
-    return paramValue == "" && (paramValue = null), paramValue 
-}
+function getParam(name) {   
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");   
+    var r = window.location.search.substr(1).match(reg);   
+    if (r != null) return decodeURI(r[2]); return null;   
+}  
