@@ -173,7 +173,7 @@ public class WeixinHelper {
 			String EventKey = map.get("EventKey");
 			String resp = MessageHandler.processMsg(EventKey);
 			if("subscribe".equals(Event)){//subscribe(订阅)
-				resp = "当前为调试时间段，只能停留在首页。如需测试完整功能，请提前联系管理员：18936483081 进行开放处理！";
+				resp = "如果停留在首页等待，则表示当前为调试时间段，如需测试完整功能，请联系管理员：18936483081 进行开放处理！";
 			}
 			TextMessage textMessage = new TextMessage();
 			textMessage.setMsgType(WeixinConstants.MESSAGE_TEXT);

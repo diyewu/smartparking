@@ -9,11 +9,10 @@ $(function() {
     getMyLocation();
 })
 
-function showInMap(longitude,latitude){
-	var longitude = 121.330725;
-	var latitude = 31.247019;
-//	window.location.href = "http://api.map.baidu.com/geocoder?location="+latitude+","+longitude+"&coord_type=gcj02&output=html&src=yourCompanyName|yourAppName";
-	window.location.href = "http://uri.amap.com/marker?position=121.330725,31.247019&name=新世界休闲生活广场B区";
+function showInMap(longitude,latitude,name){
+	window.location.href = "http://uri.amap.com/navigation?from=" + currentLng + "," + currentLat 
+	+ "&to="+longitude+","+latitude+"&name="+name+"&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=0";
+	
 }
 
 function showSearch(){
@@ -52,7 +51,6 @@ function getMyLocation(){
         geolocation.getCurrentPosition();
         //返回定位信息
         AMap.event.addListener(geolocation, 'complete', function(geolocationResult){
-//        	console.log(geolocationResult.position.lng, geolocationResult.position.lat);
             regeocoder(geolocationResult.position.lng, geolocationResult.position.lat);
             getParkList(geolocationResult.position.lng, geolocationResult.position.lat);
             currentLng = geolocationResult.position.lng;
@@ -93,6 +91,29 @@ function autoComplete(obj){
         $(".sel_address").html('');
         return;
     }
+    AMap.plugin('AMap.Autocomplete', function(){
+    	  var autoOptions = {
+    	    city: currentCity,
+    	    datatype : "poi"    	  }
+    	  var autoComplete= new AMap.Autocomplete(autoOptions);
+    	  autoComplete.search(keys, function(status, result) {
+    	    // 搜索成功时，result即是对应的匹配数据
+//    		  console.log(result);
+    		  var html = "";
+              for (var i = 0; i < result.tips.length; i++){
+                  if (result.tips[i].location.lng == undefined || result.tips[i].location.lat == undefined){
+                      continue;
+                  }
+                  html += "<div class='sel_address_div' onclick=\"clickAutoTips('" + result.tips[i].name + "'," + result.tips[i].location.lng + "," + result.tips[i].location.lat + ")\">" +
+                              "<img src='images/location.png'>" +
+                              "<div class='sel_address_div_title'>" + result.tips[i].name + "</div>" +
+                              "<div class='sel_address_div_desc'>" + (result.tips[i].address == '' ? result.tips[i].name : result.tips[i].address) + "</div>" +
+                          "</div>";
+              }
+              $(".sel_address").html(html);
+    	  })
+    })
+    /*
     var auto = new AMap.Autocomplete({
         city : currentCity,
         datatype : "poi"
@@ -121,6 +142,7 @@ function autoComplete(obj){
             });
         }
     })
+    */
 }
 function clickAutoTips(name, lng, lat){
     $("body").showLoadingView();
@@ -160,8 +182,8 @@ function getParkList(lng, lat){
         },
         success: function(result) {
             $("body").hiddenLoadingView();
-            console.log(result);
             if(result.success == true){
+            	parkList = result.data;
             	insertParkList(result.data,2);
             }else{
             	$("body").alertDialog({
@@ -176,28 +198,32 @@ function getParkList(lng, lat){
 }
 /**
  * 插入数据
- * @param type 1：全部；2：手机支付
+ * @param type 0: 支持 1不支持 2全部
  */
-function insertParkList(parkList,type){
-    if (type == 1){
+function insertParkList(paramParkList,type){
+	$(".sel_park").empty();
+    if (type == 2){
         $(".park_type_button").removeClass("park_type_button_selected");
         $(".park_type_button_right").addClass("park_type_button_selected");
     }
-    if (type == 2){
+    if (type == 0){
         $(".park_type_button").removeClass("park_type_button_selected");
         $(".park_type_button_left").addClass("park_type_button_selected");
     }
     var html = "";
-    for (var i = 0; i < parkList.length; i++){
-        var detail = parkList[i];
-        if (type == 2 && detail.isSupportPay == 1){//如果只显示手机支付，则不显示
+    if(!paramParkList){
+    	paramParkList = parkList;
+    }
+    for (var i = 0; i < paramParkList.length; i++){
+        var detail = paramParkList[i];
+        if (type == 0 && detail.supportMobilePay == 1){//如果只显示手机支付，则不显示
             continue;
         }
-        var isSupportPay = detail.isSupportPay == 1 ? "payment_gray.png'>不支持手机支付" : "icon_search_payment_green@3x.png'>支持手机支付";
+        var isSupportPay = detail.supportMobilePay == 1 ? "payment_gray.png'>不支持手机支付" : "icon_search_payment_green@3x.png'>支持手机支付";
         html += "<div class='sel_park_div'>" +
                     "<div class='sel_park_div_1'>" +
-                        "<div class='sel_park_div_name'>" + detail.name + "</div>" +
-                        ((getCookie('webSourceType') == 2 || getCookie('webSourceType') == 1) ? "<div class='sel_park_div_button' onclick=\"jumpNaviPage('" + detail.name + "'," + detail.longitude + "," + detail.latitude + ");\">导航</div>" : "") +
+                        "<div class='sel_park_div_name' onclick=\"showInMap('"+detail.longitude+"','"+detail.latitude+"','"+detail.name+"');\">" + detail.name + "</div>" +
+                        "<div class='sel_park_div_button' onclick=\"showInMap('"+detail.longitude+"','"+detail.latitude+"','"+detail.name+"');\">开启导航</div>"  +
                     "</div>" +
                     "<div class='sel_park_div_2'>" +
                         "<div class='sel_park_div_pay'><img src='images/" + isSupportPay + "</div>" +
@@ -246,7 +272,7 @@ function naviOrder(type){
     $.ajax({
         type: "post",
         dateType: "json",
-        url: "/psa/park/reserve/navigation",
+        url: "",
         data: {psaId : getCookie("psaId"), parkName : $("#orderParkName").val(), lng : $("#orderLng").val(), lat : $("#orderLat").val(), type : type},
         success: function(result) {
             $("body").hiddenLoadingView();

@@ -29,10 +29,11 @@
 	</div>
 	<div class="current_address">
 		<img src="images/icon_search_dangqianweizhi@3x.png">
-		<div>当前位置：上海市嘉定区江桥镇华江公路慧创国际</div>
+		<div></div>
 	</div>
 	<div class="sel_address"></div>
 	<div class="sel_park">
+	<!-- 
 		<div class="sel_park_div">
 			<div class="sel_park_div_1" onclick="showInMap();">
 				<div class="sel_park_div_name">汉庭酒店（江桥店）</div>
@@ -89,24 +90,27 @@
 				<div class="sel_park_div_distance">距离：11.6km</div>
 			</div>
 		</div>
+		-->
 	</div>
+	
 	<div class="park_type">
 		<div class="park_type_line"></div>
 		<div
 			class="park_type_button park_type_button_left park_type_button_selected"
-			onclick="insertParkList(2);">
+			onclick="insertParkList('',0);">
 			<span>手机支付</span>
 			<div class="park_type_button_point">
 				<div></div>
 			</div>
 		</div>
 		<div class="park_type_button park_type_button_right"
-			onclick="insertParkList(1);">
+			onclick="insertParkList('',2);">
 			<span>全部</span>
 			<div class="park_type_button_point">
 				<div></div>
 			</div>
 		</div>
+		 
 	</div>
 	<div class="order_navi">
 		<input id="orderParkName" type="hidden"> <input id="orderLng"

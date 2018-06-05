@@ -1,6 +1,6 @@
 server: 
     session: 
-        timeout: 3600
+        timeout: 36000
     port: 9090
 
 
