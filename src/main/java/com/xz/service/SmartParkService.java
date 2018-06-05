@@ -1,5 +1,7 @@
 package com.xz.service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,11 +9,14 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.xz.common.SmartParkDictionary;
+import com.xz.entity.CategoryTreeBean;
 import com.xz.entity.SmartOrder;
+import com.xz.entity.SmartPark;
+import com.xz.entity.SmartSpace;
 import com.xz.utils.SortableUUID;
 
 @Service
@@ -243,13 +248,59 @@ public class SmartParkService {
 		}
 	}
 	
-	
-	
-	
-	
 	//订单相关 service****************************************************************
 	
+	/**
+	 * 获取全部停车场列表
+	 * @return
+	 */
+	public List<SmartPark> getParkList(String keyWord){
+		StringBuilder sb = new StringBuilder();
+		sb.append(" select sp.id,sp.park_name,sp.park_longitude,sp.park_latitude,sp.support_mobile_pay ");
+		sb.append(" from smart_park sp ");
+		sb.append(" where 1=1 ");
+		List<String> param = new ArrayList<String>();
+		if(StringUtils.isNotBlank(keyWord)){
+			sb.append(" and sp.name like ? ");
+			param.add("%"+keyWord+"%");
+		}
+		List<SmartPark> list = (List<SmartPark>)jdbcTemplate.query(sb.toString(),new SmartParkBeanRowMapper(),param.toArray());
+		return list;
+	}
 	
+	
+	public List<SmartSpace> getParkSpaceByParkId(String parkId){
+		String sql = " select * from smart_park_space where park_id = ? ";
+		List<SmartSpace> list = (List<SmartSpace>)jdbcTemplate.query(sql,new SmartSpaceBeanRowMapper(),parkId);
+		return list;
+	}
+	public static class SmartParkBeanRowMapper implements RowMapper<SmartPark> {
+		@Override
+		public SmartPark mapRow(ResultSet rs, int rowNum) throws SQLException {
+			SmartPark sp = new SmartPark();
+			sp.setId(rs.getString("id"));
+			sp.setName(rs.getString("park_name"));
+			sp.setLongitude(rs.getDouble("park_longitude"));
+			sp.setLatitude(rs.getDouble("park_latitude"));
+//			sp.setSpacePricePerhour(rs.getDouble("space_price_perhour"));
+			sp.setSupportMobilePay(rs.getInt("support_mobile_pay"));
+			return sp;
+		}
+	}
+	public static class SmartSpaceBeanRowMapper implements RowMapper<SmartSpace> {
+		@Override
+		public SmartSpace mapRow(ResultSet rs, int rowNum) throws SQLException {
+			SmartSpace sp = new SmartSpace();
+			sp.setId(rs.getString("id"));
+			sp.setParkId(rs.getString("park_id"));
+			sp.setSpaceType(rs.getInt("space_type"));
+			sp.setSpaceTotal(rs.getInt("space_total"));
+			sp.setSpaceUsed(rs.getInt("space_used"));
+			sp.setSpacePricePerhour(rs.getDouble("space_price_perhour"));
+			sp.setSpaceDescription(rs.getString("space_description"));
+			return sp;
+		}
+	}
 	
 	
 	

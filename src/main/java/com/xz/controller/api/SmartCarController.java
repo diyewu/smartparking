@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,8 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("smartCar")
-public class SmartCarController extends BaseController{
+public class SmartCarController extends BaseController implements InitializingBean{
+	
 	
 	@Autowired
 	private SmartCarService smartCarService;
@@ -149,6 +151,10 @@ public class SmartCarController extends BaseController{
 			e.printStackTrace();
 		}
 		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+	}
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		
 	}
 	
 	
