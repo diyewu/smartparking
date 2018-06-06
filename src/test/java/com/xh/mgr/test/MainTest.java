@@ -15,7 +15,7 @@ import com.google.common.base.Joiner;
 
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException, ParseException {
-		time();
+		urlEncode();
 	}
 	
 	
@@ -44,7 +44,7 @@ public class MainTest {
 	}
 	
 	public static void urlEncode() throws UnsupportedEncodingException{
-		 System.out.println(java.net.URLEncoder.encode("https://zhonglestudio.cn/smartparking/weixin/index.htm",   "utf-8"));   
+		 System.out.println(java.net.URLEncoder.encode("https://zhonglestudio.cn/qlvip/weixin/index.html",   "utf-8"));   
 	}
 	
 	public static void formatTest(){
