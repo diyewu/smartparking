@@ -47,7 +47,7 @@ function getCoupon(type){
                     $(".scroller ul").html(
                         "<li class='order_none_div' style='height: " + (document.body.offsetHeight) + "px'>" +
                         "<div class='order_none_img'>" +
-                        "<img src='" + contextPath + "/resources/images/weChat/order_list/pic_discount_unavailable@3x.png'>" +
+                        "<img src='images/pic_discount_unavailable@3x.png'>" +
                         "</div>" +
                         "<div class='order_none_text'>暂无订单</div>" +
                         "</li>");
