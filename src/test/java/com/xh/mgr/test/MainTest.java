@@ -15,7 +15,8 @@ import com.google.common.base.Joiner;
 
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException, ParseException {
-		urlEncode();
+//		urlEncode();
+		System.out.println(new Date().getTime());
 	}
 	
 	
