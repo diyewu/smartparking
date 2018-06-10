@@ -17,7 +17,8 @@ import com.xz.common.ServerResult;
 import com.xz.common.SmartParkDictionary;
 import com.xz.controller.BaseController;
 import com.xz.entity.SmartOrder;
-import com.xz.model.json.AppJsonModel;
+import com.xz.model.json.JsonModel;
+import com.xz.model.json.JsonModel;
 import com.xz.service.SmartCarService;
 import com.xz.service.SmartParkService;
 import com.xz.utils.DateHelper;
@@ -35,7 +36,7 @@ public class DemoController extends BaseController{
 	@ApiOperation(value = "汽车申请驶入停车场地", notes = "由客户端识别汽车牌照", httpMethod = "POST")
 	@RequestMapping("askInParking")
 	@ResponseBody
-	public AppJsonModel askInParking(
+	public JsonModel askInParking(
 			 @ApiParam(name = "carNumber", value = "准备驶入停车场汽车牌照编号，有客户端自动识别或手动填写", required = true) @RequestParam(value = "carNumber", required = false) String carNumber,
 			 @ApiParam(name = "parkId", value = "停车场编号", required = true) @RequestParam(value = "parkId", required = true) String parkId
 			){
@@ -62,14 +63,14 @@ public class DemoController extends BaseController{
 			e.printStackTrace();
 		}
 		respMap.put("orderId", orderId);
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
 	
 	@ApiOperation(value = "汽车申请驶出停车场地", notes = "由机器客户端识别汽车牌照，返回：开始停车时间、结束停车时间、停车场地、车位、总共产生停车费用，推送到APP客户端，等待会员支付", httpMethod = "POST")
 	@RequestMapping("askOutParking")
 	@ResponseBody
-	public AppJsonModel askOutParking(
+	public JsonModel askOutParking(
 			@ApiParam(name = "carNumber", value = "准备驶出停车场汽车牌照编号，有客户端自动识别或手动填写", required = true) @RequestParam(value = "carNumber", required = false) String carNumber,
 			@ApiParam(name = "parkId", value = "停车场编号", required = true) @RequestParam(value = "parkId", required = true) String parkId
 			){
@@ -144,14 +145,14 @@ public class DemoController extends BaseController{
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
 
 	@ApiOperation(value = "用户支付", notes = "用户收到服务器推送消息，在线支付应收费用，web页面支付完成后更新订单", httpMethod = "POST")
 	@RequestMapping("onlinePay")
 	@ResponseBody
-	public AppJsonModel onlinePay(
+	public JsonModel onlinePay(
 			@ApiParam(name = "memberId", value = "会员编号", required = true) @RequestParam(value = "memberId", required = true) String memberId,
 			@ApiParam(name = "orderId", value = "订单编号", required = true) @RequestParam(value = "orderId", required = true) String orderId,
 			@ApiParam(name = "payWayId", value = "支付方式", required = true) @RequestParam(value = "payWayId", required = true) String payWayId,
@@ -184,13 +185,13 @@ public class DemoController extends BaseController{
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
 	}
 	
 	@ApiOperation(value = "汽车驶入或驶出停车场地", notes = "由客户端识别汽车牌照", httpMethod = "POST")
 	@RequestMapping("parking")
 	@ResponseBody
-	public AppJsonModel parking(
+	public JsonModel parking(
 			@ApiParam(name = "carNumber", value = "准备驶入停车场汽车牌照编号，有客户端自动识别或手动填写", required = true) @RequestParam(value = "carNumber", required = false) String carNumber,
 			@ApiParam(name = "parkId", value = "停车场编号", required = true) @RequestParam(value = "parkId", required = true) String parkId,
 			@ApiParam(name = "spaceId", value = "停车位编号", required = false) @RequestParam(value = "spaceId", required = true) String spaceId,
@@ -263,14 +264,14 @@ public class DemoController extends BaseController{
 			}
 		}
 		respMap.put("parkId", parkId);
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
 	
 	@ApiOperation(value = "加载车辆信息", notes = "加载车辆信息", httpMethod = "POST")
 	@RequestMapping("listCar")
 	@ResponseBody
-	public AppJsonModel listCar(){
+	public JsonModel listCar(){
 		String msg = null;
 		int code = 0;
 		Map<String,Object> respMap = new HashMap<String, Object>();
@@ -283,13 +284,13 @@ public class DemoController extends BaseController{
 				e.printStackTrace();
 			}
 		}
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
 	}
 	
 	@ApiOperation(value = "加载停车场信息", notes = "加载停车场信息", httpMethod = "POST")
 	@RequestMapping("listPark")
 	@ResponseBody
-	public AppJsonModel listPark(){
+	public JsonModel listPark(){
 		String msg = null;
 		int code = 0;
 		Map<String,Object> respMap = new HashMap<String, Object>();
@@ -302,13 +303,13 @@ public class DemoController extends BaseController{
 				e.printStackTrace();
 			}
 		}
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
 	}
 	
 	@ApiOperation(value = "根据停车场地加载车位信息", notes = "根据停车场地加载车位信息", httpMethod = "POST")
 	@RequestMapping("listSpaceByPark")
 	@ResponseBody
-	public AppJsonModel listSpaceByPark(
+	public JsonModel listSpaceByPark(
 			@ApiParam(name = "parkId", value = "停车场地编号", required = true) @RequestParam(value = "parkId", required = true) String parkId
 			){
 		String msg = null;
@@ -323,7 +324,9 @@ public class DemoController extends BaseController{
 				e.printStackTrace();
 			}
 		}
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
 	}
+	
+	
 	
 }

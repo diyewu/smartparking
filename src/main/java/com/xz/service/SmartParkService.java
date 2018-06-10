@@ -79,7 +79,7 @@ public class SmartParkService {
 	 * @return
 	 */
 	public List<Map<String, Object>> listPark(){
-		String sql = " select id,park_name from smart_park ";
+		String sql = " select * from smart_park ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		return list;
 	}
