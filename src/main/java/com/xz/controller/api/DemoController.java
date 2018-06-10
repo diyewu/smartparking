@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xz.common.ServerResult;
 import com.xz.common.SmartParkDictionary;
 import com.xz.controller.BaseController;
+import com.xz.controller.weixin.WeixinSendTeleplate;
 import com.xz.entity.SmartOrder;
 import com.xz.model.json.JsonModel;
-import com.xz.model.json.JsonModel;
 import com.xz.service.SmartCarService;
+import com.xz.service.SmartMemberService;
+import com.xz.service.SmartOrderService;
 import com.xz.service.SmartParkService;
 import com.xz.utils.DateHelper;
 
@@ -32,13 +34,18 @@ public class DemoController extends BaseController{
 	private SmartParkService smartParkService;
 	@Autowired
 	private SmartCarService smartCarService;
+	@Autowired
+	private SmartOrderService smartOrderService;
+	@Autowired
+	private SmartMemberService smartMemberService;
 	
 	@ApiOperation(value = "汽车申请驶入停车场地", notes = "由客户端识别汽车牌照", httpMethod = "POST")
 	@RequestMapping("askInParking")
 	@ResponseBody
 	public JsonModel askInParking(
-			 @ApiParam(name = "carNumber", value = "准备驶入停车场汽车牌照编号，有客户端自动识别或手动填写", required = true) @RequestParam(value = "carNumber", required = false) String carNumber,
-			 @ApiParam(name = "parkId", value = "停车场编号", required = true) @RequestParam(value = "parkId", required = true) String parkId
+			 @ApiParam(name = "carNumber", value = "准备驶入停车场汽车牌照编号，有客户端自动识别或手动填写", required = true) @RequestParam(value = "carNumber", required = true) String carNumber,
+			 @ApiParam(name = "parkId", value = "停车场编号", required = true) @RequestParam(value = "parkId", required = true) String parkId,
+			 @ApiParam(name = "spaceId", value = "停车位类型编号", required = false) @RequestParam(value = "spaceId", required = false) String spaceId
 			){
 		String msg = null;
 		int code = 0;
@@ -55,10 +62,11 @@ public class DemoController extends BaseController{
 				//车辆申请停车，TODO 判断是否允许车辆停车,需要判断车位剩余数量信息  判断车辆 是否需要付钱
 				code = smartParkService.checkCarForbidParking(carId, parkId);
 				if(code == 0){//申请成功，允许车辆进入，创建订单
-					orderId = smartParkService.createOrder(carId, parkId, 0);
+					orderId = smartParkService.createOrder(carId, parkId, 0,spaceId);
 				}
 			}
 		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
@@ -80,68 +88,105 @@ public class DemoController extends BaseController{
 		String orderId = "";
 		try {
 			//获取carid,
-			String carId = smartCarService.getCarIdByNumber(carNumber);
+			String carId = "";
+			// 会员编号，用来推送支付信息,TODO member_id car_owner_id 应怎么样处理或取舍，发送支付订单信息应想member_id发送，
+			//car为该会员注册进入。如果车主再次注册该车辆该如何处理
+			String memberId = "";
+			List<Map<String, Object>> carList = smartCarService.getMemberInfoByCarNumber(carNumber);
+			if(carList != null && carList.size()>0){
+				carId = (String)carList.get(0).get("id");
+				memberId = (String)carList.get(0).get("member_id");
+			}
 			if(StringUtils.isBlank(carId)){//车辆信息不存在
 				code = ServerResult.RESULT_CAR_NOT_REGIST_ERROR;
 			}
+			String format = "yyyy-MM-dd HH:mm:ss";
+			double totalParkingFee = 0;
 			if(code == 0){
 				//车辆申请驶出场地，返回，开始停车时间、结束停车时间、停车场地、车位、总共产生停车费用，到会员客户端，等待会员支付
 				//step 1、查看是否有满足条件的订单，carId，parkId，order_state_id=2
 				//TODO 如何处理多条  同样carId，parkId，order_state_id=2 订单，暂时先按照第一条处理
-				List<Map<String, Object>> list = smartParkService.getOrderId(carId, parkId, 2);
+				List<Map<String, Object>> list = smartParkService.getOrderId(carId, parkId, SmartParkDictionary.orderState.CAR_PARKING.ordinal());
 				if (list != null && list.size() > 0) {
 					orderId = list.get(0).get("id")+"";
 				}else{
 					code = ServerResult.RESULT_ORDER_DONOT_EXSIT_ERROR;
 				}
-				//step 2、根据订单信息，获取进场record，计算停车费用
+				//step 2、根据订单信息，获取进场record，
+				List<Map<String, Object>> orderList = new ArrayList<Map<String,Object>>();
 				if(code == 0){
-					List<Map<String, Object>> orderList = smartParkService.getOrderInfo(orderId);
-					if (orderList != null && orderList.size() > 0) {
-						String format = "yyyy-MM-dd HH:mm:ss";
-						String beginTimeStr = orderList.get(0).get("begin_time")+"";
-						Date beginTime = DateHelper.paraseStringToDate(beginTimeStr, format);
-						Date endTime = new Date();
-						String endTimeStr = DateHelper.paraseDateToString(endTime, format);
-						long between=(endTime.getTime()-beginTime.getTime())/1000;//除以1000是为了转换成秒
-						long min=between/60;//获取分钟数
-						double hour = min/60;
-						long yushu = min%60;//取整数小时候，余 分钟数,不满30分钟，按照0.5小时计算，大于30分钟按1小时计算
-						if(yushu <= 30){
-							hour = hour+0.5;
-						}else{
-							hour = hour + 1;
-						}
-						double spacePricePerhour = 0;
-						try {
-							spacePricePerhour = Double.parseDouble(orderList.get(0).get("space_price_perhour")+"");
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						double totalParkingFee = hour * spacePricePerhour;
-						String parkName = orderList.get(0).get("park_name")+"";
-						String spaceName = orderList.get(0).get("space_name")+"";
-						
-						respMap.put("orderId", orderId);//用于用户返回更新订单状态
-						respMap.put("parkName", parkName);
-						respMap.put("spaceName", spaceName);
-						respMap.put("beginTime", beginTimeStr);
-						respMap.put("endTime", endTimeStr);
-						respMap.put("totalParkingFee", totalParkingFee);
-						
-						//step 3 更新订单状态
-						SmartOrder smartOrder = new SmartOrder();
-						smartOrder.setId(orderId);
-//						smartOrder.setOrderStateId(SmartParkDictionary.ASK_OUT);
-						smartOrder.setOrderStateId(SmartParkDictionary.orderState.ASK_OUT.ordinal());
-						smartOrder.setBeginTime(beginTimeStr);
-						smartOrder.setEndTime(endTimeStr);
-						smartOrder.setReceivableAmount(totalParkingFee);
+					orderList = smartParkService.getOrderInfo(orderId);
+					if(orderList == null || orderList.size() == 0){
+						code = ServerResult.RESULT_ORDER_STATE_ERROR;
+					}
+				}
+				//step 3 计算停车费用,更新订单状态
+				if(code == 0){
+					
+					String beginTimeStr = orderList.get(0).get("begin_time")+"";
+					Date beginTime = DateHelper.paraseStringToDate(beginTimeStr, format);
+					Date endTime = new Date();
+					String endTimeStr = DateHelper.paraseDateToString(endTime, format);
+					long between=(endTime.getTime()-beginTime.getTime())/1000;//除以1000是为了转换成秒
+					long min=between/60;//获取分钟数
+					double hour = min/60;
+					long yushu = min%60;//取整数小时候，余 分钟数,不满30分钟，按照0.5小时计算，大于30分钟按1小时计算
+					if(yushu <= 30){
+						hour = hour+0.5;
+					}else{
+						hour = hour + 1;
+					}
+					double spacePricePerhour = 0;
+					try {
+						spacePricePerhour = Double.parseDouble(orderList.get(0).get("space_price_perhour")+"");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					totalParkingFee = hour * spacePricePerhour;
+					String parkName = orderList.get(0).get("park_name")+"";
+					String spaceName = orderList.get(0).get("space_name")+"";
+					
+					respMap.put("orderId", orderId);//用于用户返回更新订单状态
+					respMap.put("parkName", parkName);
+					respMap.put("spaceName", spaceName);
+					respMap.put("beginTime", beginTimeStr);
+					respMap.put("endTime", endTimeStr);
+					respMap.put("totalParkingFee", totalParkingFee);
+					
+					//更新订单状态
+					SmartOrder smartOrder = new SmartOrder();
+					smartOrder.setId(orderId);
+					smartOrder.setOrderStateId(SmartParkDictionary.orderState.ASK_OUT.ordinal());
+					smartOrder.setBeginTime(beginTimeStr);
+					smartOrder.setEndTime(endTimeStr);
+					smartOrder.setReceivableAmount(totalParkingFee);
+					try {
 						smartParkService.updateSmartOrder(smartOrder);
+					} catch (Exception e) {
+						msg = e.getMessage();
+						code = ServerResult.RESULT_SERVER_ERROR;
+						e.printStackTrace();
+					}
+				}
+				//TODO 向客户端发送消息信息，提醒客户支付，车牌号做唯一验证
+				if(code == 0){
+					//根据memberId获取用户open_id
+					List<Map<String, Object>> memberList = smartMemberService.getMemberInfoById(memberId);
+					if(memberList != null && memberList.size()>0){
+						String openId = (String)memberList.get(0).get("open_id");
+						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html";
+					    long time = 30*60*1000;//30分钟
+					    Date now = new Date();
+					    Date afterDate = new Date(now .getTime() + time);//30分钟后的时间
+					    String failureTime = DateHelper.paraseDateToString(afterDate, format);
+						WeixinSendTeleplate.sendUnpaidInfo(openId, url, orderId, totalParkingFee+"", "微信支付", failureTime);
+					}else{
+						code =ServerResult.RESULT_MEMBER_AUTH_ERROR;
 					}
 				}
 			}
 		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
@@ -182,6 +227,7 @@ public class DemoController extends BaseController{
 				smartOrder.setOrderStateId(SmartParkDictionary.orderState.PAY_FINISHED.ordinal());
 			} 
 		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
@@ -194,10 +240,10 @@ public class DemoController extends BaseController{
 	public JsonModel parking(
 			@ApiParam(name = "carNumber", value = "准备驶入停车场汽车牌照编号，有客户端自动识别或手动填写", required = true) @RequestParam(value = "carNumber", required = false) String carNumber,
 			@ApiParam(name = "parkId", value = "停车场编号", required = true) @RequestParam(value = "parkId", required = true) String parkId,
-			@ApiParam(name = "spaceId", value = "停车位编号", required = false) @RequestParam(value = "spaceId", required = true) String spaceId,
-			@ApiParam(name = "entranceId", value = "停车场入口编号", required = false) @RequestParam(value = "entranceId", required = true) String entranceId,
+			@ApiParam(name = "spaceId", value = "停车位编号", required = false) @RequestParam(value = "spaceId", required = false) String spaceId,
+			@ApiParam(name = "entranceId", value = "停车场入口编号", required = false) @RequestParam(value = "entranceId", required = false) String entranceId,
 			@ApiParam(name = "parkingType", value = "停车类型，0：驶入 1：驶出", required = true) @RequestParam(value = "parkingType", required = true) int parkingType,
-			@ApiParam(name = "description", value = "停车说明", required = false) @RequestParam(value = "description", required = false) int description
+			@ApiParam(name = "description", value = "停车说明", required = false) @RequestParam(value = "description", required = false) String description
 			){
 		String msg = null;
 		int code = 0;
@@ -218,13 +264,12 @@ public class DemoController extends BaseController{
 						orderState = SmartParkDictionary.orderState.ASK_IN.ordinal();
 						String format = "yyyy-MM-dd HH:mm:ss";
 						String beginTime = DateHelper.paraseDateToString(new Date(), format);
-						smartOrder.setId(orderId);
+//						smartOrder.setId(orderId);
 						smartOrder.setBeginTime(beginTime);
 						smartOrder.setOrderStateId(SmartParkDictionary.orderState.CAR_PARKING.ordinal());
-						
 					}else{//驶出
 						orderState = SmartParkDictionary.orderState.CAR_PARKING.ordinal();
-						smartOrder.setId(orderId);
+//						smartOrder.setId(orderId);
 						smartOrder.setOrderStateId(SmartParkDictionary.orderState.ORDER_FINISHED.ordinal());
 					}
 					//step1 根据parkid和carid获取状态为“申请驶进停车场”订单信息，TODO 如何处理存在多条记录   如果获取不到，TODO 则走人工流程
@@ -240,6 +285,12 @@ public class DemoController extends BaseController{
 						msg = e.getMessage();
 						code = ServerResult.RESULT_SERVER_ERROR;
 						e.printStackTrace();
+					}
+					if(code == 0 && StringUtils.isBlank(orderId)){
+						code = ServerResult.RESULT_ORDER_STATE_ERROR;
+					}
+					if(code == 0){
+						smartOrder.setId(orderId);
 					}
 					//step2 创建停车出入场地记录
 					if(code == 0){
@@ -257,8 +308,12 @@ public class DemoController extends BaseController{
 						}
 						smartParkService.updateSmartOrder(smartOrder);
 					}
+					if(code == 0){
+						//TODO  发送驶入停车场通知给用户
+					}
 				}
 			} catch (Exception e) {
+				code = ServerResult.RESULT_SERVER_ERROR;
 				msg = e.getMessage();
 				e.printStackTrace();
 			}
@@ -280,6 +335,7 @@ public class DemoController extends BaseController{
 			try {
 				list = smartCarService.listCar();
 			} catch (Exception e) {
+				code = ServerResult.RESULT_SERVER_ERROR;
 				msg = e.getMessage();
 				e.printStackTrace();
 			}
@@ -299,6 +355,7 @@ public class DemoController extends BaseController{
 			try {
 				list = smartParkService.listPark();
 			} catch (Exception e) {
+				code = ServerResult.RESULT_SERVER_ERROR;
 				msg = e.getMessage();
 				e.printStackTrace();
 			}
@@ -320,6 +377,7 @@ public class DemoController extends BaseController{
 			try {
 				list = smartParkService.listSpaceByParkId(parkId);
 			} catch (Exception e) {
+				code = ServerResult.RESULT_SERVER_ERROR;
 				msg = e.getMessage();
 				e.printStackTrace();
 			}

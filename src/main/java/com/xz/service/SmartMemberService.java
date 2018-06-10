@@ -29,7 +29,7 @@ public class SmartMemberService {
 		return memberId;
 	}
 	
-	public List<Map<String, Object>> getMemberINfoByOpenId(String openId){
+	public List<Map<String, Object>> getMemberInfoByOpenId(String openId){
 		String sql = " select * from smart_member where open_id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, openId);
 		return list;
@@ -153,8 +153,6 @@ public class SmartMemberService {
 		jdbcTemplate.update(sql, mobileNumber,now,code);
 	}
 	
-	
-	
 	/**
 	 * 初始化发送验证码次数
 	 * @param time
@@ -164,4 +162,11 @@ public class SmartMemberService {
 		jdbcTemplate.update(sql, time);
 		
 	}
+	
+	public List<Map<String, Object>> getMemberInfoById(String memberId){
+		String sql = " select * from smart_member where id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);
+		return list;
+	}
+	
 }

@@ -10,7 +10,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.xz.controller.weixin.message.response.TemplateMsgResult;
 import com.xz.controller.weixin.message.response.WechatTemplateMsg;
 
-
+/**
+ * 
+ * 线程
+ *
+ */
 public class WeiXinSendTemplateThread extends Thread {
 	private List<Map<String, Object>> list;
 
@@ -28,40 +32,11 @@ public class WeiXinSendTemplateThread extends Thread {
 				String phone = list.get(i).get("phone") + "";// 手机号
 				String openId = list.get(i).get("open_id") + "";// 微信关注的open_id
 				String date = list.get(i).get("inputdatetime") + "";// date
-				processTemplate(openId, "", memberNo, date, actuallypaid, deposit);
+				WeixinSendTeleplate.sendUnpaidInfo(openId, "", memberNo, date, actuallypaid, deposit);
 			}
 		}
 	}
-
-	public void processTemplate(String openId, String url, String memberNo, String date, String actuallypaid,
-			String deposit) {
-		ObjectMapper mapper = new ObjectMapper();
-		TemplateMsgResult templateMsgResult = null;
-		TreeMap<String, TreeMap<String, String>> params = new TreeMap<String, TreeMap<String, String>>();
-		// 根据具体模板参数组装
-		params.put("first", WechatTemplateMsg.item("尊敬的会员，您的订单已经支付成功", "#000000"));
-		params.put("keyword1", WechatTemplateMsg.item(memberNo, "#000000")); // 会员编号
-		params.put("keyword2", WechatTemplateMsg.item(date, "#000000")); // 消费时间
-		params.put("keyword3", WechatTemplateMsg.item(actuallypaid, "#FF0033")); // 消费金额：
-		params.put("keyword4", WechatTemplateMsg.item(deposit, "#33CC33")); // 卡中余额：
-		params.put("remark", WechatTemplateMsg.item("若对此订单有疑问，请及时联系店员小姐姐哦，谢谢！", "#000000"));
-		WechatTemplateMsg wechatTemplateMsg = new WechatTemplateMsg();
-		wechatTemplateMsg.setTemplate_id("qpXgZFCca3YI5Ktb-nobddSe1VqqoDOjKVTIuaKu18s"); // 消费成功模板ID
-		wechatTemplateMsg.setTouser(openId);
-		wechatTemplateMsg.setUrl(url);
-		wechatTemplateMsg.setData(params);
-		String data = "";
-		try {
-			data = mapper.writeValueAsString(wechatTemplateMsg);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String token = WeixinHelper.getAccessToken("", "");
-		templateMsgResult = MessageHandler.sendTemplate(token, data);
-		if(!"0".equals(templateMsgResult.getErrcode())){
-			System.out.println("出错啦……"+templateMsgResult.getErrmsg());
-		}
-	}
+	
 
 	public static void main(String[] args) {
 		Thread thread = new WeiXinSendTemplateThread(new ArrayList<Map<String, Object>>());

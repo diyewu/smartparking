@@ -106,3 +106,4 @@ function getParam(paramName) {
     } 
     return paramValue == "" && (paramValue = null), paramValue 
 }  
+

@@ -292,7 +292,7 @@ public class WeixinAccessController extends BaseController{
 			//手机验证码验证成功之后，插入会员信息
 			if (code == 0) {
 				//根据openid获取会员信息
-				List<Map<String, Object>> list = smartMemberService.getMemberINfoByOpenId(openId);
+				List<Map<String, Object>> list = smartMemberService.getMemberInfoByOpenId(openId);
 				if(list != null && list.size()>0){
 					memberId = (String)list.get(0).get("id");
 				}

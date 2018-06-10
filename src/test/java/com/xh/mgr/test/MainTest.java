@@ -14,11 +14,27 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Joiner;
 
 public class MainTest {
-	public static void main(String[] args) throws UnsupportedEncodingException, ParseException {
+	public static void main(String[] args) throws UnsupportedEncodingException, ParseException, InterruptedException {
 //		urlEncode();
-		System.out.println(new Date().getTime());
+		timecha();
 	}
 	
+	
+	public static void timecha() throws InterruptedException{
+		Date beginTime = new Date();
+		Thread.sleep(3000);
+		Date endTime = new Date();
+		long between=(endTime.getTime()-beginTime.getTime())/1000;//除以1000是为了转换成秒
+		long min=between/60;//获取分钟数
+		double hour = min/60;
+		long yushu = min%60;//取整数小时候，余 分钟数,不满30分钟，按照0.5小时计算，大于30分钟按1小时计算
+		if(yushu <= 30){
+			hour = hour+0.5;
+		}else{
+			hour = hour + 1;
+		}
+		System.out.println(hour);
+	}
 	
 	public static void time( ) throws ParseException{
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  

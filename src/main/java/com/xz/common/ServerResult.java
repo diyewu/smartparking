@@ -24,6 +24,9 @@ import org.apache.commons.lang.StringUtils;
     50012:名下登记车辆总数超过最大数量
     50013:车辆信息校验错误
     50014:车辆权限信息校验失败
+    50015:尚未查询到符合条件的订单，请确认已经发出停车申请
+    50016:会员信息校验失败
+    
  * @author 吴迪叶
  *
  */
@@ -77,7 +80,12 @@ public class ServerResult {
 	
 	public final static int RESULT_CAR_AUTH_VALIDATE_ERROR = 50014;
 	public final static String RESULT_CAR_AUTH_VALIDATE_ERROR_MSG = "车辆权限信息校验失败";
+
+	public final static int RESULT_ORDER_STATE_ERROR = 50015;
+	public final static String RESULT_ORDER_STATE_ERROR_MSG = "尚未查询到符合条件的订单";
 	
+	public final static int RESULT_MEMBER_AUTH_ERROR = 50016;
+	public final static String RESULT_MEMBER_AUTH_ERROR_MSG = "会员信息校验失败";
 	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
@@ -97,6 +105,8 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_MAX_CAR_ERROR, RESULT_MAX_CAR_ERROR_MSG);
 		ServerResultMap.put(RESULT_CAR_VALIDATE_ERROR, RESULT_CAR_VALIDATE_ERROR_MSG);
 		ServerResultMap.put(RESULT_CAR_AUTH_VALIDATE_ERROR, RESULT_CAR_AUTH_VALIDATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_ORDER_STATE_ERROR, RESULT_ORDER_STATE_ERROR_MSG);
+		ServerResultMap.put(RESULT_MEMBER_AUTH_ERROR, RESULT_MEMBER_AUTH_ERROR_MSG);
 	}
 	
 	

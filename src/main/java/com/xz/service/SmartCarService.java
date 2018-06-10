@@ -88,6 +88,7 @@ public class SmartCarService {
 	}
 	
 	
+	
 	/**
 	 * 检查车辆是否属于会员名下，防止请求被篡改
 	 * @param memberId
@@ -126,5 +127,15 @@ public class SmartCarService {
 		return list;
 	}
 	
+	
+	/**
+	 * 根据车牌号获取会员信息
+	 * @param carNumber
+	 */
+	public List<Map<String, Object>> getMemberInfoByCarNumber(String carNumber){
+		String sql = " select * from smart_car where car_number  = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, carNumber);
+		return list;
+	}
 	
 }

@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.xz.common.SmartParkDictionary;
 import com.xz.entity.CategoryTreeBean;
 import com.xz.entity.SmartOrder;
 import com.xz.entity.SmartPark;
@@ -85,8 +86,8 @@ public class SmartParkService {
 	}
 	
 	public List<Map<String, Object>> listSpaceByParkId(String parkId){
-		String sql = " select sps.id,spsd.space_name from smart_park_space sps left join smart_park_space_dictionary spsd on sps.space_type = spsd.id where park_id = ? ";
-		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		String sql = " select sps.id,spsd.space_name,sps.space_price_perhour from smart_park_space sps left join smart_park_space_dictionary spsd on sps.space_type = spsd.id where park_id = ? ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql,parkId);
 		return list;
 	}
 
@@ -112,10 +113,18 @@ public class SmartParkService {
 	 * @param parkingType
 	 * @return
 	 */
-	public String createOrder(String carId,String parkId,int orderType){
+	public String createOrder(String carId,String parkId,int orderType,String spaceId){
 		String orderId = SortableUUID.randomUUID();
-		String orderSql = " insert into smart_order(id,car_id,park_id,order_type,order_state_id,create_time)values(?,?,?,?,?,?,NOW()) ";
-		jdbcTemplate.update(orderSql, orderId,carId,parkId,orderType,1);
+		//默认取当前停车场第一种停车位
+		if(StringUtils.isBlank(spaceId)){
+			String sql = " select sps.id from smart_park sp left join smart_park_space sps on  sp.id = sps.park_id where 1 = 1 and sp.id = ? order by sps.space_type ";
+			List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, parkId);
+			if (list != null && list.size() > 0) {
+				spaceId = (String)list.get(0).get("id");
+			}
+		}
+		String orderSql = " insert into smart_order(id,car_id,park_id,space_id,order_type,order_state_id,create_time)values(?,?,?,?,?,?,NOW()) ";
+		jdbcTemplate.update(orderSql, orderId,carId,parkId,spaceId,orderType,SmartParkDictionary.orderState.ASK_IN.ordinal());
 		return orderId;
 	}
 	
@@ -138,7 +147,7 @@ public class SmartParkService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getOrderInfo(String orderId){
-		String sql = " SELECT so.begin_time, so.record_in_id, sps.space_price_perhour, sps.space_name, sp.park_name FROM smart_order so LEFT JOIN ( SELECT a.space_price_perhour, b.space_name FROM smart_park_space a LEFT JOIN smart_park_space_dictionary b ON a.space_type = b.id ) sps ON so.space_id = sps.id LEFT JOIN smart_park sp ON so.park_id = sp.id WHERE id = ? ";
+		String sql = " SELECT so.begin_time, so.record_in_id, sps.space_price_perhour, sps.space_name, sp.park_name FROM smart_order so LEFT JOIN ( SELECT a.id,a.space_price_perhour, b.space_name FROM smart_park_space a LEFT JOIN smart_park_space_dictionary b ON a.space_type = b.id ) sps ON so.space_id = sps.id LEFT JOIN smart_park sp ON so.park_id = sp.id WHERE so.id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, orderId);
 		return list;
 	}
@@ -154,7 +163,7 @@ public class SmartParkService {
 	 */
 	public String parkIngIn(String carId,String parkId,String spaceId,String entranceId,int parkingType){
 		String recordId = SortableUUID.randomUUID();
-		String sql = " insert into smart_car_park_recoder(id,car_id,park_id,space_id,entrance_id,parking_type,create_time)VALUE(?,?,?,?,?,?,NOW()) ";
+		String sql = " insert into smart_car_park_record(id,car_id,park_id,space_id,entrance_id,parking_type,create_time)VALUE(?,?,?,?,?,?,NOW()) ";
 		jdbcTemplate.update(sql, recordId,carId,parkId,spaceId,entranceId,parkingType);
 		return recordId;
 	}
