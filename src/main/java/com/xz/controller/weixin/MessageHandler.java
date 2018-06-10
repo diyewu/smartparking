@@ -10,7 +10,7 @@ import com.xz.utils.HttpsUtil;
 public class MessageHandler {
 	private final static String tempLateUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 	public static String processMsg(String content){
-		String resp = "欢迎使用停车系统！";
+		String resp = "如果停留在首页等待，则表示当前为调试时间段，如需测试完整功能，请联系管理员：18936483081 进行开放处理！";
 		if("connectus".equals(content)){
 			resp = "电话：021-0000000\n地址：上海市黄浦区南苏州路1305号3号门";
 		}

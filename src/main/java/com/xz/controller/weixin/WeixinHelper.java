@@ -170,10 +170,12 @@ public class WeixinHelper {
 			responseMessage = textMessageToXml(textMessage);
 		}else if(WeixinConstants.MESSAGE_EVENT.equals(msgType)){//click
 			String Event = map.get("Event");
-			String EventKey = map.get("EventKey");
-			String resp = MessageHandler.processMsg(EventKey);
+			String resp = "";
 			if("subscribe".equals(Event)){//subscribe(订阅)
 				resp = "如果停留在首页等待，则表示当前为调试时间段，如需测试完整功能，请联系管理员：18936483081 进行开放处理！";
+			}else if(WeixinConstants.MESSAGE_EVENT_CLICK.equals(Event)){
+				String EventKey = map.get("EventKey");
+				resp = MessageHandler.processMsg(EventKey);
 			}
 			TextMessage textMessage = new TextMessage();
 			textMessage.setMsgType(WeixinConstants.MESSAGE_TEXT);

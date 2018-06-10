@@ -119,7 +119,7 @@ public class WeixinAccessController extends BaseController{
 				respMap = WeixinHelper.getWebAuthOpenIdAndAccessToken(customConfig.getAppid(), customConfig.getSecret(), authCode);
 				openId = respMap.get(WeixinConstants.WEIXIN_OPEN_ID);
 			}
-			if(StringUtils.isBlank(openId) && StringUtils.isBlank(authCode)){
+			if(StringUtils.isBlank(openId)){
 				openId = (String)session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
 			}
 			System.out.println("openId="+openId);
@@ -134,7 +134,9 @@ public class WeixinAccessController extends BaseController{
 				if(list != null && list.size()>0){//存在,查询当前停车信息，展示出来
 					map.put("state", "1");
 					String memberId = (String)list.get(0).get("id");
+					String mobile = (String)list.get(0).get("mobile");
 					session.setAttribute(WeixinConstants.SESSION_MEMBER_ID, memberId);
+					session.setAttribute(WeixinConstants.SESSION_WEIXIN_USER_MOBILE, mobile);
 					List<Map<String, Object>> carParkList = smartMemberService.getCarParkStateByMemId(memberId);
 					List<Map<String, Object>> respList = new ArrayList<Map<String,Object>>();
 					if(carParkList != null && carParkList.size()>0){
