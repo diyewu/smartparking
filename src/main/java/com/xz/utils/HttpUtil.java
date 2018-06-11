@@ -54,6 +54,7 @@ public class HttpUtil {
      * @return
      */
     public static String httpGetRequest(String url) {
+    	System.out.println(url);
         HttpGet httpGet = new HttpGet(url);
         return getResult(httpGet);
     }

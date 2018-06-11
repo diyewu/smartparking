@@ -17,6 +17,7 @@ import com.xz.common.ServerResult;
 import com.xz.common.SmartParkDictionary;
 import com.xz.controller.BaseController;
 import com.xz.controller.weixin.WeixinSendTeleplate;
+import com.xz.entity.CustomConfig;
 import com.xz.entity.SmartOrder;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartCarService;
@@ -24,6 +25,7 @@ import com.xz.service.SmartMemberService;
 import com.xz.service.SmartOrderService;
 import com.xz.service.SmartParkService;
 import com.xz.utils.DateHelper;
+import com.xz.utils.SmartEncryptionUtil;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -38,6 +40,8 @@ public class DemoController extends BaseController{
 	private SmartOrderService smartOrderService;
 	@Autowired
 	private SmartMemberService smartMemberService;
+	@Autowired  
+    private CustomConfig customConfig; 
 	
 	@ApiOperation(value = "汽车申请驶入停车场地", notes = "由客户端识别汽车牌照", httpMethod = "POST")
 	@RequestMapping("askInParking")
@@ -174,7 +178,13 @@ public class DemoController extends BaseController{
 					List<Map<String, Object>> memberList = smartMemberService.getMemberInfoById(memberId);
 					if(memberList != null && memberList.size()>0){
 						String openId = (String)memberList.get(0).get("open_id");
-						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html";
+						long paramTime = System.currentTimeMillis();
+						Map<String, String> param = new HashMap<String, String>();
+						param.put("time", paramTime+"");
+						param.put("memberId", memberId);
+						String sign = SmartEncryptionUtil.encryParam(param, "memberId", customConfig.getAeskeycode());
+						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html?time="+
+						paramTime+"&memberId="+memberId+"&sign="+sign;
 					    long time = 30*60*1000;//30分钟
 					    Date now = new Date();
 					    Date afterDate = new Date(now .getTime() + time);//30分钟后的时间

@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
     50014:车辆权限信息校验失败
     50015:尚未查询到符合条件的订单，请确认已经发出停车申请
     50016:会员信息校验失败
+    50017:参数校验失败
     
  * @author 吴迪叶
  *
@@ -87,6 +88,9 @@ public class ServerResult {
 	public final static int RESULT_MEMBER_AUTH_ERROR = 50016;
 	public final static String RESULT_MEMBER_AUTH_ERROR_MSG = "会员信息校验失败";
 	
+	public final static int RESULT_PARAM_CHECK_ERROR = 50017;
+	public final static String RESULT_PARAM_CHECK_ERROR_MSG = "参数校验失败";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -107,13 +111,14 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_CAR_AUTH_VALIDATE_ERROR, RESULT_CAR_AUTH_VALIDATE_ERROR_MSG);
 		ServerResultMap.put(RESULT_ORDER_STATE_ERROR, RESULT_ORDER_STATE_ERROR_MSG);
 		ServerResultMap.put(RESULT_MEMBER_AUTH_ERROR, RESULT_MEMBER_AUTH_ERROR_MSG);
+		ServerResultMap.put(RESULT_PARAM_CHECK_ERROR, RESULT_PARAM_CHECK_ERROR_MSG);
 	}
-	
 	
 	public static String getCodeMsg(int code,String defaultValue){
 		String msg = null;
-		msg = ServerResultMap.get(code);
 		if(StringUtils.isBlank(msg)){
+			msg = ServerResultMap.get(code);;
+		}else{
 			msg = defaultValue;
 		}
 		return msg;

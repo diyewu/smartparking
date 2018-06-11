@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xz.common.ServerResult;
 import com.xz.controller.BaseController;
 import com.xz.controller.weixin.WeixinConstants;
-import com.xz.model.json.AppJsonModel;
+import com.xz.model.json.JsonModel;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartMemberService;
 
@@ -33,7 +33,7 @@ public class SmartMemberController extends BaseController{
 	@ApiOperation(value = "会员注册", notes = "会员注册,输入姓名、性别", httpMethod = "POST")
 	@RequestMapping("memberRegist")
 	@ResponseBody
-	public AppJsonModel memberRegist(
+	public JsonModel memberRegist(
 			 @ApiParam(name = "memberName", value = "会员名称", required = true) @RequestParam("memberName") String memberName,
 			 @ApiParam(name = "memberSex", value = "会员性别", required = true) @RequestParam("memberSex") String memberSex
 			){
@@ -51,20 +51,20 @@ public class SmartMemberController extends BaseController{
 		Map<String,String> respMap = new HashMap<String, String>();
 		respMap.put("memberId", memberId);
 		
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
 	@ApiOperation(value = "微信公众号根据openid检查会员是否注册", notes = "判断依据为是否有手机号码", httpMethod = "POST")
 	@RequestMapping("checkMemberByOpenId")
 	@ResponseBody
-	public AppJsonModel checkMemberByOpenId(
+	public JsonModel checkMemberByOpenId(
 			@ApiParam(name = "openId", value = "微信openId", required = true) @RequestParam("openId") String openId
 			){
 		String msg = null;
 		Map<String,String> respMap = new HashMap<String, String>();
 		int code = 0;
 		
-		return new AppJsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
 	@ApiOperation(value = "获取当前用户信息，展示用户手机号", notes = "获取当前用户信息，展示用户手机号", httpMethod = "POST")

@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,7 +30,6 @@ import com.xz.entity.SmartMember;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartMemberService;
 import com.xz.utils.DateHelper;
-import com.xz.utils.MailSam;
 import com.xz.utils.SignUtil;
 
 import io.swagger.annotations.ApiOperation;
