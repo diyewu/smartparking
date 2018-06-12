@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
     50015:尚未查询到符合条件的订单，请确认已经发出停车申请
     50016:会员信息校验失败
     50017:参数校验失败
+    50018:订单编号无效
     
  * @author 吴迪叶
  *
@@ -91,6 +92,9 @@ public class ServerResult {
 	public final static int RESULT_PARAM_CHECK_ERROR = 50017;
 	public final static String RESULT_PARAM_CHECK_ERROR_MSG = "参数校验失败";
 	
+	public final static int RESULT_ORDER_ID_ERROR = 50018;
+	public final static String RESULT_ORDER_ID_ERROR_MSG = "订单编号无效";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -112,11 +116,12 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_ORDER_STATE_ERROR, RESULT_ORDER_STATE_ERROR_MSG);
 		ServerResultMap.put(RESULT_MEMBER_AUTH_ERROR, RESULT_MEMBER_AUTH_ERROR_MSG);
 		ServerResultMap.put(RESULT_PARAM_CHECK_ERROR, RESULT_PARAM_CHECK_ERROR_MSG);
+		ServerResultMap.put(RESULT_ORDER_ID_ERROR, RESULT_ORDER_ID_ERROR_MSG);
 	}
 	
 	public static String getCodeMsg(int code,String defaultValue){
 		String msg = null;
-		if(StringUtils.isBlank(msg)){
+		if(StringUtils.isBlank(defaultValue)){
 			msg = ServerResultMap.get(code);;
 		}else{
 			msg = defaultValue;

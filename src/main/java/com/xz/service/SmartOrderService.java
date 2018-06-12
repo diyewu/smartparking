@@ -42,12 +42,25 @@ public class SmartOrderService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getOrderListByMemberId(String memberId,int min,int max){
-		String sql = " SELECT so.id, sosd.show_name FROM smart_order so LEFT JOIN smart_order_state_dictionory sosd ON so.order_state_id = sosd.id LEFT JOIN smart_car sc ON so.car_id = sc.id WHERE sc.member_id = ? ORDER BY so.create_time desc limit ? , ? ";
+		String sql = " SELECT so.id, sosd.id AS status,so.receivable_amount, sosd.show_name, sp.park_name FROM smart_order so LEFT JOIN smart_order_state_dictionory sosd ON so.order_state_id = sosd.id LEFT JOIN smart_car sc ON so.car_id = sc.id LEFT JOIN smart_park sp ON so.park_id = sp.id WHERE sc.member_id = ? ORDER BY so.create_time desc limit ? , ? ";
 		if(max == 0){
 			max = 10;
 		}
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId,min,max);
 		return list;
 	}
+	
+	/**
+	 * 根据订单Id获取订单详细信息
+	 * @param orderId
+	 * @return
+	 */
+	public List<Map<String, Object>> getOrderInfoById(String orderId){
+		String sql = " select id, begin_time,end_time,receivable_amount from smart_order where id = ? and order_state_id = 3 ";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, orderId);
+		return list;
+	}
+	
+	
 	
 }

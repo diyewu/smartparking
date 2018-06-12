@@ -1,8 +1,11 @@
 package com.xz.controller.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xz.common.ServerResult;
+import com.xz.controller.BaseController;
+import com.xz.controller.weixin.WeixinConstants;
 import com.xz.entity.CustomConfig;
 import com.xz.model.json.JsonModel;
+import com.xz.service.SmartMemberService;
 import com.xz.service.SmartOrderService;
 import com.xz.utils.SmartEncryptionUtil;
 
@@ -22,10 +28,12 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping("smartOrder")
-public class SmartOrderController {
+public class SmartOrderController extends BaseController{
 	
 	@Autowired
 	private SmartOrderService smartOrderService;
+	@Autowired
+	private SmartMemberService smartMemberService;
 	@Autowired  
     private CustomConfig customConfig; 
 	
@@ -53,11 +61,33 @@ public class SmartOrderController {
 				code = ServerResult.RESULT_SERVER_ERROR;
 			}
 			int total = 0;
-			//step2 获取订单信息，根据订单状态排序
+			//step2 校验memberid
+			if(code == 0){
+				List<Map<String, Object>> list = smartMemberService.getMemberInfoById(memberId);
+				if(list != null && list.size()>0){
+					String openId = (String)list.get(0).get("open_id");
+					if(StringUtils.isNotBlank(openId)){
+						HttpSession session = getRequest().getSession();
+						session.setAttribute(WeixinConstants.SESSION_MEMBER_ID, memberId);
+						session.setAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID, openId);
+					}else{
+						code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+					}
+				}else{
+					code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+				}
+			}
+			//step3 获取订单信息，根据订单状态排序
 			if(code == 0){
 				total = smartOrderService.getOrderCountByMemberId(memberId);
 				List<Map<String, Object>> list = smartOrderService.getOrderListByMemberId(memberId, pageIndex*pageSize,  (pageIndex+1)*pageSize);
+				int totalPage = total/pageSize;
+				int yushu =  total%pageSize;
+				if(yushu > 0){
+					totalPage = totalPage+1;
+				}
 				respMap.put("total", total);
+				respMap.put("totalPage", totalPage);
 				respMap.put("list", list);
 			}
 		} catch (Exception e) {
@@ -67,5 +97,41 @@ public class SmartOrderController {
 		}
 		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
+	
+	@ApiOperation(value = "根据订单编号获取订单详细信息", notes = "根据订单编号获取订单详细信息", httpMethod = "POST")
+	@RequestMapping("getOrderInfoByOrderNo")
+	@ResponseBody
+	public JsonModel getOrderInfoByOrderNo(
+			@ApiParam(name = "orderNo", value = "订单编号", required = true) @RequestParam(value = "orderNo", required = true) String orderNo
+			){
+		String msg = null;
+		int code = 0;
+		Map<String,Object> respMap = new HashMap<String, Object>();
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		try {
+			//step1 校验session参数,一定会有会员编号，一种是首页进来，一种是通过消息通知进来
+			HttpSession session = getRequest().getSession();
+			String memberId = (String)session.getAttribute(WeixinConstants.SESSION_MEMBER_ID);
+			if(StringUtils.isBlank(memberId)){
+				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}
+			//step 2 根据订单编号获取信息
+			if(code == 0){
+				list = smartOrderService.getOrderInfoById(orderNo);
+				if(list == null || list.size() == 0){
+					code = ServerResult.RESULT_ORDER_ID_ERROR;
+				}
+			}
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+	}
+	
+	
+	
+	
 	
 }

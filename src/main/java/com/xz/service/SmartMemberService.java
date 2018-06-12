@@ -163,6 +163,11 @@ public class SmartMemberService {
 		
 	}
 	
+	/**
+	 * 根据会员编号获取会员信息
+	 * @param memberId
+	 * @return
+	 */
 	public List<Map<String, Object>> getMemberInfoById(String memberId){
 		String sql = " select * from smart_member where id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);

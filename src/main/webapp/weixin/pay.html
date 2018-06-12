@@ -6,7 +6,12 @@
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>支付订单</title>
 	<link rel="stylesheet" href="css/style.css" type="text/css"/>
+	  
+  <link rel="stylesheet" href="css/base.css" >
+  <link rel="stylesheet" href="css/wap_show_tools.css" >
 	<script type="text/javascript" src="js/jquery_1.9.min.js" ></script>
+	<script type="text/javascript" src="js/base.js" ></script>
+  	<script type="text/javascript" src="js/wap_show_tools.js" ></script>
 	<script type="text/javascript" src="js/pay.js" ></script>
 	
 </head>
@@ -24,9 +29,10 @@
     
     <div class="payTime">
     	<!-- <li><span>剩余时间</span><span id="left_time"></span></li> -->
-        <li>总共消费:<strong id="pay_order_amount">¥<span class="payorderamount">56.00</span></strong></li>
-        <li>停车时长:<strong><span id="pay_order_time">2小时50分钟</span></strong></li>
-        <li>订单号:<span id="pay_order_id">487237899083627829</span></li>
+        <li>总共消费:<strong  style="color:red;">¥<span id="pay_order_amount" class="payorderamount">-</span></strong></li>
+        <li>开始时间:<span id="pay_order_begin_time">-</span></li>
+        <li>结束时间:<span id="pay_order_end_time">-</span></li>
+        <li>订单编号:<span id="pay_order_no">-</span></li>
     </div>
     
     <!--支付 star-->
@@ -57,7 +63,7 @@
 <div class="book-recovery-bot2" id="footer">
 	<a href="#"><div class="payBottom">
     	<li class="textfr">确认支付:</li>
-        <li class="textfl"><span>¥<span class="payorderamount">56.00</span></span></li>
+        <li class="textfl"><span>¥<span class="payorderamount" id="pay_order_amount_bo">-</span></span></li>
     </div>
 	</a>
 </div> 

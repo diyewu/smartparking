@@ -17,6 +17,7 @@ public class CustomConfig {
     private String weixintoken;
     private String sendtimes;
     private String aeskeycode;
+    private String mchid;
 
 	public String getClientFileUpladPath() {
 		return clientFileUpladPath;
@@ -105,6 +106,16 @@ public class CustomConfig {
 
 	public void setAeskeycode(String aeskeycode) {
 		this.aeskeycode = aeskeycode;
+	}
+
+	public String getMchid() {
+		return mchid;
+	}
+
+	public void setMchid(String mchid) {
+		this.mchid = mchid;
 	} 
+	
+	
     
 }  
