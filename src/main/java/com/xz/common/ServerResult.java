@@ -95,6 +95,12 @@ public class ServerResult {
 	public final static int RESULT_ORDER_ID_ERROR = 50018;
 	public final static String RESULT_ORDER_ID_ERROR_MSG = "订单编号无效";
 	
+	public final static int RESULT_GET_PREPAY_ID_ERROR = 50019;
+	public final static String RESULT_GET_PREPAY_ID_ERROR_MSG = "预支付交易会话标识失败";
+	
+	public final static int RESULT_ORDER_FEE_ERROR = 50020;
+	public final static String RESULT_ORDER_FEE_ERROR_MSG = "订单费用异常";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -117,6 +123,8 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_MEMBER_AUTH_ERROR, RESULT_MEMBER_AUTH_ERROR_MSG);
 		ServerResultMap.put(RESULT_PARAM_CHECK_ERROR, RESULT_PARAM_CHECK_ERROR_MSG);
 		ServerResultMap.put(RESULT_ORDER_ID_ERROR, RESULT_ORDER_ID_ERROR_MSG);
+		ServerResultMap.put(RESULT_GET_PREPAY_ID_ERROR, RESULT_GET_PREPAY_ID_ERROR_MSG);
+		ServerResultMap.put(RESULT_ORDER_FEE_ERROR, RESULT_ORDER_FEE_ERROR_MSG);
 	}
 	
 	public static String getCodeMsg(int code,String defaultValue){

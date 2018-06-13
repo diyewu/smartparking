@@ -51,6 +51,7 @@ public class SmartOrderService {
 	}
 	
 	/**
+	 * 获取待支付的订单
 	 * 根据订单Id获取订单详细信息
 	 * @param orderId
 	 * @return

@@ -1,24 +1,113 @@
 package com.xh.mgr.test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayUtil;
 import com.google.common.base.Joiner;
+import com.xz.utils.HttpUtil;
 
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException, ParseException, InterruptedException {
 //		urlEncode();
-		timecha();
+//		timecha();
+		getSandBoxKey();
 	}
 	
+	/**
+	 * 获取沙箱验证码
+	 */
+	public static void getSandBoxKey(){
+		String url = "https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey";
+		
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("mch_id", "1505894581");
+		data.put("nonce_str", WXPayUtil.generateNonceStr());
+		try {
+			data.put("sign", WXPayUtil.generateSignature(data, "sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp"));
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		try {
+			System.out.println(requestWithoutCert(url, data, 10*1000, 10*1000));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static String requestWithoutCert(String strUrl, Map<String, String> reqData, int connectTimeoutMs,
+			int readTimeoutMs) throws Exception {
+		String UTF8 = "UTF-8";
+		String reqBody = WXPayUtil.mapToXml(reqData);
+		URL httpUrl = new URL(strUrl);
+		HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
+		httpURLConnection.setDoOutput(true);
+		httpURLConnection.setRequestMethod("POST");
+		httpURLConnection.setConnectTimeout(connectTimeoutMs);
+		httpURLConnection.setReadTimeout(readTimeoutMs);
+		httpURLConnection.connect();
+		OutputStream outputStream = httpURLConnection.getOutputStream();
+		outputStream.write(reqBody.getBytes(UTF8));
+
+		// if (httpURLConnection.getResponseCode()!= 200) {
+		// throw new Exception(String.format("HTTP response code is %d, not
+		// 200", httpURLConnection.getResponseCode()));
+		// }
+
+		// 获取内容
+		InputStream inputStream = httpURLConnection.getInputStream();
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF8));
+		final StringBuffer stringBuffer = new StringBuffer();
+		String line = null;
+		while ((line = bufferedReader.readLine()) != null) {
+			stringBuffer.append(line);
+		}
+		String resp = stringBuffer.toString();
+		if (stringBuffer != null) {
+			try {
+				bufferedReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (inputStream != null) {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (outputStream != null) {
+			try {
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		// if (httpURLConnection!=null) {
+		// httpURLConnection.disconnect();
+		// }
+
+		return resp;
+	}
 	
 	public static void timecha() throws InterruptedException{
 		Date beginTime = new Date();

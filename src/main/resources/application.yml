@@ -79,10 +79,12 @@ custom:
      port: 587
      user: 194973883@qq.com
      pwd: bctxjkzoywyqbied
-     appid: wxc03cad31c1ceb8f3
-     secret: d4624c36b6795d1d99dcf0547af5443d
+     appid: wx4307e5a5bb1ced6c
+     secret: cda03704e18865361c18583bfef73358
      baiduapikey: 7gsG6xxeUEbtVCvVIqZ6aZY9Bage25Zm
      weixintoken: N6BflxST3dsDdRNr
      sendtimes: 10
-     aeskeycode: DFnialUkSdDlZKT8
+     aeskeycode: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp
      mchid: 1505894581
+     notifyurl: https://zhonglestudio.cn/smartparking/wepay/accessWePayNotify/
+     weixinapikey: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp

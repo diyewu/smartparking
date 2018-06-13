@@ -3,14 +3,17 @@ package com.xz.utils;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.xz.entity.CustomConfig;
 
 public class SmartEncryptionUtil {
-	
 	
 	public static String encryParam(Map<String, String> param, String key,String code){
 		String time = param.get("time");
 		String value = param.get(key);
-		String sign = value + time + code;
+		String sign = value + time + code ;
 		sign = MD5.encrypt(sign);
 		return sign;
 	}

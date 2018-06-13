@@ -18,6 +18,8 @@ public class CustomConfig {
     private String sendtimes;
     private String aeskeycode;
     private String mchid;
+    private String notifyurl;
+    private String weixinapikey;
 
 	public String getClientFileUpladPath() {
 		return clientFileUpladPath;
@@ -114,8 +116,23 @@ public class CustomConfig {
 
 	public void setMchid(String mchid) {
 		this.mchid = mchid;
-	} 
-	
-	
+	}
+
+	public String getNotifyurl() {
+		return notifyurl;
+	}
+
+	public void setNotifyurl(String notifyurl) {
+		this.notifyurl = notifyurl;
+	}
+
+	public String getWeixinapikey() {
+		return weixinapikey;
+	}
+
+	public void setWeixinapikey(String weixinapikey) {
+		this.weixinapikey = weixinapikey;
+	}
+
     
 }  
