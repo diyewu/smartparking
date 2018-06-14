@@ -185,6 +185,7 @@ public class DemoController extends BaseController{
 						String sign = SmartEncryptionUtil.encryParam(param, "memberId", customConfig.getAeskeycode());
 						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html?time="+
 						paramTime+"&memberId="+memberId+"&sign="+sign;
+						System.out.println("url="+url);
 					    long time = 120*60*1000;//30分钟
 					    Date now = new Date();
 					    Date afterDate = new Date(now .getTime() + time);//30分钟后的时间

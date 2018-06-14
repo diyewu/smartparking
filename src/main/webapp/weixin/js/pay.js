@@ -69,7 +69,7 @@ function getPrepayInfo(orderNo){
 	},'json');
 }
 
-function onBridgeReady(appId,timeStamp,nonceStr,Package,signType，paySign) {
+function onBridgeReady(appId,timeStamp,nonceStr,Package,signType,paySign) {
 	WeixinJSBridge.invoke(
 		'getBrandWCPayRequest', {
 			"appId" : appId, //公众号名称，由商户传入
