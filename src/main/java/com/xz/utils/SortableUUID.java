@@ -26,7 +26,7 @@ public class SortableUUID {
 	}
 
 	public static String randomUUID() {
-		return getTimeMillis(null) + getSeq() + mac;
+		return (getTimeMillis(null) + getSeq() + mac).substring(0, 32);
 	}
 
 	private static synchronized String getSeq() {

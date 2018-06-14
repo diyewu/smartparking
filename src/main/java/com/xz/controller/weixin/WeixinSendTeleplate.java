@@ -18,7 +18,7 @@ public class WeixinSendTeleplate {
 	 * @param failureTime
 	 */
 	public static void sendUnpaidInfo(String openId, String url, String orderNo, String pay, String payWay,
-			String failureTime) {
+			String failureTime,String appId,String appSecret) {
 		String msg = null;
 		TemplateMsgResult templateMsgResult = null;
 		try {
@@ -32,7 +32,7 @@ public class WeixinSendTeleplate {
 			params.put("keyword4", WechatTemplateMsg.item(failureTime, "#FF0033")); // 失效时间：
 			params.put("remark", WechatTemplateMsg.item("若对此订单有疑问，请及时联系客服人员：021-0000000", "#000000"));
 			WechatTemplateMsg wechatTemplateMsg = new WechatTemplateMsg();
-			wechatTemplateMsg.setTemplate_id("LqgZRwEXn51qUM0O3954-IFKkcUbVSkWFWjv8znNRt0"); // 消费成功模板ID
+			wechatTemplateMsg.setTemplate_id("gENGskvy7kJ6RHALE9KUBEeQGoxebSz1Ei9Pv88Dqww"); // 消费成功模板ID
 			wechatTemplateMsg.setTouser(openId);
 			wechatTemplateMsg.setUrl(url);
 			wechatTemplateMsg.setData(params);
@@ -42,7 +42,7 @@ public class WeixinSendTeleplate {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			String token = WeixinHelper.getAccessToken("", "");
+			String token = WeixinHelper.getAccessToken(appId, appSecret);
 			templateMsgResult = MessageHandler.sendTemplate(token, data);
 		} catch (Exception e) {
 			msg = e.getMessage();

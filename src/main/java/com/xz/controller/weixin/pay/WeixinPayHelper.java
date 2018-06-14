@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayConstants.SignType;
 import com.xz.config.weixin.WeixinConfig;
 
 public class WeixinPayHelper {
@@ -17,7 +18,8 @@ public class WeixinPayHelper {
 			String notifyUrl, String openId) {
 		WeixinConfig config = new WeixinConfig();
 //		config.getKey();
-		WXPay wxpay = new WXPay(config);
+		//沙箱测试，正式环境需要把 useSandbox 改为false
+		WXPay wxpay = new WXPay(config,SignType.MD5,true);
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("body", body);// "停车缴费订单支付"
 		data.put("out_trade_no", orderNo);// 商户订单号

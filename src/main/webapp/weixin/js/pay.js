@@ -5,11 +5,13 @@ $(function(){
 function loadOrderInfo(){
 	$("body").showLoadingView();
 	var orderNo = getParam('orderNo');
+	alert(orderNo);
 	$.post("../smartOrder/getOrderInfoByOrderNo/", 
 	{
 		orderNo:orderNo
 	},
 	function(result){
+		alert(result.success);
 		$("body").hiddenLoadingView();
 		if(result.success == true){
 			var data = result.data;

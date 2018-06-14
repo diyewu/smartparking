@@ -121,6 +121,7 @@ public class WeixinPayController extends BaseController{
 	@RequestMapping("accessWePayNotify")
 	@ResponseBody
 	public void accessWePayNotify(HttpServletRequest request, HttpServletResponse response){
+		System.out.println("____收到微信通知————————————————————————");
 		String msg = null;
 		int code = 0;
 		Map<String,Object> respMap = new HashMap<String, Object>();

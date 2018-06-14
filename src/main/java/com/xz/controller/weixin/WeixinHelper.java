@@ -21,12 +21,14 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.stereotype.Component;
 
 import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
 import com.xz.controller.weixin.message.response.TextMessage;
 import com.xz.utils.AgingCache;
 import com.xz.utils.HttpsUtil;
 
+@Component
 public class WeixinHelper {
 
 	public static void main(String[] args) {
@@ -49,7 +51,7 @@ public class WeixinHelper {
 	 */
 	public static String getAccessToken(String appId, String appSecret) {
 		ObjectMapper mapper = new ObjectMapper();
-		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc03cad31c1ceb8f3&secret=d4624c36b6795d1d99dcf0547af5443d";
+		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appId+"&secret="+appSecret+"";
 		// String url = "https://api.weixin.qq.com/cgi-bin/token?";
 		String accessToken = "";
 		try {
@@ -62,6 +64,7 @@ public class WeixinHelper {
 				// params.put("secret", appSecret);
 				// params.put("grant_type", "client_credential");
 				String resp = HttpsUtil.doPostSSL(url, params);
+				System.out.println("获取token="+resp);
 				Map<String, Object> map = mapper.readValue(resp, Map.class);
 				if (map.containsKey("access_token")) {
 					accessToken = (String) map.get("access_token");

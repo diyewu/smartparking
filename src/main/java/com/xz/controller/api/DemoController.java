@@ -185,11 +185,11 @@ public class DemoController extends BaseController{
 						String sign = SmartEncryptionUtil.encryParam(param, "memberId", customConfig.getAeskeycode());
 						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html?time="+
 						paramTime+"&memberId="+memberId+"&sign="+sign;
-					    long time = 30*60*1000;//30分钟
+					    long time = 120*60*1000;//30分钟
 					    Date now = new Date();
 					    Date afterDate = new Date(now .getTime() + time);//30分钟后的时间
 					    String failureTime = DateHelper.paraseDateToString(afterDate, format);
-						WeixinSendTeleplate.sendUnpaidInfo(openId, url, orderId, totalParkingFee+"", "微信支付", failureTime);
+						WeixinSendTeleplate.sendUnpaidInfo(openId, url, orderId, totalParkingFee+"", "微信支付", failureTime,customConfig.getAppid(),customConfig.getSecret());
 					}else{
 						code =ServerResult.RESULT_MEMBER_AUTH_ERROR;
 					}

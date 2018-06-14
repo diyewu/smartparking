@@ -184,6 +184,7 @@ function getCoupon(type){
 }
 
 function jumpPay(orderNo){
+	alert(orderNo);
 	window.location.href = "pay.html?orderNo="+orderNo
 }
 
