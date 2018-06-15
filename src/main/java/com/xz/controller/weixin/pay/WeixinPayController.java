@@ -38,6 +38,9 @@ public class WeixinPayController extends BaseController{
 	@Autowired  
     private CustomConfig customConfig; 
 	
+	@Autowired  
+	private WeixinConfig config;  
+	
 	@ApiOperation(value = "调用接口在微信支付服务后台生成预支付交易单", notes = "根据订单编号获取订单信息，发送到微信服务器获取预支付交易单", httpMethod = "POST")
 	@RequestMapping("getWePayPrepayId")
 	@ResponseBody
@@ -55,6 +58,7 @@ public class WeixinPayController extends BaseController{
 			String totalFee = "";
 			String spbillCreateIp = WeixinPayHelper.getIpAddress(getRequest());
 			double totalFeeD = 0;
+			int totalFeeInt = 0;
 			String prepayId = "";
 			if(StringUtils.isBlank(openId)){
 				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
@@ -65,11 +69,12 @@ public class WeixinPayController extends BaseController{
 				if(list == null || list.size() == 0){
 					code = ServerResult.RESULT_ORDER_ID_ERROR;
 				}else{
-					totalFee = (String)list.get(0).get("receivable_amount");
+					totalFee = String.valueOf(list.get(0).get("receivable_amount"));
 				}
 				try {
 					totalFeeD = Double.parseDouble(totalFee);
 					totalFeeD = totalFeeD * 100;
+					totalFeeInt = (int)totalFeeD;
 				} catch (Exception e) {
 					code = ServerResult.RESULT_ORDER_FEE_ERROR;
 					e.printStackTrace();
@@ -77,7 +82,7 @@ public class WeixinPayController extends BaseController{
 			}
 			//发起获取   微信支付服务后台生成预支付交易单  请求
 			if(code == 0){
-				Map<String, String> payRespMap = WeixinPayHelper.unifiedOrder(body, orderNo, totalFeeD+"", spbillCreateIp, customConfig.getNotifyurl(), openId);
+				Map<String, String> payRespMap = WeixinPayHelper.unifiedOrder(config,body, orderNo, totalFeeInt+"", spbillCreateIp, customConfig.getNotifyurl(), openId);
 				if(payRespMap != null && !payRespMap.isEmpty()){
 					String returnCode = payRespMap.get("return_code");
 					if("SUCCESS".equals(returnCode)){//调用成功，通信标识
@@ -97,8 +102,7 @@ public class WeixinPayController extends BaseController{
 				}
 			}
 			if(code == 0 && StringUtils.isNotBlank(prepayId)){
-				
-				WeixinConfig config = new WeixinConfig();
+//				WeixinConfig config = new WeixinConfig();
 				respMap.put("appId", config.getAppID());
 				respMap.put("timeStamp", (System.currentTimeMillis()/1000)+"");
 				respMap.put("nonceStr", WXPayUtil.generateNonceStr());//随机字符串

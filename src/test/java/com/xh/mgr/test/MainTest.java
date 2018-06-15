@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.google.common.base.Joiner;
+import com.xz.config.weixin.WeixinConfig;
 import com.xz.utils.HttpUtil;
 
 public class MainTest {
@@ -30,6 +31,7 @@ public class MainTest {
 //		urlEncode();
 //		timecha();
 		getSandBoxKey();
+		
 	}
 	
 	/**

@@ -5,19 +5,23 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayConstants.SignType;
 import com.xz.config.weixin.WeixinConfig;
 
+@Component
 public class WeixinPayHelper {
-
+//    @Autowired  
+//    private WeixinConfig config;  
 	/**
 	 * 统一下单
 	 */
-	public static Map<String, String> unifiedOrder(String body, String orderNo, String totalFee, String spbillCreateIp,
+	public static Map<String, String> unifiedOrder(WeixinConfig config,String body, String orderNo, String totalFee, String spbillCreateIp,
 			String notifyUrl, String openId) {
-		WeixinConfig config = new WeixinConfig();
-//		config.getKey();
+		System.out.println("totalFee="+totalFee);
 		//沙箱测试，正式环境需要把 useSandbox 改为false
 		WXPay wxpay = new WXPay(config,SignType.MD5,true);
 		Map<String, String> data = new HashMap<String, String>();

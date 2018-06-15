@@ -11,8 +11,26 @@ import com.xz.entity.CustomConfig;
 @Component
 public class WeixinConfig implements WXPayConfig{
 	
+//	public static WeixinConfig instance;
 	@Autowired  
     private CustomConfig customConfig; 
+	
+//	public static WeixinConfig getInstance(){
+//		if (instance == null) {
+//			synchronized (WeixinConfig.class) {
+//				if (instance == null) {
+//					instance = new WeixinConfig();
+//					instance.init();
+//				}
+//			}
+//		}
+//		return instance;
+//	}
+//	
+//	private void init(){
+//		instance.se
+//	}
+
 	
 	@Override
 	public String getAppID() {

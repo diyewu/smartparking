@@ -37,11 +37,13 @@ function loadOrderInfo(){
 function getPrepayInfo(orderNo){
 	$("body").showLoadingView();
 	var orderNo = getParam('orderNo');
-	$.post("../smartOrder/getOrderInfoByOrderNo/", 
+	console.log("orderNo="+orderNo);
+	$.post("../wepay/getWePayPrepayId/", 
 	{
 		orderNo:orderNo
 	},
 	function(result){
+		console.log(result);
 		$("body").hiddenLoadingView();
 		if(result.success == true){
 			var data = result.data;
