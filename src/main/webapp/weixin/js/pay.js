@@ -51,11 +51,11 @@ function getPrepayInfo(orderNo){
 				var appId = data.appId;
 				var timeStamp = data.timeStamp;
 				var nonceStr = data.nonceStr;
-				var package = data.package;
+				var Package = data.package;
 				var signType = data.signType;
 				var paySign = data.paySign;
 				
-				onBridgeReady(appId, timeStamp, nonceStr, package, signType, paySign)
+				onBridgeReady(appId, timeStamp, nonceStr, Package, signType, paySign)
 				
 			}
 		}else{
@@ -72,6 +72,12 @@ function getPrepayInfo(orderNo){
 }
 
 function onBridgeReady(appId,timeStamp,nonceStr,Package,signType,paySign) {
+	console.log(appId);
+	console.log(timeStamp);
+	console.log(nonceStr);
+	console.log(Package);
+	console.log(signType);
+	console.log(paySign);
 	WeixinJSBridge.invoke(
 		'getBrandWCPayRequest', {
 			"appId" : appId, //公众号名称，由商户传入

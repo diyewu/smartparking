@@ -71,10 +71,7 @@ logging:
 #custom settings
 custom:
      clientFileUpladPath: /opt/gis/temp/
-#     clientFileUpladPath: E:\gistools\img/
 #     clientFileUpladPath: /home/gis/temp
-#     clientFileUpladPath: F:\tempfilepath/
-#     clientFileUpladPath: /Users/calvin/Work/Tomcat/temp/
      smtp: smtp.qq.com
      port: 587
      user: 194973883@qq.com
@@ -84,8 +81,10 @@ custom:
      baiduapikey: 7gsG6xxeUEbtVCvVIqZ6aZY9Bage25Zm
      weixintoken: N6BflxST3dsDdRNr
      sendtimes: 10
-#     aeskeycode: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp
-     aeskeycode: e73468ca120fb8f3e781fbd41581668c
+#     aeskeycode: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp#正式环境key
+     aeskeycode: e73468ca120fb8f3e781fbd41581668c#sandbox环境key
      mchid: 1505894581
      notifyurl: https://zhonglestudio.cn/smartparking/wepay/accessWePayNotify/
      weixinapikey: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp
+     sandbox: true #是否 沙盒环境
+     certpath: /opt/apache-tomcat-8.5.28/weixinpaycert/apiclient_cert.p12#证书路径

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.xz.common.SmartParkDictionary;
-import com.xz.entity.CategoryTreeBean;
 import com.xz.entity.SmartOrder;
 import com.xz.entity.SmartPark;
 import com.xz.entity.SmartSpace;

@@ -15,15 +15,23 @@ import com.xz.config.weixin.WeixinConfig;
 @Component
 public class WeixinPayHelper {
 //    @Autowired  
-//    private WeixinConfig config;  
+//    private WeixinConfig config; 
 	/**
 	 * 统一下单
+	 * @param config
+	 * @param body
+	 * @param orderNo
+	 * @param totalFee
+	 * @param spbillCreateIp
+	 * @param notifyUrl
+	 * @param openId
+	 * @return
 	 */
 	public static Map<String, String> unifiedOrder(WeixinConfig config,String body, String orderNo, String totalFee, String spbillCreateIp,
-			String notifyUrl, String openId) {
+			String notifyUrl, String openId,boolean sandBox) {
 		System.out.println("totalFee="+totalFee);
 		//沙箱测试，正式环境需要把 useSandbox 改为false
-		WXPay wxpay = new WXPay(config,SignType.MD5,true);
+		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("body", body);// "停车缴费订单支付"
 		data.put("out_trade_no", orderNo);// 商户订单号
@@ -44,6 +52,26 @@ public class WeixinPayHelper {
 		}
 		return resp;
 	}
+	
+	/**
+	 * 查询订单
+	 * @param config
+	 * @param data
+	 * @return
+	 */
+	public static Map<String, String> orderQuery(WeixinConfig config,Map<String, String> data,boolean sandBox){
+		//沙箱测试，正式环境需要把 useSandbox 改为false
+		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
+		Map<String, String> query = new HashMap<String, String>();
+		try {
+			query = wxpay.orderQuery(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return query;
+	}
+	
+	
 
 	/**
 	 * 获取客户端IP

@@ -1,6 +1,11 @@
 package com.xz.controller.weixin.pay;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +26,11 @@ import com.xz.common.ServerResult;
 import com.xz.config.weixin.WeixinConfig;
 import com.xz.controller.BaseController;
 import com.xz.controller.weixin.WeixinConstants;
+import com.xz.controller.weixin.WeixinHelper;
 import com.xz.entity.CustomConfig;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartOrderService;
+import com.xz.utils.DateHelper;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -82,7 +89,7 @@ public class WeixinPayController extends BaseController{
 			}
 			//发起获取   微信支付服务后台生成预支付交易单  请求
 			if(code == 0){
-				Map<String, String> payRespMap = WeixinPayHelper.unifiedOrder(config,body, orderNo, totalFeeInt+"", spbillCreateIp, customConfig.getNotifyurl(), openId);
+				Map<String, String> payRespMap = WeixinPayHelper.unifiedOrder(config,body, orderNo, totalFeeInt+"", spbillCreateIp, customConfig.getNotifyurl(), openId,customConfig.isSandbox());
 				if(payRespMap != null && !payRespMap.isEmpty()){
 					String returnCode = payRespMap.get("return_code");
 					if("SUCCESS".equals(returnCode)){//调用成功，通信标识
@@ -102,6 +109,7 @@ public class WeixinPayController extends BaseController{
 				}
 			}
 			if(code == 0 && StringUtils.isNotBlank(prepayId)){
+				System.out.println(DateHelper.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
 //				WeixinConfig config = new WeixinConfig();
 				respMap.put("appId", config.getAppID());
 				respMap.put("timeStamp", (System.currentTimeMillis()/1000)+"");
@@ -120,7 +128,12 @@ public class WeixinPayController extends BaseController{
 		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	
-	
+	/**
+	 * API  地址 ：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
+	 * queryorder :https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
+	 * @param request
+	 * @param response
+	 */
 	@ApiOperation(value = "异步接收微信支付结果通知的回调地址", notes = "通知url必须为外网可访问的url，不能携带参数", httpMethod = "POST")
 	@RequestMapping("accessWePayNotify")
 	@ResponseBody
@@ -129,12 +142,75 @@ public class WeixinPayController extends BaseController{
 		String msg = null;
 		int code = 0;
 		Map<String,Object> respMap = new HashMap<String, Object>();
+		String resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"  
+                + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
+		InputStream inStream = null;
+		ByteArrayOutputStream outSteam = null;
 		try {
-			
+            inStream = request.getInputStream();  
+            outSteam = new ByteArrayOutputStream();  
+            byte[] buffer = new byte[1024];  
+            int len = 0;  
+            while ((len = inStream.read(buffer)) != -1) {  
+                outSteam.write(buffer, 0, len);  
+            }
+            String result = new String(outSteam.toByteArray(), "utf-8");// 获取微信调用我们notify_url的返回信息  
+            System.out.println("notify-result="+result);
+            Map<String, String> map = WXPayUtil.xmlToMap(result);
+            if ("SUCCESS".equalsIgnoreCase(map.get("return_code"))) {//微信支付----返回成功,验证参数，回复微信服务器
+            	if("SUCCESS".equalsIgnoreCase(map.get("result_code"))){
+            		//校验签名
+            		boolean signatureValid = WXPayUtil.isSignatureValid(result, customConfig.getAeskeycode());
+            		if(signatureValid){//校验成功,通知微信
+
+            			//查询订单，通过查询订单接口主动查询订单状态，完成下一步的业务逻辑。
+            			String transaction_id = map.get("transaction_id");//微信支付订单号
+            			String out_trade_no = map.get("out_trade_no");//订单号
+            			System.out.println("out_trade_no="+out_trade_no);
+            			Map<String, String> queryMap = new HashMap<String, String>();
+//            			queryMap.put("transaction_id", transaction_id);
+            			queryMap.put("out_trade_no", out_trade_no);
+            			Map<String, String> resultQueryMap = WeixinPayHelper.orderQuery(config, queryMap, customConfig.isSandbox());
+            			System.out.println("resultQueryMap="+resultQueryMap);
+            			if("SUCCESS".equalsIgnoreCase(resultQueryMap.get("return_code"))){
+            				if("SUCCESS".equalsIgnoreCase(map.get("result_code"))){
+            					/**
+            					 * SUCCESS—支付成功
+									REFUND—转入退款
+									NOTPAY—未支付
+									CLOSED—已关闭
+									REVOKED—已撤销（刷卡支付）
+									USERPAYING--用户支付中
+									PAYERROR--支付失败(其他原因，如银行返回失败)
+            					 */
+            					if("SUCCESS".equalsIgnoreCase(map.get("trade_state"))){
+            						//TODO  更新订单状态，通知用户支付状态
+            					}
+            				}else{
+            					System.out.println("查询订单失败："+resultQueryMap);
+            				}
+            			}else{
+            				System.out.println("查询订单失败："+resultQueryMap);
+            			}
+            			//通知微信
+            		}else{
+            			System.out.println("____sign___校验失败");
+            		}
+            	}
+            }else{//微信支付----返回失败
+            	System.out.println("微信支付----返回失败："+map);
+            }
 		} catch (Exception e) {
 			code = ServerResult.RESULT_SERVER_ERROR;
 			msg = e.getMessage();
 			e.printStackTrace();
+		}finally{
+			this.printData(response, resXml);
+            try {
+            	outSteam.close();  
+				inStream.close();
+			} catch (IOException e) {
+			}  
 		}
 	}
 	

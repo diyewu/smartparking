@@ -1,5 +1,9 @@
 package com.xz.config.weixin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,26 +15,9 @@ import com.xz.entity.CustomConfig;
 @Component
 public class WeixinConfig implements WXPayConfig{
 	
-//	public static WeixinConfig instance;
 	@Autowired  
     private CustomConfig customConfig; 
 	
-//	public static WeixinConfig getInstance(){
-//		if (instance == null) {
-//			synchronized (WeixinConfig.class) {
-//				if (instance == null) {
-//					instance = new WeixinConfig();
-//					instance.init();
-//				}
-//			}
-//		}
-//		return instance;
-//	}
-//	
-//	private void init(){
-//		instance.se
-//	}
-
 	
 	@Override
 	public String getAppID() {
@@ -44,8 +31,16 @@ public class WeixinConfig implements WXPayConfig{
 	
 	@Override
 	public InputStream getCertStream() {
-		// TODO Auto-generated method stub
-		return null;
+//		String certPath = "E:\OnMyWay\微信公众号\qlvip\cert\cert";
+        File file = new File(customConfig.getCertpath());
+        InputStream certStream = null;
+		try {
+			certStream = new FileInputStream(file);
+			certStream.close();	
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+        return certStream;
 	}
 
 	@Override
