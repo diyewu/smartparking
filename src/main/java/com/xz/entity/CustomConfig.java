@@ -13,7 +13,7 @@ public class CustomConfig {
     private String pwd;
     private String appid;
     private String secret;
-    private String baiduapikey;
+    private String baidumapapikey;
     private String weixintoken;
     private String sendtimes;
     private String aeskeycode;
@@ -80,12 +80,13 @@ public class CustomConfig {
 		this.secret = secret;
 	}
 
-	public String getBaiduapikey() {
-		return baiduapikey;
+
+	public String getBaidumapapikey() {
+		return baidumapapikey;
 	}
 
-	public void setBaiduapikey(String baiduapikey) {
-		this.baiduapikey = baiduapikey;
+	public void setBaidumapapikey(String baidumapapikey) {
+		this.baidumapapikey = baidumapapikey;
 	}
 
 	public String getWeixintoken() {

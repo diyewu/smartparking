@@ -1,10 +1,11 @@
-package com.xz.controller.api;
+package com.xz.lbs.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,14 +32,15 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.xz.common.ServerResult;
 import com.xz.entity.CustomConfig;
+import com.xz.lbs.service.LbsService;
+import com.xz.lbs.utils.AyPoint;
 import com.xz.model.json.JsonModel;
-import com.xz.service.LbsService;
 
 import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("lbs")
-public class LbsController {
+public class LbsController{
 	
 	@Autowired  
     private CustomConfig customConfig; 
@@ -48,18 +51,20 @@ public class LbsController {
 		private String destPath;
 		private File xlsFile;
 		private HttpSession session;
+		private String apiKey;
 		
-		ReadCallable(String destPath,File xlsFile,HttpSession session) {
+		ReadCallable(String destPath,File xlsFile,HttpSession session,String apiKey) {
 			this.destPath = destPath;
 			this.xlsFile = xlsFile;
 			this.session = session;
+			this.apiKey = apiKey;
 			
 		}
 		@Override
 		public Object call() throws Exception {
 			String resp = "";
 			try {
-				resp = lbsService.geoAddress(xlsFile, destPath,session);
+				resp = lbsService.geoAddress(xlsFile, destPath,session,apiKey);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -109,7 +114,7 @@ public class LbsController {
 				if(xlsFile != null || zipFile != null){
 					if(msg == null){
 						//线程处理
-						ReadCallable cb = new ReadCallable(destPath, xlsFile,session);
+						ReadCallable cb = new ReadCallable(destPath, xlsFile,session,customConfig.getBaidumapapikey());
 						Future<Object> future = threadPool.submit(cb);
 //						if("success".equals(future.get())){//成功返回
 //							
@@ -191,4 +196,8 @@ public class LbsController {
 			}
         }
 	}
+
+
+
+	
 }

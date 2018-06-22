@@ -1,19 +1,54 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 107.150.28.244_inzoom
-Source Server Version : 50611
-Source Host           : 107.150.28.244:3306
+Source Server         : localhost
+Source Server Version : 50629
+Source Host           : localhost:3306
 Source Database       : smartpark
 
 Target Server Type    : MYSQL
-Target Server Version : 50611
+Target Server Version : 50629
 File Encoding         : 65001
 
-Date: 2018-06-16 16:15:21
+Date: 2018-06-22 16:30:17
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for location_area
+-- ----------------------------
+DROP TABLE IF EXISTS `location_area`;
+CREATE TABLE `location_area` (
+  `name` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of location_area
+-- ----------------------------
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.392987,31.162703');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.383636,31.163446');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.386986,31.153154');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.388369,31.139664');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.391962,31.132678');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.400676,31.135275');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.398107,31.146077');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.402455,31.147282');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.406443,31.149878');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.406623,31.149786');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.408851,31.143635');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.413162,31.145861');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.416217,31.147808');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.416217,31.148271');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.415857,31.150713');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.41672,31.151207');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.40921,31.168265');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.401233,31.165268');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.402239,31.161683');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.394693,31.159705');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.393975,31.162796');
+INSERT INTO `location_area` VALUES ('上海市静安区古美街道', '121.383636,31.163446');
 
 -- ----------------------------
 -- Table structure for order_refund
