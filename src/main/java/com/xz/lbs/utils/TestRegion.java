@@ -6,6 +6,35 @@ public class TestRegion {
 	public static void main(String[] args){
 		check();
 	}
+	private static void check1(){
+		List<Point> mPoints = new ArrayList<Point>();
+		
+		mPoints.add(new Point(121.392987,31.162703));
+		mPoints.add(new Point(121.383636,31.163446));
+		mPoints.add(new Point(121.386986,31.153154));
+		mPoints.add(new Point(121.388369,31.139664));
+		mPoints.add(new Point(121.391962,31.132678));
+		mPoints.add(new Point(121.400676,31.135275));
+		mPoints.add(new Point(121.398107,31.146077));
+		mPoints.add(new Point(121.402455,31.147282));
+		mPoints.add(new Point(121.406443,31.149878));
+		mPoints.add(new Point(121.406623,31.149786));
+		mPoints.add(new Point(121.408851,31.143635));
+		mPoints.add(new Point(121.413162,31.145861));
+		mPoints.add(new Point(121.416217,31.147808));
+		mPoints.add(new Point(121.416217,31.148271));
+		mPoints.add(new Point(121.415857,31.150713));
+		mPoints.add(new Point(121.41672,31.151207 ));
+		mPoints.add(new Point(121.40921,31.168265 ));
+		mPoints.add(new Point(121.401233,31.165268));
+		mPoints.add(new Point(121.402239,31.161683));
+		mPoints.add(new Point(121.394693,31.159705));
+		mPoints.add(new Point(121.393975,31.162796));
+		mPoints.add(new Point(121.383636,31.163446));
+		
+		Point p = new Point(121.392988,31.162703);
+		System.out.println(GeoUtils2.isPointInPolygon(mPoints, p));
+	}
 	
 	private static void check(){
 		AyPoint p = new AyPoint(121.392988,31.162703);

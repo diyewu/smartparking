@@ -19,10 +19,11 @@ public class GeoUtils {
 	
 	public static void main(String[] args) {
 		//上海市古美高级中学
-		System.out.println(getGeocoderLatitude("上海市万源路平南路路口", "plEzfOG4jm58EGxEsHw4kCPoG3UjOcNv"));
+		System.out.println(getGeocoderLatitude("上海市平南路虹梅路路口", "plEzfOG4jm58EGxEsHw4kCPoG3UjOcNv"));
+		getGeocoderLatitudeByGaode("上海市平南路虹梅路路口", "b9c32abccd62b658a78097ca940d25d4");
 	}
 	/**
-	 * 根据详细地址获取 经纬度
+	 * 根据详细地址获取 经纬度-百度
 	 * @param address
 	 * @param key
 	 * @return
@@ -101,4 +102,16 @@ public class GeoUtils {
 		return b;
 	}
 	
+	
+	/**
+	 * 根据详细地址获取 经纬度-高德
+	 * @param address
+	 * @param key
+	 */
+	public static void getGeocoderLatitudeByGaode(String address,String key){
+		String baseUrl = "http://restapi.amap.com/v3/geocode/geo";
+		baseUrl =baseUrl+ "?"+"key="+key+"&address="+address;
+		String resp = HttpUtil.httpGetRequest(baseUrl);
+		System.out.println(resp);
+	}
 }
