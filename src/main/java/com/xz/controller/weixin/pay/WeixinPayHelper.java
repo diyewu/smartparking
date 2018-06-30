@@ -126,7 +126,13 @@ public class WeixinPayHelper {
 	}
 	
 	
-	
+	/**
+	 * 下载对账单
+	 * @param config
+	 * @param billDate
+	 * @param sandBox
+	 * @return
+	 */
 	public static Map<String, String> downloadBill(WeixinConfig config,String billDate,boolean sandBox){
 		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
 		Map<String, String> data = new HashMap<String, String>();
@@ -139,6 +145,24 @@ public class WeixinPayHelper {
 			e.printStackTrace();
 		}
 		return downloadBill;
+	}
+	
+	/**
+	 * 
+	 * @param config
+	 * @param billDate
+	 * @param sandBox
+	 * @param reqData
+	 * @return
+	 */
+	public static boolean isPayResultNotifySignatureValid(WeixinConfig config,boolean sandBox,Map<String, String> reqData){
+		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
+		try {
+			return wxpay.isPayResultNotifySignatureValid(reqData);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 

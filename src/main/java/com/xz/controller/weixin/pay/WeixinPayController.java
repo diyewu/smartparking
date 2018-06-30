@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +42,9 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("wepay")
 @RestController
 public class WeixinPayController extends BaseController{
+	//线程池
+//	ExecutorService threadPool = Executors.newCachedThreadPool();
+	ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 	
 	@Autowired
 	private SmartOrderService smartOrderService;
@@ -104,9 +111,13 @@ public class WeixinPayController extends BaseController{
 						code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
 						msg = payRespMap.get("return_msg");
 					}
-				}else{
-					code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
 				}
+//					code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
+				//TODO 制定定时任务，每隔30秒查询一次订单状态
+    			Map<String, String> queryMap = new HashMap<String, String>();
+    			queryMap.put("out_trade_no", orderNo);
+				scheduler.scheduleAtFixedRate(new PayOrderQueryProcess(config, queryMap, customConfig.isSandbox()), 0, 30, TimeUnit.SECONDS);
+				
 			}
 			if(code == 0 && StringUtils.isNotBlank(prepayId)){
 				System.out.println(DateHelper.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss"));
@@ -259,10 +270,11 @@ public class WeixinPayController extends BaseController{
             			Map<String, String> queryMap = new HashMap<String, String>();
 //            			queryMap.put("transaction_id", transaction_id);
             			queryMap.put("out_trade_no", out_trade_no);
+            			/*
             			Map<String, String> resultQueryMap = WeixinPayHelper.orderQuery(config, queryMap, customConfig.isSandbox());
             			System.out.println("resultQueryMap="+resultQueryMap);
             			if("SUCCESS".equalsIgnoreCase(resultQueryMap.get("return_code"))){
-            				if("SUCCESS".equalsIgnoreCase(map.get("result_code"))){
+            				if("SUCCESS".equalsIgnoreCase(resultQueryMap.get("result_code"))){
             					/**
             					 * SUCCESS—支付成功
 									REFUND—转入退款
@@ -272,6 +284,7 @@ public class WeixinPayController extends BaseController{
 									USERPAYING--用户支付中
 									PAYERROR--支付失败(其他原因，如银行返回失败)
             					 */
+            			/*
             					if("SUCCESS".equalsIgnoreCase(map.get("trade_state"))){
             						//TODO  更新订单状态，通知用户支付状态
             					}
@@ -281,6 +294,7 @@ public class WeixinPayController extends BaseController{
             			}else{
             				System.out.println("查询订单失败："+resultQueryMap);
             			}
+            			 */
             			//通知微信
             		}else{
             			System.out.println("____sign___校验失败");
