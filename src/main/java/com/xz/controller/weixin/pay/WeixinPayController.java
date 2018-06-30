@@ -1,10 +1,8 @@
 package com.xz.controller.weixin.pay;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,14 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.wxpay.sdk.WXPayUtil;
 import com.xz.common.ServerResult;
+import com.xz.common.SmartParkDictionary;
 import com.xz.config.weixin.WeixinConfig;
 import com.xz.controller.BaseController;
 import com.xz.controller.weixin.WeixinConstants;
-import com.xz.controller.weixin.WeixinHelper;
 import com.xz.entity.CustomConfig;
+import com.xz.entity.SmartOrder;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartOrderService;
 import com.xz.utils.DateHelper;
+import com.xz.utils.SortableUUID;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -72,7 +72,7 @@ public class WeixinPayController extends BaseController{
 			}
 			//step 2 根据orderNo 获取订单信息
 			if(code == 0){
-				List<Map<String, Object>> list = smartOrderService.getOrderInfoById(orderNo);
+				List<Map<String, Object>> list = smartOrderService.getOrderInfoByIdAndState(orderNo, SmartParkDictionary.orderState.ASK_OUT.ordinal());
 				if(list == null || list.size() == 0){
 					code = ServerResult.RESULT_ORDER_ID_ERROR;
 				}else{
@@ -136,7 +136,7 @@ public class WeixinPayController extends BaseController{
 	@ApiOperation(value = "申请退款", notes = "根据订单编号申请退款", httpMethod = "POST")
 	@RequestMapping("refund")
 	@ResponseBody
-	public void refund(
+	public JsonModel refund(
 			@ApiParam(name = "orderNo", value = "订单编号", required = true) @RequestParam(value = "orderNo", required = true) String orderNo
 			){
 		String msg = null;
@@ -145,34 +145,77 @@ public class WeixinPayController extends BaseController{
 		String totalFee = "";//订单总费用
 		double totalFeeD = 0;
 		int totalFeeInt = 0;
-		//step 1 校验权限
-		HttpSession session = getRequest().getSession();
-		String openId = (String)session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
-		if(StringUtils.isBlank(openId)){
-			code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
-		}
-		//step 2 根据orderNo 获取订单信息
-		if(code == 0){
-			List<Map<String, Object>> list = smartOrderService.getOrderInfoById(orderNo);
-			if(list == null || list.size() == 0){
-				code = ServerResult.RESULT_ORDER_ID_ERROR;
-			}else{
-				totalFee = String.valueOf(list.get(0).get("receivable_amount"));
+		try {
+			System.out.println("orderNo="+orderNo);
+			//step 1 校验权限
+			HttpSession session = getRequest().getSession();
+			String openId = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+			if (StringUtils.isBlank(openId)) {
+				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
 			}
-			try {
-				totalFeeD = Double.parseDouble(totalFee);
-				totalFeeD = totalFeeD * 100;
-				totalFeeInt = (int)totalFeeD;
-			} catch (Exception e) {
-				code = ServerResult.RESULT_ORDER_FEE_ERROR;
-				e.printStackTrace();
+			//step 2 根据orderNo 获取订单信息
+			if (code == 0) {
+				List<Map<String, Object>> list = smartOrderService.getOrderInfoByIdAndState(orderNo, SmartParkDictionary.orderState.ORDER_FINISHED.ordinal());
+				if (list == null || list.size() == 0) {
+					code = ServerResult.RESULT_ORDER_ID_ERROR;
+				} else {
+					totalFee = String.valueOf(list.get(0).get("receivable_amount"));
+					System.out.println("totalFee="+totalFee);
+				}
+				try {
+					totalFeeD = Double.parseDouble(totalFee);
+					totalFeeD = totalFeeD * 100;
+					totalFeeInt = (int) totalFeeD;
+				} catch (Exception e) {
+					code = ServerResult.RESULT_ORDER_FEE_ERROR;
+					e.printStackTrace();
+				}
 			}
+			//step 3 生成退款信息，调用微信API
+			if (code == 0) {
+				//退款单号,退款完成后，插入数据库，并生成退款订单
+				String outRefundNo = SortableUUID.randomUUID();
+				//TODO 沙盒测试，全额退款，实际可能根据业务需求改变
+				int refundFee = totalFeeInt;
+				//退款原因
+				//TODO 退款通知URL 沙盒测试未接收到消息，为了验证通过沙盒测试，在返回成功时，直接调用查询退款 接口
+				String refundDesc = "沙盒测试-全额退款";
+				Map<String, String> refundRespMap = WeixinPayHelper.refund(config, orderNo, outRefundNo,
+						totalFeeInt + "", refundFee + "", refundDesc, customConfig.getNotifyurl(),
+						customConfig.isSandbox());
+				if (refundRespMap != null && !refundRespMap.isEmpty()) {
+					String returnCode = refundRespMap.get("return_code");
+					if ("SUCCESS".equals(returnCode)) {//调用成功，通信标识
+						String resultCode = refundRespMap.get("result_code");
+						if ("SUCCESS".equals(resultCode)) {
+							//TODO  更新数据库 退款信息
+							SmartOrder smartOrder = new SmartOrder();
+							smartOrder.setId(orderNo);
+							smartOrder.setOrderStateId(SmartParkDictionary.orderState.ORDER_REFUND.ordinal());
+							smartOrder.setOrderRefundId(outRefundNo);
+							smartOrderService.updateSmartOrder(smartOrder);
+							
+							//TODO 调用查询退款 接口
+							Map<String, String> refundQuery = WeixinPayHelper.refundQuery(config, orderNo, customConfig.isSandbox());
+							System.out.println(refundQuery);
+						} else {
+							code = ServerResult.RESULT_REFUND_ERROR;
+							msg = refundRespMap.get("err_code_des");
+						}
+					} else {
+						code = ServerResult.RESULT_REFUND_ERROR;
+						msg = refundRespMap.get("return_msg");
+					}
+				} else {
+					code = ServerResult.RESULT_REFUND_ERROR;
+				}
+			} 
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
 		}
-		
-		//step 3 生成退款信息，调用微信API
-//		String outRefundNo
-		
-		
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
 	}
 	/**
 	 * API  地址 ：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
@@ -260,4 +303,35 @@ public class WeixinPayController extends BaseController{
 		}
 	}
 	
+	
+	/**
+	 * API  地址 ：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
+	 */
+	@ApiOperation(value = "下载对账单", notes = "根据订单编号申请退款", httpMethod = "POST")
+	@RequestMapping("downloadBill")
+	@ResponseBody
+	public JsonModel downloadBill(
+			){
+		String msg = null;
+		int code = 0;
+		Map<String,Object> respMap = new HashMap<String, Object>();
+		try {
+			//step 1 校验权限 TODO 应改为后台权限，为了沙盒测试，暂时使用前台权限验证
+			HttpSession session = getRequest().getSession();
+			String openId = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+			if (StringUtils.isBlank(openId)) {
+//				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}
+			if(code == 0){
+				Map<String, String> map = WeixinPayHelper.downloadBill(config,
+						DateHelper.dateToString(new Date(), "yyyymmdd"), customConfig.isSandbox());
+				System.out.println(map);
+			}
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), respMap);
+	}
 }

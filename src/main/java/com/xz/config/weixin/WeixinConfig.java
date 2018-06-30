@@ -29,6 +29,9 @@ public class WeixinConfig implements WXPayConfig{
 		return customConfig.getMchid();
 	}
 	
+	/**
+	 * 在这里不需要close处理，在调用方close
+	 */
 	@Override
 	public InputStream getCertStream() {
 //		String certPath = "E:\OnMyWay\微信公众号\qlvip\cert\cert";
@@ -36,9 +39,13 @@ public class WeixinConfig implements WXPayConfig{
         InputStream certStream = null;
 		try {
 			certStream = new FileInputStream(file);
-			certStream.close();	
 		} catch (Exception e1) {
 			e1.printStackTrace();
+		}finally{
+//			try {
+//				certStream.close();
+//			} catch (IOException e) {
+//			}	
 		}
         return certStream;
 	}

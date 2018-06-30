@@ -78,7 +78,7 @@ function getCoupon(type){
                         var status = order.status;
                         var insertDiv;
                         if (status == 0){//完结
-                        	insertDiv = "<div class='order_left_blue'></div>已完结</div><div onclick='jumpPay(\"" + order.id +  "\")' class='order_right'>申请退款</div>";
+                        	insertDiv = "<div class='order_left_blue'></div>已完结</div><div onclick='doRefund(\"" + order.id +  "\")' class='order_right'>申请退款</div>";
                         }else if(status == 1){//申请驶入
                         	insertDiv = "<div class='order_left_blue'></div>申请驶入</div>";
                         }else if(status == 2){//停车中
@@ -191,8 +191,24 @@ function jumpPay(orderNo){
 /**
  * 申请退款  TODO 测试阶段，直接可以发送退款请求到微信，正式环境下先提交退款申请，待操作员同意后在发送请求到微信，退款成功后，微信通知用户
  */
-function doRefund(){
-	
+function doRefund(orderNo){
+	$.ajax({
+        type: "post",
+        dateType: "json",
+        url: "../wepay/refund/",
+        data: {
+        	orderNo:orderNo
+        },
+        success: function(result) {
+        	console.log(result);
+            if (result.success == true) {
+            	alert("退款成功");
+            } else {
+                alert(result.msg);
+            }
+
+        }
+    });
 }
 
 

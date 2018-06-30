@@ -8,6 +8,7 @@ public class SmartParkDictionary {
 		ASK_OUT,//申请驶出停车场，待支付
 		PAY_FINISHED,//支付完成，待出场
 		FORCE_FINISH,//强制完结，无法正常完结
+		ORDER_CANCEL,//已取消
 		ORDER_REFUND//已退款
 	}
 	

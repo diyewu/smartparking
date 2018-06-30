@@ -72,12 +72,6 @@ function getPrepayInfo(orderNo){
 }
 
 function onBridgeReady(appId,timeStamp,nonceStr,Package,signType,paySign) {
-	console.log(appId);
-	console.log(timeStamp);
-	console.log(nonceStr);
-	console.log(Package);
-	console.log(signType);
-	console.log(paySign);
 	WeixinJSBridge.invoke(
 		'getBrandWCPayRequest', {
 			"appId" : appId, //公众号名称，由商户传入
@@ -89,7 +83,23 @@ function onBridgeReady(appId,timeStamp,nonceStr,Package,signType,paySign) {
 		},
 		function(res) {
 			if (res.err_msg == "get_brand_wcpay_request:ok") {
-				window.location.replace("index.html");
+				$.ajax({
+			        type: "post",
+			        dateType: "json",
+			        url: "../smartOrder/updateOrderState/",
+			        data: {
+			        	orderNo:orderNo,
+			        	orderState:"payFinished"
+			        },
+			        success: function(result) {
+			        	console.log(result);
+			            if (result.success == true) {
+			            	window.location.replace("index.html");
+			            } else {
+			                alert(result.msg);
+			            }
+			        }
+			    });
 			}
 		}
 	);

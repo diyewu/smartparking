@@ -55,6 +55,59 @@ public class WeixinPayHelper {
 	}
 	
 	/**
+	 * 申请退款
+	 * @param config
+	 * @param orderNo
+	 * @param outRefundNo
+	 * @param totalFee
+	 * @param refundFee
+	 * @param refundDesc
+	 * @param notifyUrl
+	 * @param sandBox
+	 * @return
+	 */
+	public static Map<String, String> refund(WeixinConfig config,String orderNo,String outRefundNo,String totalFee,String refundFee,
+			String refundDesc,String notifyUrl,boolean sandBox){
+		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("out_trade_no", orderNo);// 商户订单号
+		data.put("out_refund_no", outRefundNo);// 商户退款单号
+		data.put("total_fee", totalFee);// 订单金额
+		data.put("refund_fee", refundFee);// 退款金额
+		data.put("refund_fee_type", "CNY");// 退款货币种类
+		data.put("refund_desc", refundDesc);// 退款原因
+		data.put("notify_url", notifyUrl);// 退款结果通知ur
+		Map<String, String> resp = new HashMap<String, String>();
+		try {
+			resp = wxpay.refund(data);//申请退款
+			System.out.println(resp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resp;
+	}
+	
+	/**
+	 * 查询退款
+	 * @param config
+	 * @param outTradeNo
+	 * @param sandBox
+	 * @return
+	 */
+	public static Map<String, String> refundQuery(WeixinConfig config,String outTradeNo,boolean sandBox){
+		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("out_trade_no", outTradeNo);
+		Map<String, String> refundQuery = new HashMap<String, String>();
+		try {
+			refundQuery = wxpay.refundQuery(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return refundQuery;
+	}
+	
+	/**
 	 * 查询订单
 	 * @param config
 	 * @param data
@@ -72,6 +125,21 @@ public class WeixinPayHelper {
 		return query;
 	}
 	
+	
+	
+	public static Map<String, String> downloadBill(WeixinConfig config,String billDate,boolean sandBox){
+		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("bill_date", billDate);
+		data.put("bill_type", "ALL");
+		Map<String, String> downloadBill  = new HashMap<String, String>();
+		try {
+			downloadBill = wxpay.downloadBill(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return downloadBill;
+	}
 	
 
 	/**

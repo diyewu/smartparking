@@ -64,9 +64,9 @@ public class DemoController extends BaseController{
 			}
 			if(code == 0){
 				//车辆申请停车，TODO 判断是否允许车辆停车,需要判断车位剩余数量信息  判断车辆 是否需要付钱
-				code = smartParkService.checkCarForbidParking(carId, parkId);
+				code = smartOrderService.checkCarForbidParking(carId, parkId);
 				if(code == 0){//申请成功，允许车辆进入，创建订单
-					orderId = smartParkService.createOrder(carId, parkId, 0,spaceId);
+					orderId = smartOrderService.createOrder(carId, parkId, 0,spaceId);
 				}
 			}
 		} catch (Exception e) {
@@ -110,7 +110,7 @@ public class DemoController extends BaseController{
 				//车辆申请驶出场地，返回，开始停车时间、结束停车时间、停车场地、车位、总共产生停车费用，到会员客户端，等待会员支付
 				//step 1、查看是否有满足条件的订单，carId，parkId，order_state_id=2
 				//TODO 如何处理多条  同样carId，parkId，order_state_id=2 订单，暂时先按照第一条处理
-				List<Map<String, Object>> list = smartParkService.getOrderId(carId, parkId, SmartParkDictionary.orderState.CAR_PARKING.ordinal());
+				List<Map<String, Object>> list = smartOrderService.getOrderId(carId, parkId, SmartParkDictionary.orderState.CAR_PARKING.ordinal());
 				if (list != null && list.size() > 0) {
 					orderId = list.get(0).get("id")+"";
 				}else{
@@ -119,7 +119,7 @@ public class DemoController extends BaseController{
 				//step 2、根据订单信息，获取进场record，
 				List<Map<String, Object>> orderList = new ArrayList<Map<String,Object>>();
 				if(code == 0){
-					orderList = smartParkService.getOrderInfo(orderId);
+					orderList = smartOrderService.getOrderInfo(orderId);
 					if(orderList == null || orderList.size() == 0){
 						code = ServerResult.RESULT_ORDER_STATE_ERROR;
 					}
@@ -165,7 +165,7 @@ public class DemoController extends BaseController{
 					smartOrder.setEndTime(endTimeStr);
 					smartOrder.setReceivableAmount(totalParkingFee);
 					try {
-						smartParkService.updateSmartOrder(smartOrder);
+						smartOrderService.updateSmartOrder(smartOrder);
 					} catch (Exception e) {
 						msg = e.getMessage();
 						code = ServerResult.RESULT_SERVER_ERROR;
@@ -222,7 +222,7 @@ public class DemoController extends BaseController{
 		try {
 			double actualAmount = 0;//
 			//step1 校验订单编号和会员编号是否一致
-			List<Map<String, Object>> chechList = smartParkService.checkOrderIdAndMemberId(orderId, memberId);
+			List<Map<String, Object>> chechList = smartOrderService.checkOrderIdAndMemberId(orderId, memberId);
 			if (chechList == null || chechList.size() == 0) {
 				code = ServerResult.RESULT_ORDERID_MEMBERID_NOTMATCH_ERROR;
 			}
@@ -286,7 +286,7 @@ public class DemoController extends BaseController{
 					//step1 根据parkid和carid获取状态为“申请驶进停车场”订单信息，TODO 如何处理存在多条记录   如果获取不到，TODO 则走人工流程
 					List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 					try {
-						list = smartParkService.getOrderId(carId, parkId, orderState);
+						list = smartOrderService.getOrderId(carId, parkId, orderState);
 						if (list != null && list.size() > 0) {
 							orderId = list.get(0).get("id") + "";
 						} else {
@@ -305,7 +305,7 @@ public class DemoController extends BaseController{
 					}
 					//step2 创建停车出入场地记录
 					if(code == 0){
-						recordId = smartParkService.parkIngIn(carId, parkId, spaceId, entranceId,parkingType);
+						recordId = smartOrderService.parkIngIn(carId, parkId, spaceId, entranceId,parkingType);
 						if(StringUtils.isBlank(recordId)){
 							code = ServerResult.RESULT_RECORD_CREATE_ERROR;
 						}
@@ -317,7 +317,7 @@ public class DemoController extends BaseController{
 						}else{
 							smartOrder.setRecordOutId(recordId);
 						}
-						smartParkService.updateSmartOrder(smartOrder);
+						smartOrderService.updateSmartOrder(smartOrder);
 					}
 					if(code == 0){
 						//TODO  发送驶入停车场通知给用户

@@ -91,4 +91,5 @@ custom:
      weixinapikey: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp
      #是否 沙盒环境
      sandbox: true 
-     certpath: /opt/apache-tomcat-8.5.28/weixinpaycert/apiclient_cert.p12#证书路径
+     #证书路径
+     certpath: /opt/apache-tomcat-8.5.28/weixinpaycert/apiclient_cert.p12

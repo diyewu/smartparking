@@ -30,11 +30,14 @@ public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException, ParseException, InterruptedException {
 //		urlEncode();
 //		timecha();
-		getSandBoxKey();
+		testDownloadBill();
 		
 	}
 	
-	
+	public static void testDownloadBill(){
+		String url  = "https://zhonglestudio.cn/smartparking/wepay/downloadBill/";
+		HttpUtil.httpPostRequest(url);
+	}
 	
 	
 	/**

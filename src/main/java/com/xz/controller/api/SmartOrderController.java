@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xz.common.ServerResult;
+import com.xz.common.SmartParkDictionary;
 import com.xz.controller.BaseController;
 import com.xz.controller.weixin.WeixinConstants;
 import com.xz.entity.CustomConfig;
+import com.xz.entity.SmartOrder;
 import com.xz.model.json.JsonModel;
 import com.xz.service.SmartMemberService;
 import com.xz.service.SmartOrderService;
@@ -134,6 +136,47 @@ public class SmartOrderController extends BaseController{
 			e.printStackTrace();
 		}
 		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), list);
+	}
+	
+	@ApiOperation(value = "更新订单状态", notes = "用户支付完成后，更新订单状态为‘支付完成，待出场’", httpMethod = "POST")
+	@RequestMapping("updateOrderState")
+	@ResponseBody
+	public JsonModel updateOrderState(
+			@ApiParam(name = "orderNo", value = "订单编号", required = true) @RequestParam(value = "orderNo", required = true) String orderNo,
+			@ApiParam(name = "orderState", value = "订单状态", required = true) @RequestParam(value = "orderState", required = true) String orderState
+			){
+		String msg = null;
+		int code = 0;
+		Map<String,Object> respMap = new HashMap<String, Object>();
+		try {
+			//step 1 校验权限
+			HttpSession session = getRequest().getSession();
+			String openId = (String) session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+			if (StringUtils.isBlank(openId)) {
+				code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+			}
+			//step 2 根据orderNo 获取订单信息
+			if (code == 0) {
+				List<Map<String, Object>> list = smartOrderService.getOrderInfoByIdAndState(orderNo, SmartParkDictionary.orderState.PAY_FINISHED.ordinal());
+				if (list == null || list.size() == 0) {
+					code = ServerResult.RESULT_ORDER_ID_ERROR;
+				} else {
+					SmartOrder smartOrder = new SmartOrder();
+					smartOrder.setId(orderNo);
+					if("payFinished".equals(orderState)){
+						smartOrder.setOrderStateId(SmartParkDictionary.orderState.PAY_FINISHED.ordinal());
+					}else if("orderFinished".equals(orderState)){
+						smartOrder.setOrderStateId(SmartParkDictionary.orderState.ORDER_FINISHED.ordinal());
+					}
+					smartOrderService.updateSmartOrder(smartOrder);
+				}
+			}
+		} catch (Exception e) {
+			code = ServerResult.RESULT_SERVER_ERROR;
+			msg = e.getMessage();
+			e.printStackTrace();
+		}
+		return new JsonModel(code, ServerResult.getCodeMsg(code, msg), null);
 	}
 	
 	
