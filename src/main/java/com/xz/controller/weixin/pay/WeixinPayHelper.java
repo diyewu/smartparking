@@ -31,6 +31,7 @@ public class WeixinPayHelper {
 			String notifyUrl, String openId,boolean sandBox) {
 		System.out.println("totalFee="+totalFee);
 		//沙箱测试，正式环境需要把 useSandbox 改为false
+		System.out.println("________key="+config.getKey());
 		WXPay wxpay = new WXPay(config,SignType.MD5,sandBox);
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("body", body);// "停车缴费订单支付"

@@ -44,13 +44,14 @@ public class WeixinSendTeleplate {
 			}
 			String token = WeixinHelper.getAccessToken(appId, appSecret);
 			templateMsgResult = MessageHandler.sendTemplate(token, data);
+			System.out.println(templateMsgResult);
 		} catch (Exception e) {
 			msg = e.getMessage();
 			e.printStackTrace();
 		}
-		if(!"0".equals(templateMsgResult.getErrcode())){
-			System.out.println("出错啦……"+templateMsgResult.getErrmsg());
-		}
+//		if(!"0".equals(templateMsgResult.getErrcode())){
+			System.out.println("_______"+templateMsgResult);
+//		}
 		
 		
 	}

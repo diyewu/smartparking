@@ -55,19 +55,25 @@ public class SmartOrderController extends BaseController{
 			param.put("time", time);
 			param.put("sign", sign);
 			param.put("memberId", memberId);
-			//step1 校验参数
-			msg = SmartEncryptionUtil.checkParameter(param, "memberId", customConfig.getAeskeycode());
-			if(StringUtils.isNotBlank(msg)){
-				code = ServerResult.RESULT_SERVER_ERROR;
+			//step1 检查当前session
+			HttpSession session = getRequest().getSession();
+			String sessionMemberId = (String)session.getAttribute(WeixinConstants.SESSION_MEMBER_ID);
+			if(StringUtils.isBlank(sessionMemberId)){
+				//step2 校验参数
+				msg = SmartEncryptionUtil.checkParameter(param, "memberId", customConfig.getAeskeycode());
+				if(StringUtils.isNotBlank(msg)){
+					code = ServerResult.RESULT_SERVER_ERROR;
+				}
+			}else{
+				memberId = sessionMemberId; 
 			}
 			int total = 0;
-			//step2 校验memberid
+			//step3 校验memberid
 			if(code == 0){
 				List<Map<String, Object>> list = smartMemberService.getMemberInfoById(memberId);
 				if(list != null && list.size()>0){
 					String openId = (String)list.get(0).get("open_id");
 					if(StringUtils.isNotBlank(openId)){
-						HttpSession session = getRequest().getSession();
 						session.setAttribute(WeixinConstants.SESSION_MEMBER_ID, memberId);
 						session.setAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID, openId);
 					}else{
@@ -77,7 +83,7 @@ public class SmartOrderController extends BaseController{
 					code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
 				}
 			}
-			//step3 获取订单信息，根据订单状态排序
+			//step4 获取订单信息，根据订单状态排序
 			if(code == 0){
 				total = smartOrderService.getOrderCountByMemberId(memberId);
 				List<Map<String, Object>> list = smartOrderService.getOrderListByMemberId(memberId, pageIndex*pageSize,  (pageIndex+1)*pageSize);

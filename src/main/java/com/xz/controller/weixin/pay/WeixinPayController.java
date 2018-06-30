@@ -129,6 +129,52 @@ public class WeixinPayController extends BaseController{
 	}
 	
 	/**
+	 * API  地址 ：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
+	 * @param orderNo
+	 * TODO 测试阶段，直接可以发送退款请求到微信，正式环境下先提交退款申请，待操作员同意后在发送请求到微信，退款成功后，微信通知用户
+	 */
+	@ApiOperation(value = "申请退款", notes = "根据订单编号申请退款", httpMethod = "POST")
+	@RequestMapping("refund")
+	@ResponseBody
+	public void refund(
+			@ApiParam(name = "orderNo", value = "订单编号", required = true) @RequestParam(value = "orderNo", required = true) String orderNo
+			){
+		String msg = null;
+		int code = 0;
+		Map<String,Object> respMap = new HashMap<String, Object>();
+		String totalFee = "";//订单总费用
+		double totalFeeD = 0;
+		int totalFeeInt = 0;
+		//step 1 校验权限
+		HttpSession session = getRequest().getSession();
+		String openId = (String)session.getAttribute(WeixinConstants.SESSION_WEIXIN_OPEN_ID);
+		if(StringUtils.isBlank(openId)){
+			code = ServerResult.RESULT_AUTH_VALIDATE_ERROR;
+		}
+		//step 2 根据orderNo 获取订单信息
+		if(code == 0){
+			List<Map<String, Object>> list = smartOrderService.getOrderInfoById(orderNo);
+			if(list == null || list.size() == 0){
+				code = ServerResult.RESULT_ORDER_ID_ERROR;
+			}else{
+				totalFee = String.valueOf(list.get(0).get("receivable_amount"));
+			}
+			try {
+				totalFeeD = Double.parseDouble(totalFee);
+				totalFeeD = totalFeeD * 100;
+				totalFeeInt = (int)totalFeeD;
+			} catch (Exception e) {
+				code = ServerResult.RESULT_ORDER_FEE_ERROR;
+				e.printStackTrace();
+			}
+		}
+		
+		//step 3 生成退款信息，调用微信API
+//		String outRefundNo
+		
+		
+	}
+	/**
 	 * API  地址 ：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
 	 * queryorder :https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
 	 * @param request

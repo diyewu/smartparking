@@ -10,7 +10,7 @@ spring:
         name: test
         url: jdbc:mysql://localhost:3306/smartpark
         username: root
-        password: 123456
+        password: NoHsPlT03DG1bkBe
         # 使用druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
@@ -70,8 +70,8 @@ logging:
 
 #custom settings
 custom:
-#     clientFileUpladPath: /opt/gis/temp/
-     clientFileUpladPath: F:\tempfilepath/
+     clientFileUpladPath: /opt/gis/temp/
+#     clientFileUpladPath: F:\tempfilepath/
 #     clientFileUpladPath: /home/gis/temp
      smtp: smtp.qq.com
      port: 587
@@ -82,10 +82,13 @@ custom:
      baidumapapikey: plEzfOG4jm58EGxEsHw4kCPoG3UjOcNv
      weixintoken: N6BflxST3dsDdRNr
      sendtimes: 10
-#     aeskeycode: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp#正式环境key
-     aeskeycode: e73468ca120fb8f3e781fbd41581668c#sandbox环境key
+     #正式环境key
+#     aeskeycode: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp
+     #sandbox环境key
+     aeskeycode: e74b42e06362960d306095802f464c23
      mchid: 1505894581
      notifyurl: https://zhonglestudio.cn/smartparking/wepay/accessWePayNotify/
      weixinapikey: sJTfkjIzdiBHndKASC8V3fFbqm1o7LDp
-     sandbox: true #是否 沙盒环境
+     #是否 沙盒环境
+     sandbox: true 
      certpath: /opt/apache-tomcat-8.5.28/weixinpaycert/apiclient_cert.p12#证书路径
