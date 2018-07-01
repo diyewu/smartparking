@@ -24,14 +24,15 @@ import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.google.common.base.Joiner;
 import com.xz.config.weixin.WeixinConfig;
+import com.xz.utils.DateHelper;
 import com.xz.utils.HttpUtil;
 
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException, ParseException, InterruptedException {
 //		urlEncode();
 //		timecha();
-		testDownloadBill();
-		
+//		testDownloadBill();
+		System.out.println(Double.parseDouble("1")/100);
 	}
 	
 	public static void testDownloadBill(){

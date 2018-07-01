@@ -1,7 +1,5 @@
 $(function() {
-//	alert(getParam("code"));
 	init();
-	//homepages
 	contextPath = $("#contextPath").val();
     //首页刷新flag,1则返回首页要刷新页面
     var homepageRefreshFlag = getCookie("homepageRefreshFlag");
@@ -23,13 +21,10 @@ $(function() {
 
 function init(){
 	var code = getParam("code");
-//	alert(code);
 	getCarParkInfo(code);
-	
 }
 function getCarParkInfo(code){
 	$("body").showLoadingView();
-	
 	jQuery.ajax({  
 	    url: "../wechat/getCarParkInfoByCode/",  
 	    type: "post",  

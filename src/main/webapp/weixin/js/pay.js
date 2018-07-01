@@ -1,17 +1,15 @@
 $(function(){
 	loadOrderInfo();
 })
-
+var globalOrderNo = "";
 function loadOrderInfo(){
 	$("body").showLoadingView();
 	var orderNo = getParam('orderNo');
-	alert(orderNo);
 	$.post("../smartOrder/getOrderInfoByOrderNo/", 
 	{
 		orderNo:orderNo
 	},
 	function(result){
-		alert(result.success);
 		$("body").hiddenLoadingView();
 		if(result.success == true){
 			var data = result.data;
@@ -21,6 +19,7 @@ function loadOrderInfo(){
 			$("#pay_order_end_time").html(data[0].end_time);
 			$("#pay_order_no").html(data[0].id);
 			$("#footer").attr("onclick","getPrepayInfo('"+data[0].id+"')");
+			globalOrderNo = data[0].id;
 		}else{
 			$("body").alertDialog({
 				title: "提示",
@@ -35,15 +34,15 @@ function loadOrderInfo(){
 }
 
 function getPrepayInfo(orderNo){
+	$("#footer").attr("onclick","");
+	$("#paytext").html("支付中...");
 	$("body").showLoadingView();
 	var orderNo = getParam('orderNo');
-	console.log("orderNo="+orderNo);
 	$.post("../wepay/getWePayPrepayId/", 
 	{
 		orderNo:orderNo
 	},
 	function(result){
-		console.log(result);
 		$("body").hiddenLoadingView();
 		if(result.success == true){
 			var data = result.data;
@@ -67,7 +66,8 @@ function getPrepayInfo(orderNo){
 				}
 			});
 		}
-		
+		$("#footer").attr("onclick","getPrepayInfo('"+globalOrderNo+"')");
+		$("#paytext").html("确认支付:");
 	},'json');
 }
 
@@ -83,23 +83,14 @@ function onBridgeReady(appId,timeStamp,nonceStr,Package,signType,paySign) {
 		},
 		function(res) {
 			if (res.err_msg == "get_brand_wcpay_request:ok") {
-				$.ajax({
-			        type: "post",
-			        dateType: "json",
-			        url: "../smartOrder/updateOrderState/",
-			        data: {
-			        	orderNo:orderNo,
-			        	orderState:"payFinished"
-			        },
-			        success: function(result) {
-			        	console.log(result);
-			            if (result.success == true) {
-			            	window.location.replace("index.html");
-			            } else {
-			                alert(result.msg);
-			            }
-			        }
-			    });
+				$("body").alertDialog({
+					title: "提示",
+					text: "支付成功！",
+					okFtn: function(){
+					   window.location.replace("index.html");
+					}
+				});
+				
 			}
 		}
 	);

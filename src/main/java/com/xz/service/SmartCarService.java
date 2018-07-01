@@ -27,14 +27,14 @@ public class SmartCarService {
 	}
 	
 	public List<Map<String, Object>> checkMaxCar(String memberId){
-		String sql = " select 1 from smart_car where car_owner_id = ? ";
+		String sql = " select 1 from smart_car where member_id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);
 		return list;
 	}
 	
 	
 	public boolean checkCarIsOwnMember(String carId,String memberId){
-		String sql = " select * from smart_car where id = ? and car_owner_id = ? ";
+		String sql = " select * from smart_car where id = ? and member_id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, carId,memberId);
 		if(list != null && list.size() == 1){
 			return true;
@@ -96,7 +96,7 @@ public class SmartCarService {
 	 */
 	public boolean checkCarOwner(String memberId,String carId){
 		boolean flag = false;
-		String sql = " select * from smart_car where car_owner_id = ? and id = ?  ";
+		String sql = " select * from smart_car where member_id = ? and id = ?  ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId,carId);
 		if(list != null && list.size()>0){
 			flag = true;
@@ -122,7 +122,7 @@ public class SmartCarService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getCarListByMemberId(String memberId){
-		String sql = " select id ,car_number from smart_car where car_owner_id = ? ";
+		String sql = " select id ,car_number from smart_car where member_id = ? ";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, memberId);
 		return list;
 	}

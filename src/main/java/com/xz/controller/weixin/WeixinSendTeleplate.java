@@ -18,14 +18,14 @@ public class WeixinSendTeleplate {
 	 * @param failureTime
 	 */
 	public static void sendUnpaidInfo(String openId, String url, String orderNo, String pay, String payWay,
-			String failureTime,String appId,String appSecret) {
+			String failureTime,String appId,String appSecret,String titleContent) {
 		String msg = null;
 		TemplateMsgResult templateMsgResult = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			TreeMap<String, TreeMap<String, String>> params = new TreeMap<String, TreeMap<String, String>>();
 			// 根据具体模板参数组装
-			params.put("first", WechatTemplateMsg.item("尊敬的会员，您有一笔待缴费停车订单", "#000000"));
+			params.put("first", WechatTemplateMsg.item(titleContent, "#000000"));
 			params.put("keyword1", WechatTemplateMsg.item(orderNo, "#000000")); // 订单编号
 			params.put("keyword2", WechatTemplateMsg.item(pay+"元", "#FF0033")); // 待付金额
 			params.put("keyword3", WechatTemplateMsg.item(payWay, "#33CC33")); // 支付方式

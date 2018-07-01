@@ -104,6 +104,9 @@ public class ServerResult {
 	public final static int RESULT_REFUND_ERROR = 50021;
 	public final static String RESULT_REFUND_ERROR_MSG = "退款失败";
 	
+	public final static int RESULT_CAR_EXIST_PARKING_ORDER_ERROR = 50022;
+	public final static String RESULT_CAR_EXIST_PARKING_ORDER_ERROR_MSG = "当前车辆存在未支付订单，请先支付未完结订单";
+	
 	public static Map<Integer,String> ServerResultMap = new HashMap<Integer, String>();
 	static{
 		ServerResultMap.put(RESULT_SUCCESS, "success");
@@ -129,6 +132,7 @@ public class ServerResult {
 		ServerResultMap.put(RESULT_GET_PREPAY_ID_ERROR, RESULT_GET_PREPAY_ID_ERROR_MSG);
 		ServerResultMap.put(RESULT_ORDER_FEE_ERROR, RESULT_ORDER_FEE_ERROR_MSG);
 		ServerResultMap.put(RESULT_REFUND_ERROR, RESULT_REFUND_ERROR_MSG);
+		ServerResultMap.put(RESULT_CAR_EXIST_PARKING_ORDER_ERROR, RESULT_CAR_EXIST_PARKING_ORDER_ERROR_MSG);
 	}
 	
 	public static String getCodeMsg(int code,String defaultValue){

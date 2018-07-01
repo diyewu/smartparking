@@ -58,15 +58,54 @@ public class DemoController extends BaseController{
 		try {
 			//TODO 进场，出场，产生订单
 			//获取carid,
-			String carId = smartCarService.getCarIdByNumber(carNumber);
+			String memberId = "";
+			String carId = "";
+			List<Map<String, Object>> carList = smartCarService.getMemberInfoByCarNumber(carNumber);
+			if(carList != null && carList.size()>0){
+				carId = (String)carList.get(0).get("id");
+				memberId = (String)carList.get(0).get("member_id");
+			}
+			
 			if(StringUtils.isBlank(carId)){//车辆信息不存在
 				code = ServerResult.RESULT_CAR_NOT_REGIST_ERROR;
 			}
 			if(code == 0){
 				//车辆申请停车，TODO 判断是否允许车辆停车,需要判断车位剩余数量信息  判断车辆 是否需要付钱
-				code = smartOrderService.checkCarForbidParking(carId, parkId);
-				if(code == 0){//申请成功，允许车辆进入，创建订单
+				boolean allowParking =false; 
+				List<Map<String, Object>> list = smartOrderService.checkCarForbidParking(carId, parkId);
+				if(list == null || list.size() == 0){
+					allowParking = true;
+				}
+				if(allowParking){//申请成功，允许车辆进入，创建订单
 					orderId = smartOrderService.createOrder(carId, parkId, 0,spaceId);
+				}else{
+					orderId = list.get(0).get("id")+"";
+					String totalParkingFee = list.get(0).get("receivable_amount")+"";
+					code = ServerResult.RESULT_CAR_EXIST_PARKING_ORDER_ERROR;
+					//发送模板消息通知用户，存在未支付订单，并指向订单列表
+					//TODO 向客户端发送消息信息，提醒客户支付，车牌号做唯一验证
+					//根据memberId获取用户open_id
+					List<Map<String, Object>> memberList = smartMemberService.getMemberInfoById(memberId);
+					if(memberList != null && memberList.size()>0){
+						String format = "yyyy-MM-dd HH:mm:ss";
+						String openId = (String)memberList.get(0).get("open_id");
+						long paramTime = System.currentTimeMillis();
+						Map<String, String> param = new HashMap<String, String>();
+						param.put("time", paramTime+"");
+						param.put("memberId", memberId);
+						String sign = SmartEncryptionUtil.encryParam(param, "memberId", customConfig.getAeskeycode());
+						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html?time="+
+						paramTime+"&memberId="+memberId+"&sign="+sign;
+						System.out.println("url="+url);
+					    long time = 24*60*60*1000;//24小时
+					    Date now = new Date();
+					    Date afterDate = new Date(now .getTime() + time);//24小时后的时间
+					    String failureTime = DateHelper.paraseDateToString(afterDate, format);
+					    String titleContent = "尊敬的会员，您有一笔待缴费停车订单";
+						WeixinSendTeleplate.sendUnpaidInfo(openId, url, orderId, totalParkingFee+"", "微信支付", failureTime,customConfig.getAppid(),customConfig.getSecret(),titleContent);
+					}else{
+						code =ServerResult.RESULT_MEMBER_AUTH_ERROR;
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -190,7 +229,8 @@ public class DemoController extends BaseController{
 					    Date now = new Date();
 					    Date afterDate = new Date(now .getTime() + time);//30分钟后的时间
 					    String failureTime = DateHelper.paraseDateToString(afterDate, format);
-						WeixinSendTeleplate.sendUnpaidInfo(openId, url, orderId, totalParkingFee+"", "微信支付", failureTime,customConfig.getAppid(),customConfig.getSecret());
+					    String titleContent = "尊敬的会员，您有一笔待缴费停车订单";
+						WeixinSendTeleplate.sendUnpaidInfo(openId, url, orderId, totalParkingFee+"", "微信支付", failureTime,customConfig.getAppid(),customConfig.getSecret(),titleContent);
 					}else{
 						code =ServerResult.RESULT_MEMBER_AUTH_ERROR;
 					}

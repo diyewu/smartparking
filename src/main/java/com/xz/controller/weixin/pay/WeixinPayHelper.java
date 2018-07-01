@@ -148,7 +148,7 @@ public class WeixinPayHelper {
 	}
 	
 	/**
-	 * 
+	 * 判断支付结果通知中的sign是否有效
 	 * @param config
 	 * @param billDate
 	 * @param sandBox

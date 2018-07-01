@@ -98,25 +98,39 @@ public class WeixinPayController extends BaseController{
 			if(code == 0){
 				Map<String, String> payRespMap = WeixinPayHelper.unifiedOrder(config,body, orderNo, totalFeeInt+"", spbillCreateIp, customConfig.getNotifyurl(), openId,customConfig.isSandbox());
 				if(payRespMap != null && !payRespMap.isEmpty()){
-					String returnCode = payRespMap.get("return_code");
-					if("SUCCESS".equals(returnCode)){//调用成功，通信标识
-						String resultCode = payRespMap.get("result_code");
-						if("SUCCESS".equals(resultCode)){
-							prepayId = payRespMap.get("prepay_id");
+					//校验sign
+					if(!WeixinPayHelper.isPayResultNotifySignatureValid(config, customConfig.isSandbox(), payRespMap)){
+						code = ServerResult.RESULT_PARAM_CHECK_ERROR;
+					}
+					if(code == 0){
+						String returnCode = payRespMap.get("return_code");
+						if("SUCCESS".equals(returnCode)){//调用成功，通信标识
+							String resultCode = payRespMap.get("result_code");
+							if("SUCCESS".equals(resultCode)){
+								prepayId = payRespMap.get("prepay_id");
+								//插入操作记录
+								smartOrderService.insertIntoWeixinPayDetail(orderNo, SmartParkDictionary.weixinPayProgress.获取预支付交易单.ordinal(), payRespMap);
+							}else{
+								code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
+								msg = payRespMap.get("err_code_des");
+							}
 						}else{
 							code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
-							msg = payRespMap.get("err_code_des");
+							msg = payRespMap.get("return_msg");
 						}
-					}else{
-						code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
-						msg = payRespMap.get("return_msg");
 					}
+				}else{
+					code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
 				}
-//					code = ServerResult.RESULT_GET_PREPAY_ID_ERROR;
-				//TODO 制定定时任务，每隔30秒查询一次订单状态
-    			Map<String, String> queryMap = new HashMap<String, String>();
-    			queryMap.put("out_trade_no", orderNo);
-				scheduler.scheduleAtFixedRate(new PayOrderQueryProcess(config, queryMap, customConfig.isSandbox()), 0, 30, TimeUnit.SECONDS);
+				if(code == 0){
+					//制定定时任务，每隔10秒查询一次订单状态,更新订单以查到的结果为准，不以通知结果为准
+	    			Map<String, String> queryMap = new HashMap<String, String>();
+	    			queryMap.put("out_trade_no", orderNo);
+					scheduler.scheduleAtFixedRate(new PayOrderQueryProcess(smartOrderService,config, queryMap, customConfig.isSandbox()),
+							0,
+							5,
+							TimeUnit.SECONDS);
+				}
 				
 			}
 			if(code == 0 && StringUtils.isNotBlank(prepayId)){
@@ -194,20 +208,22 @@ public class WeixinPayController extends BaseController{
 				Map<String, String> refundRespMap = WeixinPayHelper.refund(config, orderNo, outRefundNo,
 						totalFeeInt + "", refundFee + "", refundDesc, customConfig.getNotifyurl(),
 						customConfig.isSandbox());
+				smartOrderService.insertIntoWeixinPayDetail(orderNo, SmartParkDictionary.weixinPayProgress.申请退款.ordinal(), refundRespMap);
 				if (refundRespMap != null && !refundRespMap.isEmpty()) {
 					String returnCode = refundRespMap.get("return_code");
 					if ("SUCCESS".equals(returnCode)) {//调用成功，通信标识
 						String resultCode = refundRespMap.get("result_code");
 						if ("SUCCESS".equals(resultCode)) {
-							//TODO  更新数据库 退款信息
+							//  更新数据库 退款信息
 							SmartOrder smartOrder = new SmartOrder();
 							smartOrder.setId(orderNo);
 							smartOrder.setOrderStateId(SmartParkDictionary.orderState.ORDER_REFUND.ordinal());
 							smartOrder.setOrderRefundId(outRefundNo);
 							smartOrderService.updateSmartOrder(smartOrder);
 							
-							//TODO 调用查询退款 接口
+							//TODO 调用查询退款 接口,线程查询，同 统一下单结果查询
 							Map<String, String> refundQuery = WeixinPayHelper.refundQuery(config, orderNo, customConfig.isSandbox());
+							smartOrderService.insertIntoWeixinPayDetail(orderNo, SmartParkDictionary.weixinPayProgress.查询退款结果.ordinal(), refundQuery);
 							System.out.println(refundQuery);
 						} else {
 							code = ServerResult.RESULT_REFUND_ERROR;
@@ -257,12 +273,14 @@ public class WeixinPayController extends BaseController{
             String result = new String(outSteam.toByteArray(), "utf-8");// 获取微信调用我们notify_url的返回信息  
             System.out.println("notify-result="+result);
             Map<String, String> map = WXPayUtil.xmlToMap(result);
+            if(map.containsKey("out_trade_no")){
+            	smartOrderService.insertIntoWeixinPayDetail(map.get("out_trade_no"), SmartParkDictionary.weixinPayProgress.微信通知.ordinal(), map);
+            }
             if ("SUCCESS".equalsIgnoreCase(map.get("return_code"))) {//微信支付----返回成功,验证参数，回复微信服务器
             	if("SUCCESS".equalsIgnoreCase(map.get("result_code"))){
             		//校验签名
             		boolean signatureValid = WXPayUtil.isSignatureValid(result, customConfig.getAeskeycode());
             		if(signatureValid){//校验成功,通知微信
-
             			//查询订单，通过查询订单接口主动查询订单状态，完成下一步的业务逻辑。
             			String transaction_id = map.get("transaction_id");//微信支付订单号
             			String out_trade_no = map.get("out_trade_no");//订单号
@@ -270,31 +288,11 @@ public class WeixinPayController extends BaseController{
             			Map<String, String> queryMap = new HashMap<String, String>();
 //            			queryMap.put("transaction_id", transaction_id);
             			queryMap.put("out_trade_no", out_trade_no);
-            			/*
-            			Map<String, String> resultQueryMap = WeixinPayHelper.orderQuery(config, queryMap, customConfig.isSandbox());
-            			System.out.println("resultQueryMap="+resultQueryMap);
-            			if("SUCCESS".equalsIgnoreCase(resultQueryMap.get("return_code"))){
-            				if("SUCCESS".equalsIgnoreCase(resultQueryMap.get("result_code"))){
-            					/**
-            					 * SUCCESS—支付成功
-									REFUND—转入退款
-									NOTPAY—未支付
-									CLOSED—已关闭
-									REVOKED—已撤销（刷卡支付）
-									USERPAYING--用户支付中
-									PAYERROR--支付失败(其他原因，如银行返回失败)
-            					 */
-            			/*
-            					if("SUCCESS".equalsIgnoreCase(map.get("trade_state"))){
-            						//TODO  更新订单状态，通知用户支付状态
-            					}
-            				}else{
-            					System.out.println("查询订单失败："+resultQueryMap);
-            				}
-            			}else{
-            				System.out.println("查询订单失败："+resultQueryMap);
-            			}
-            			 */
+            			// 制定定时任务，在接收到微信通知以后，仍然调用一次任务，任务中需有防止重复操作逻辑。
+        				scheduler.scheduleAtFixedRate(new PayOrderQueryProcess(smartOrderService,config, queryMap, customConfig.isSandbox()),
+        						0,
+        						10,
+        						TimeUnit.SECONDS);
             			//通知微信
             		}else{
             			System.out.println("____sign___校验失败");
@@ -338,7 +336,7 @@ public class WeixinPayController extends BaseController{
 			}
 			if(code == 0){
 				Map<String, String> map = WeixinPayHelper.downloadBill(config,
-						DateHelper.dateToString(new Date(), "yyyymmdd"), customConfig.isSandbox());
+						DateHelper.dateToString(new Date(), "yyyyMMdd"), customConfig.isSandbox());
 				System.out.println(map);
 			}
 		} catch (Exception e) {

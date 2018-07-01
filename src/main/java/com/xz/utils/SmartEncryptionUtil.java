@@ -38,7 +38,7 @@ public class SmartEncryptionUtil {
 		} else if(value == null) {
 			msg = key + " 参数有误!";
 		} else {
-			if(Math.abs(System.currentTimeMillis() - NumberUtils.toLong(time)) > 30 * 60 * 1000) {
+			if(Math.abs(System.currentTimeMillis() - NumberUtils.toLong(time)) > 24 * 60 * 60 * 1000) {
 				msg = "处理时间超过时限!";
 			} else {
 				String validCode = value + time + code;

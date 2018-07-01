@@ -17,4 +17,11 @@ public class SmartParkDictionary {
 		PARK_OUT//驶出
 	}
 	
+	public enum weixinPayProgress{
+		获取预支付交易单,
+		查询订单结果,
+		微信通知,
+		申请退款,
+		查询退款结果
+	}
 }
