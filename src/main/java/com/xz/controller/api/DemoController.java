@@ -94,7 +94,7 @@ public class DemoController extends BaseController{
 						param.put("time", paramTime+"");
 						param.put("memberId", memberId);
 						String sign = SmartEncryptionUtil.encryParam(param, "memberId", customConfig.getAeskeycode());
-						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html?time="+
+						String url = "https://zhonglestudio.cn/qlvip/weixin/order.html?time="+
 						paramTime+"&memberId="+memberId+"&sign="+sign;
 						System.out.println("url="+url);
 					    long time = 24*60*60*1000;//24小时
@@ -222,7 +222,7 @@ public class DemoController extends BaseController{
 						param.put("time", paramTime+"");
 						param.put("memberId", memberId);
 						String sign = SmartEncryptionUtil.encryParam(param, "memberId", customConfig.getAeskeycode());
-						String url = "https://zhonglestudio.cn/smartparking/weixin/order.html?time="+
+						String url = "https://zhonglestudio.cn/qlvip/weixin/order.html?time="+
 						paramTime+"&memberId="+memberId+"&sign="+sign;
 						System.out.println("url="+url);
 					    long time = 120*60*1000;//30分钟
@@ -319,7 +319,7 @@ public class DemoController extends BaseController{
 						smartOrder.setBeginTime(beginTime);
 						smartOrder.setOrderStateId(SmartParkDictionary.orderState.CAR_PARKING.ordinal());
 					}else{//驶出
-						orderState = SmartParkDictionary.orderState.CAR_PARKING.ordinal();
+						orderState = SmartParkDictionary.orderState.PAY_FINISHED.ordinal();
 //						smartOrder.setId(orderId);
 						smartOrder.setOrderStateId(SmartParkDictionary.orderState.ORDER_FINISHED.ordinal());
 					}

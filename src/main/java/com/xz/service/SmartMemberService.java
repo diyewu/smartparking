@@ -111,7 +111,7 @@ public class SmartMemberService {
 		sb.append(" select sc.car_number,so.order_state_id,sp.park_name ,sod.state_name ,so.begin_time ,max(sc.create_time)");
 		sb.append(" from smart_car sc  ");
 		sb.append(" left join smart_member sm on sc.member_id= sm.id ");
-		sb.append(" left join smart_order so on so.car_id = sc.id ");
+		sb.append(" left join smart_order so on so.car_id = sc.id and so.order_state_id not in(0) ");
 		sb.append(" left join smart_order_state_dictionory sod on so.order_state_id = sod.id ");
 		sb.append(" left join smart_park sp on so.park_id = sp.id ");
 		sb.append(" where sm.id = ? ");

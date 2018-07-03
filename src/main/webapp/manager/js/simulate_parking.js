@@ -112,8 +112,12 @@ function parking(parkingType) {
 			},
 			function(result) {
 				if (result.success == true) {
-					start();
-					alert("开始计时");
+					if('0' == parkingType){
+						start();
+						alert("开始计时");
+					}else if('1' == parkingType){
+						alert("驶出停车场");
+					}
 				}else{
 					alert(result.msg);
 				}

@@ -193,7 +193,7 @@ public class SmartOrderService {
 			StringBuilder sb = new StringBuilder();
 			List<Object> param = new ArrayList<Object>();
 			sb.append(" update smart_order set update_time=NOW() ");
-			param.add(smartOrder.getId());
+//			param.add(smartOrder.getId());
 			if (StringUtils.isNotBlank(smartOrder.getCarId())) {
 				sb.append(" ,car_id = ? ");
 				param.add(smartOrder.getCarId());

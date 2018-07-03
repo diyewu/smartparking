@@ -29,10 +29,10 @@ import com.xz.utils.HttpUtil;
 
 public class MainTest {
 	public static void main(String[] args) throws UnsupportedEncodingException, ParseException, InterruptedException {
-//		urlEncode();
+		urlEncode();
 //		timecha();
 //		testDownloadBill();
-		System.out.println(Double.parseDouble("1")/100);
+//		System.out.println(Double.parseDouble("1")/100);
 	}
 	
 	public static void testDownloadBill(){
@@ -159,6 +159,7 @@ public class MainTest {
 	}
 	
 	public static void urlEncode() throws UnsupportedEncodingException{
+		 System.out.println(java.net.URLEncoder.encode("https://zhonglestudio.cn/smartparking/weixin/index.html",   "utf-8"));   
 		 System.out.println(java.net.URLEncoder.encode("https://zhonglestudio.cn/qlvip/weixin/index.html",   "utf-8"));   
 	}
 	
